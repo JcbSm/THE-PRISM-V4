@@ -1,8 +1,25 @@
 {
     "name": "the-prism-v4",
-    "main": "dist/index.js",
+    "main": "out/index.js",
+    "type": "module",
+    
     "dependencies": {
+        "@sapphire/discord.js-utilities": "^5.1.2",
         "@sapphire/framework": "^3.1.4",
-        "discord.js": "^14.7.1"
+        "@sapphire/ts-config": "^3.3.4",
+        "discord.js": "^13.12.0",
+        "dotenv": "^16.0.3",
+        "mysql": "^2.18.1"
+    },
+    "devDependencies": {
+        "@types/mysql": "^2.15.21"
+    },
+    "scripts": {
+        "build": "tsc",
+        "start": "node out/index.js"
+    },
+    "imports": {
+        "#root/*": "./out/*.js",
+        "#lib/*": "./out/lib/*.js"
     }
 }

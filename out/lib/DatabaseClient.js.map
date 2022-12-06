@@ -1,0 +1,1 @@
+{"version":3,"file":"DatabaseClient.js","sourceRoot":"","sources":["../../src/lib/DatabaseClient.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,gBAAgB,EAAE,MAAM,OAAO,CAAC;AAOzC,MAAM,OAAO,cAAc;IACvB,YAAY,MAAc;QACtB,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;IACzB,CAAC;IAEM,OAAO;QAEV,OAAO,gBAAgB,CAAC,OAAO,CAAC,GAAG,CAAC,MAAO,CAAC,CAAA;IAEhD,CAAC;CACJ"}
