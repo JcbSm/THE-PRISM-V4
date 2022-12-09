@@ -8,18 +8,27 @@ console.log("Initialising...");
 let client = new PrismClient({
     intents: [ // For a list: https://discord.com/developers/docs/topics/gateway#list-of-intents
         'GUILDS',
+        'GUILD_MESSAGES',
+        'GUILD_PRESENCES'
     ],
     partials: [],
     logger: {
-        level: Boolean(process.env.DEV) ? LogLevel.Debug : LogLevel.Info
-    }
+        level: LogLevel.Info //Boolean(process.env.DEV) ? LogLevel.Debug : LogLevel.Info
+    },
+    defaultPrefix: ['-'],
+    allowedMentions: { parse: ['everyone']}
 });
 
 client.logger.info("Attempting connection to MySQL database...");
+
 try {
+
     await client.db.connect();
-    client.logger.info("Connection established.")
+    client.logger.info("Connection established.");
+    
 } catch (err) {
+
+    console.log(err)
     client.logger.fatal("Unable to establish connection to MySQL database. Exiting process.");
     process.exit(1);
 }
