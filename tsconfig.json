@@ -16,8 +16,9 @@
         // Paths and such
         "baseUrl": "./src",
         "paths": {
-            "#lib/*": ["./lib/*"],
-            "#types/*": ["./lib/types/*"]
+            "#structs/*": ["./lib/structures/*"],
+            "#types/*": ["./lib/types/*"],
+            "#lib/*": ["./lib/*"]
         }
     },
 

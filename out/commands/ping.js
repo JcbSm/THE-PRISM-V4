@@ -1,22 +1,22 @@
-import { Command } from "@sapphire/framework";
-export class PingCommand extends Command {
-    constructor(context, options) {
-        super(context, { ...options });
-    }
+import { __decorate } from "tslib";
+import { PrismCommand } from "#structs/PrismCommand";
+import { ApplyOptions } from "@sapphire/decorators";
+let PingCommand = class PingCommand extends PrismCommand {
     registerApplicationCommands(registry) {
-        registry.registerChatInputCommand((builder) => builder.setName('ping').setDescription('Ping the bot.'));
+        registry.registerChatInputCommand((builder) => builder
+            .setName('ping')
+            .setDescription('Ping the bot.'), {
+            // [dev, prod]
+            idHints: ['868234547471462453', '1050050625771163688']
+        });
     }
     async chatInputRun(interaction) {
         await interaction.reply({ content: `Pinging...`, ephemeral: true, fetchReply: true });
         return interaction.editReply(`**Pong! 🏓**\nHeartbeat: \`${this.container.client.ws.ping} ms\`.`);
-        /*
-        if (isMessageInstance(msg)) {
-            const diff = msg.createdTimestamp - interaction.createdTimestamp;
-            const ping = Math.round(this.container.client.ws.ping);
-            return interaction.editReply(`**Pong! 🏓**\nRound-trip: \`${diff} ms\`\nHeartbeat: \`${ping} ms\`.`);
-        }
-
-        return interaction.editReply(`Unable to retrieve ping :(`)*/
     }
-}
+};
+PingCommand = __decorate([
+    ApplyOptions({})
+], PingCommand);
+export { PingCommand };
 //# sourceMappingURL=ping.js.map

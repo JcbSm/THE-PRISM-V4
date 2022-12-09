@@ -2,8 +2,8 @@
     "name": "the-prism-v4",
     "main": "out/index.js",
     "type": "module",
-    
     "dependencies": {
+        "@sapphire/decorators": "^5.0.0",
         "@sapphire/discord.js-utilities": "^5.1.2",
         "@sapphire/framework": "^3.1.4",
         "@sapphire/ts-config": "^3.3.4",
@@ -19,7 +19,9 @@
         "start": "node out/index.js"
     },
     "imports": {
-        "#root/*": "./out/*.js",
-        "#lib/*": "./out/lib/*.js"
+        "#structs/*":   "./out/lib/structures/*.js",
+        "#types/*":     "./out/lib/typedefs/*.js",
+        "#lib/*":       "./out/lib/*.js",
+        "#root/*":      "./out/*.js"
     }
 }

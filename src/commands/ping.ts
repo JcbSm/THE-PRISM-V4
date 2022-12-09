@@ -1,28 +1,29 @@
-import { ChatInputCommand, Command } from "@sapphire/framework";
+import { PrismCommand } from "#structs/PrismCommand";
+import { ApplyOptions } from "@sapphire/decorators"
+import type { ChatInputCommand } from "@sapphire/framework";
 
-export class PingCommand extends Command {
+@ApplyOptions<PrismCommand.Options>({
 
-    public constructor(context: Command.Context, options: Command.Options) {
-        super(context, { ...options })
-    }
+})
+
+export class PingCommand extends PrismCommand {
 
     public override registerApplicationCommands(registry: ChatInputCommand.Registry) {
-        registry.registerChatInputCommand((builder) => builder.setName('ping').setDescription('Ping the bot.'));
+        registry.registerChatInputCommand(
+            (builder) => builder
+                .setName('ping')
+                .setDescription('Ping the bot.'),
+            {
+                // [dev, prod]
+                idHints: ['868234547471462453', '1050050625771163688']
+            });
     }
 
-    public async chatInputRun(interaction: Command.ChatInputInteraction): Promise<unknown> {
+    public async chatInputRun(interaction: PrismCommand.ChatInputInteraction): Promise<unknown> {
 
         await interaction.reply({ content: `Pinging...`, ephemeral: true, fetchReply: true });
         return interaction.editReply(`**Pong! 🏓**\nHeartbeat: \`${this.container.client.ws.ping} ms\`.`)
 
-        /*
-        if (isMessageInstance(msg)) {
-            const diff = msg.createdTimestamp - interaction.createdTimestamp;
-            const ping = Math.round(this.container.client.ws.ping);
-            return interaction.editReply(`**Pong! 🏓**\nRound-trip: \`${diff} ms\`\nHeartbeat: \`${ping} ms\`.`);
-        }
-
-        return interaction.editReply(`Unable to retrieve ping :(`)*/
     }
 
 }

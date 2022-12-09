@@ -1,2 +1,9 @@
+# Node modules not needed
 /node_modules/
+
+# Information not for the eyes of another.
 .env
+
+# Don't push the debug command 
+/out/commands/debug.*
+/src/commands/debug.*

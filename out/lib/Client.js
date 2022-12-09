@@ -1,6 +1,9 @@
 import { SapphireClient } from "@sapphire/framework";
-export class Client extends SapphireClient {
+import { DatabaseClient } from "#lib/DatabaseClient";
+export class PrismClient extends SapphireClient {
     constructor(options) {
         super(options);
+        this.db = new DatabaseClient(this);
     }
 }
+//# sourceMappingURL=Client.js.map
