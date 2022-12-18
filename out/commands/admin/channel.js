@@ -19,7 +19,7 @@ let ChannelCommand = class ChannelCommand extends PrismSubcommand {
             .addChannelOption((option) => option //
             .setName('channel')
             .setDescription('The channel where level-up messages will be sent'))), {
-            idHints: ['1053315950759379034']
+            idHints: ['1053315950759379034', '1053835411002236989']
         });
     }
     async chatInputRunCounting(interaction) {
