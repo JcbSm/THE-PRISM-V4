@@ -9,12 +9,12 @@ let default_1 = class extends PrismCommand {
         registry.registerChatInputCommand(command => command //
             .setName('cs')
             .setDescription('Load up noob'), {
-            guildIds: ['742026925156860026'],
-            idHints: ['1050830508906528849']
+            guildIds: this.client.dev ? ['569556194612740115'] : ['742026925156860026'],
+            idHints: ['1050830508906528849', '1050832661184258048']
         });
     }
     async chatInputRun(interaction) {
-        interaction.reply({ content: `@everyone cs or bent` });
+        return await interaction.reply({ content: `@everyone cs or bent` });
     }
 };
 default_1 = __decorate([

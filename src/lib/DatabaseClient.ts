@@ -1,10 +1,10 @@
-import { Connection, createConnection, MysqlError } from 'mysql';
+import { Connection, createConnection, MysqlError, OkPacket } from 'mysql';
 import type { PrismClient } from '#lib/Client';
-import type { Guild, GuildMember, User } from 'discord.js';
+import type { Channel, Guild, GuildMember, User } from 'discord.js';
 import type { 
-    User as DatabaseUser,
-    Guild as DatabaseGuild,
-    Member as DatabaseMember
+    DatabaseUser,
+    DatabaseGuild,
+    DatabaseMember
 } from './typedefs/database';
 
 export interface DatabaseClient {
@@ -16,8 +16,8 @@ export interface DatabaseClient {
 export class DatabaseClient {
     constructor(client: PrismClient) {
         this.client = client;
-        this.connection = this.getConnection();
         this.db = this.client.db;
+        this.getConnection();
     }
 
     /**
@@ -39,7 +39,7 @@ export class DatabaseClient {
      * Gets the Database URL from .env and creates the connection.
      * @returns { Connection } MySQL Connection.
      */
-    private getConnection(): Connection {
+    private getConnection() {
 
         // Check if DB_URL is provided in .env
         if (!process.env.DB_URL) {
@@ -48,7 +48,8 @@ export class DatabaseClient {
             process.exit(1);
         }
 
-        return createConnection(process.env.DB_URL);
+        this.connection = createConnection(process.env.DB_URL);
+        this.connection.config.supportBigNumbers = true;
     }
 
     /**
@@ -61,9 +62,9 @@ export class DatabaseClient {
         return new Promise((res, rej) => {
             this.connection.query(query, (err, result) => {
 
-                if (err)
+                if (err) {
                     rej(err);
-                else
+                } else
                     res(result);
 
             })
@@ -105,5 +106,58 @@ export class DatabaseClient {
         res.voice = Boolean(res.voice);
 
         return res;
+    }
+
+    /**
+     * Update database values for a guild.
+     * @param guild DatabaseGuild to update
+     * @param options Fields to update
+     * @returns MySQL Query result
+     */
+    public async updateGuild(guild: Guild, options: DatabaseGuild.Options) {
+        await this.fetchGuild(guild);
+        return this.query(`UPDATE guilds SET ${this.queryOptions(options)} WHERE guild_id = ${guild.id}`)
+    }
+
+    /**
+     * Update database values for member.
+     * @param member Guildmember to update
+     * @param options Fields to update
+     * @returns MySQL query results
+     */
+    public async updateMember(member: GuildMember, options: DatabaseMember.Options) {
+        const { member_id } = await this.fetchMember(member);
+        return this.query(`UPDATE members SET ${this.queryOptions(options)} WHERE member_id = ${member_id}`)
+    }
+
+    /**
+     * XP FUNCTIONS
+     */
+    public async addXP(member: DatabaseMember): Promise<void> {
+
+        member;
+
+    }
+
+    /**
+     * Sets a channel in the guilds table
+     * @param guild Guild to set channel for
+     * @param feature Which channel id to set
+     * @param channel ID of channel
+     * @returns Query result
+     */
+    public async setChannel(guild: Guild, feature: DatabaseGuild.Channels, channel: Channel): Promise<OkPacket | MysqlError> {
+
+        // Ensure guild exists on database
+        await this.fetchGuild(guild);
+
+        // Set values
+        return await this.query(`UPDATE guilds SET channel_id_${feature} = ${channel.id} WHERE guild_id = ${guild.id}`);
+
+    }
+
+    private queryOptions(options: DatabaseGuild.Options | DatabaseMember.Options): string {
+        const arr = Object.entries(options);
+        return arr.map(v => `${v[0]} = ${v[1]}`).join(", ")
     }
 }

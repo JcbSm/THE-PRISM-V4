@@ -1,1 +1,1 @@
-{"version":3,"file":"database.js","sourceRoot":"","sources":["../../../src/lib/typedefs/database.ts"],"names":[],"mappings":""}
+{"version":3,"file":"database.js","sourceRoot":"","sources":["../../../src/lib/typedefs/database.ts"],"names":[],"mappings":"AAaA,MAAM,KAAW,aAAa,CAc7B;AAdD,WAAiB,aAAa;IAI1B,IAAiB,QAAQ,CAGxB;IAHD,WAAiB,QAAQ;QACR,iBAAQ,GAAG,UAAU,CAAC;QACtB,iBAAQ,GAAG,SAAS,CAAA;IACrC,CAAC,EAHgB,QAAQ,GAAR,sBAAQ,KAAR,sBAAQ,QAGxB;AAOL,CAAC,EAdgB,aAAa,KAAb,aAAa,QAc7B"}

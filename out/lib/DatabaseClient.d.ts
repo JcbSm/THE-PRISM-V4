@@ -1,7 +1,7 @@
-import { Connection, MysqlError } from 'mysql';
+import { Connection, MysqlError, OkPacket } from 'mysql';
 import type { PrismClient } from '#lib/Client';
-import type { Guild, GuildMember, User } from 'discord.js';
-import type { User as DatabaseUser, Guild as DatabaseGuild, Member as DatabaseMember } from './typedefs/database';
+import type { Channel, Guild, GuildMember, User } from 'discord.js';
+import type { DatabaseUser, DatabaseGuild, DatabaseMember } from './typedefs/database';
 export interface DatabaseClient {
     client: PrismClient;
     connection: Connection;
@@ -43,5 +43,32 @@ export declare class DatabaseClient {
      * @returns Member data
      */
     fetchMember(member: GuildMember): Promise<DatabaseMember>;
+    /**
+     * Update database values for a guild.
+     * @param guild DatabaseGuild to update
+     * @param options Fields to update
+     * @returns MySQL Query result
+     */
+    updateGuild(guild: Guild, options: DatabaseGuild.Options): Promise<any>;
+    /**
+     * Update database values for member.
+     * @param member Guildmember to update
+     * @param options Fields to update
+     * @returns MySQL query results
+     */
+    updateMember(member: GuildMember, options: DatabaseMember.Options): Promise<any>;
+    /**
+     * XP FUNCTIONS
+     */
+    addXP(member: DatabaseMember): Promise<void>;
+    /**
+     * Sets a channel in the guilds table
+     * @param guild Guild to set channel for
+     * @param feature Which channel id to set
+     * @param channel ID of channel
+     * @returns Query result
+     */
+    setChannel(guild: Guild, feature: DatabaseGuild.Channels, channel: Channel): Promise<OkPacket | MysqlError>;
+    private queryOptions;
 }
 //# sourceMappingURL=DatabaseClient.d.ts.map

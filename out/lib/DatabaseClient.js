@@ -2,8 +2,8 @@ import { createConnection } from 'mysql';
 export class DatabaseClient {
     constructor(client) {
         this.client = client;
-        this.connection = this.getConnection();
         this.db = this.client.db;
+        this.getConnection();
     }
     /**
      * Attempts to connect to the MySQL database.
@@ -28,7 +28,8 @@ export class DatabaseClient {
             this.client.destroy();
             process.exit(1);
         }
-        return createConnection(process.env.DB_URL);
+        this.connection = createConnection(process.env.DB_URL);
+        this.connection.config.supportBigNumbers = true;
     }
     /**
      * Run a query on the MySQL database
@@ -38,8 +39,9 @@ export class DatabaseClient {
     async query(query) {
         return new Promise((res, rej) => {
             this.connection.query(query, (err, result) => {
-                if (err)
+                if (err) {
                     rej(err);
+                }
                 else
                     res(result);
             });
@@ -75,6 +77,49 @@ export class DatabaseClient {
         // Convert TINYINT(1) to boolean
         res.voice = Boolean(res.voice);
         return res;
+    }
+    /**
+     * Update database values for a guild.
+     * @param guild DatabaseGuild to update
+     * @param options Fields to update
+     * @returns MySQL Query result
+     */
+    async updateGuild(guild, options) {
+        await this.fetchGuild(guild);
+        return this.query(`UPDATE guilds SET ${this.queryOptions(options)} WHERE guild_id = ${guild.id}`);
+    }
+    /**
+     * Update database values for member.
+     * @param member Guildmember to update
+     * @param options Fields to update
+     * @returns MySQL query results
+     */
+    async updateMember(member, options) {
+        const { member_id } = await this.fetchMember(member);
+        return this.query(`UPDATE members SET ${this.queryOptions(options)} WHERE member_id = ${member_id}`);
+    }
+    /**
+     * XP FUNCTIONS
+     */
+    async addXP(member) {
+        member;
+    }
+    /**
+     * Sets a channel in the guilds table
+     * @param guild Guild to set channel for
+     * @param feature Which channel id to set
+     * @param channel ID of channel
+     * @returns Query result
+     */
+    async setChannel(guild, feature, channel) {
+        // Ensure guild exists on database
+        await this.fetchGuild(guild);
+        // Set values
+        return await this.query(`UPDATE guilds SET channel_id_${feature} = ${channel.id} WHERE guild_id = ${guild.id}`);
+    }
+    queryOptions(options) {
+        const arr = Object.entries(options);
+        return arr.map(v => `${v[0]} = ${v[1]}`).join(", ");
     }
 }
 //# sourceMappingURL=DatabaseClient.js.map

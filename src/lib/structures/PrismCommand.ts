@@ -1,7 +1,7 @@
 import { Command } from "@sapphire/framework";
 
 export abstract class PrismCommand extends Command {
-    public constructor(context: Command.Context, options: Command.Options) {
+    public constructor(context: PrismCommand.Context, options: PrismCommand.Options) {
         super(context, {
             ...options
         })

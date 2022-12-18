@@ -19,6 +19,8 @@ let client = new PrismClient({
     allowedMentions: { parse: ['everyone']}
 });
 
+client.dev ? client.logger.info("Starting in dev mode...") : () => {};
+
 client.logger.info("Attempting connection to MySQL database...");
 
 try {

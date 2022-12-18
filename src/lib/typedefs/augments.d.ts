@@ -4,6 +4,7 @@ import type { DatabaseClient } from "#lib/DatabaseClient";
 declare module 'discord.js' {
     interface Client {
         db: DatabaseClient;
+        dev: boolean;
     }
 }
 

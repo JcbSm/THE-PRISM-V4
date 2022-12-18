@@ -6,5 +6,6 @@ export declare class PrismClient extends SapphireClient {
 }
 export interface PrismClient {
     db: DatabaseClient;
+    dev: boolean;
 }
 //# sourceMappingURL=Client.d.ts.map
