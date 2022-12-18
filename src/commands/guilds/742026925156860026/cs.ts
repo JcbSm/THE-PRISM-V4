@@ -19,15 +19,13 @@ export default class extends PrismCommand {
                 .setName('cs')
                 .setDescription('Load up noob'),
                 {
-                    guildIds: ['742026925156860026'],
-                    idHints: ['1050830508906528849']
+                    guildIds: this.client.dev ? ['569556194612740115'] : ['742026925156860026'],
+                    idHints: ['1050830508906528849', '1050832661184258048']
                 }
         )
     }
 
     public async chatInputRun(interaction: PrismCommand.ChatInputInteraction) {
-
-        interaction.reply({ content: `@everyone cs or bent` });
-
+        return await interaction.reply({ content: `@everyone cs or bent` });
     }
 }
