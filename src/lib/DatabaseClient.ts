@@ -6,6 +6,7 @@ import type {
     DatabaseGuild,
     DatabaseMember
 } from '#types/database';
+import { rng } from '#helpers/numbers';
 
 export interface DatabaseClient {
     client: PrismClient;
@@ -58,19 +59,29 @@ export class DatabaseClient {
      * @returns Query result
      */
     private async query(query: string): Promise<any> {
-
+        
         return new Promise((res, rej) => {
             this.connection.query(query, (err, result) => {
-
+                
                 if (err) {
                     rej(err);
                 } else
-                    res(result);
-
+                res(result);
+                
             })
         });
     }
 
+    /**
+     * Converts options object into string useable with query
+     * @param options Options to convert
+     * @returns Queryable string eg. 'col = val, col = val'
+     */
+    private queryOptions(options: DatabaseGuild.Options | DatabaseMember.Options): string {
+        const arr = Object.entries(options);
+        return arr.map(v => `${v[0]} = ${v[1]}`).join(", ")
+    }
+    
     /**
      * Get a user from the database. Will insert user if none found.
      * @param user User to fetch
@@ -131,15 +142,6 @@ export class DatabaseClient {
     }
 
     /**
-     * XP FUNCTIONS
-     */
-    public async addXP(member: DatabaseMember): Promise<void> {
-
-        member;
-
-    }
-
-    /**
      * Sets a channel in the guilds table
      * @param guild Guild to set channel for
      * @param feature Which channel id to set
@@ -156,8 +158,20 @@ export class DatabaseClient {
 
     }
 
-    private queryOptions(options: DatabaseGuild.Options | DatabaseMember.Options): string {
-        const arr = Object.entries(options);
-        return arr.map(v => `${v[0]} = ${v[1]}`).join(", ")
+    public async addXP(member: GuildMember, reason: 'message' | 'voice') {
+        const { member_id } = await this.fetchMember(member);
+        
+        let xp = 0;
+
+        if (reason === 'message') {
+            xp = rng(3, 7);
+        }
+
+        if (reason === 'voice') {
+            xp = 5;
+        }
+
+        return await this.query(`UPDATE members SET xp = xp + ${xp} WHERE member_id = ${member_id};`)
+
     }
 }
