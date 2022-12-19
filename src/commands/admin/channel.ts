@@ -72,9 +72,7 @@ export class ChannelCommand extends PrismSubcommand {
         // Confirm
         interaction.reply({ content: `Set the \`${DatabaseGuild.Channels.COUNTING.toUpperCase()}\` channel ID to \`${channel_id_counting}\``, ephemeral: true });
 
-        channel.send({ content: `${counting_count}` });
-
-        return;
+        return channel.send({ content: `${counting_count}` });
 
     }
 
@@ -99,7 +97,7 @@ export class ChannelCommand extends PrismSubcommand {
         // Set channel
         await this.db.setChannel(interaction.guild, DatabaseGuild.Channels.LEVEL_UP, channel);
 
-        return interaction.reply({ content: `Set the \`${DatabaseGuild.Channels.LEVEL_UP.toUpperCase()}\` channel to ${channel}`, ephemeral: true });
+        return interaction.reply({ content: `Set the \`${DatabaseGuild.Channels.LEVEL_UP.toUpperCase()}\` channel ID to ${channel.id}`, ephemeral: true });
 
     }
 }
