@@ -26,6 +26,12 @@ export declare class DatabaseClient {
      */
     private query;
     /**
+     * Converts options object into string useable with query
+     * @param options Options to convert
+     * @returns Queryable string eg. 'col = val, col = val'
+     */
+    private queryOptions;
+    /**
      * Get a user from the database. Will insert user if none found.
      * @param user User to fetch
      * @returns User data
@@ -58,10 +64,6 @@ export declare class DatabaseClient {
      */
     updateMember(member: GuildMember, options: DatabaseMember.Options): Promise<any>;
     /**
-     * XP FUNCTIONS
-     */
-    addXP(member: DatabaseMember): Promise<void>;
-    /**
      * Sets a channel in the guilds table
      * @param guild Guild to set channel for
      * @param feature Which channel id to set
@@ -69,6 +71,6 @@ export declare class DatabaseClient {
      * @returns Query result
      */
     setChannel(guild: Guild, feature: DatabaseGuild.Channels, channel: Channel): Promise<OkPacket | MysqlError>;
-    private queryOptions;
+    addXP(member: GuildMember, reason: 'message' | 'voice'): Promise<any>;
 }
 //# sourceMappingURL=DatabaseClient.d.ts.map

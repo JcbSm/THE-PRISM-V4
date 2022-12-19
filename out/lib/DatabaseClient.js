@@ -1,4 +1,5 @@
 import { createConnection } from 'mysql';
+import { rng } from '#helpers/numbers';
 export class DatabaseClient {
     constructor(client) {
         this.client = client;
@@ -46,6 +47,15 @@ export class DatabaseClient {
                     res(result);
             });
         });
+    }
+    /**
+     * Converts options object into string useable with query
+     * @param options Options to convert
+     * @returns Queryable string eg. 'col = val, col = val'
+     */
+    queryOptions(options) {
+        const arr = Object.entries(options);
+        return arr.map(v => `${v[0]} = ${v[1]}`).join(", ");
     }
     /**
      * Get a user from the database. Will insert user if none found.
@@ -99,12 +109,6 @@ export class DatabaseClient {
         return this.query(`UPDATE members SET ${this.queryOptions(options)} WHERE member_id = ${member_id}`);
     }
     /**
-     * XP FUNCTIONS
-     */
-    async addXP(member) {
-        member;
-    }
-    /**
      * Sets a channel in the guilds table
      * @param guild Guild to set channel for
      * @param feature Which channel id to set
@@ -117,9 +121,16 @@ export class DatabaseClient {
         // Set values
         return await this.query(`UPDATE guilds SET channel_id_${feature} = ${channel.id} WHERE guild_id = ${guild.id}`);
     }
-    queryOptions(options) {
-        const arr = Object.entries(options);
-        return arr.map(v => `${v[0]} = ${v[1]}`).join(", ");
+    async addXP(member, reason) {
+        const { member_id } = await this.fetchMember(member);
+        let xp = 0;
+        if (reason === 'message') {
+            xp = rng(3, 7);
+        }
+        if (reason === 'voice') {
+            xp = 5;
+        }
+        return await this.query(`UPDATE members SET xp = xp + ${xp} WHERE member_id = ${member_id};`);
     }
 }
 //# sourceMappingURL=DatabaseClient.js.map
