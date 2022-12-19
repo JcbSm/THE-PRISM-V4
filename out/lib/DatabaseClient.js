@@ -121,6 +121,12 @@ export class DatabaseClient {
         // Set values
         return await this.query(`UPDATE guilds SET channel_id_${feature} = ${channel.id} WHERE guild_id = ${guild.id}`);
     }
+    /**
+     * Add xp to a DatabaseMember
+     * @param member Member to add xp to
+     * @param reason Reason for xp gain. 'message' or 'voice'
+     * @returns Query result
+     */
     async addXP(member, reason) {
         const { member_id } = await this.fetchMember(member);
         let xp = 0;

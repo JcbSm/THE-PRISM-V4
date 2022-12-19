@@ -158,7 +158,14 @@ export class DatabaseClient {
 
     }
 
+    /**
+     * Add xp to a DatabaseMember
+     * @param member Member to add xp to
+     * @param reason Reason for xp gain. 'message' or 'voice'
+     * @returns Query result
+     */
     public async addXP(member: GuildMember, reason: 'message' | 'voice') {
+
         const { member_id } = await this.fetchMember(member);
         
         let xp = 0;

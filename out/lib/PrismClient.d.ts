@@ -1,7 +1,7 @@
 import { SapphireClient } from "@sapphire/framework";
 import type { ClientOptions } from "discord.js";
 import { DatabaseClient } from "#lib/DatabaseClient";
-import { PrismClientUtil } from "./structures/PrismClientUtil";
+import { PrismClientUtil } from "#structs/PrismClientUtil";
 export declare class PrismClient extends SapphireClient {
     constructor(options: ClientOptions);
 }

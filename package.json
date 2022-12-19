@@ -31,7 +31,7 @@
     "imports": {
         "#structs/*": "./out/lib/structures/*.js",
         "#types/*": "./out/lib/typedefs/*.js",
-        "#util/*": "./out/lib/util/*.js",
+        "#helpers/*": "./out/lib/helpers/*.js",
         "#lib/*": "./out/lib/*.js",
         "#root/*": "./out/*.js"
     }

@@ -1,6 +1,6 @@
 import { SapphireClient } from "@sapphire/framework";
 import { DatabaseClient } from "#lib/DatabaseClient";
-import { PrismClientUtil } from "./structures/PrismClientUtil";
+import { PrismClientUtil } from "#structs/PrismClientUtil";
 export class PrismClient extends SapphireClient {
     constructor(options) {
         super(options);

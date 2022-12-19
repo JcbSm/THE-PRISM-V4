@@ -71,6 +71,12 @@ export declare class DatabaseClient {
      * @returns Query result
      */
     setChannel(guild: Guild, feature: DatabaseGuild.Channels, channel: Channel): Promise<OkPacket | MysqlError>;
+    /**
+     * Add xp to a DatabaseMember
+     * @param member Member to add xp to
+     * @param reason Reason for xp gain. 'message' or 'voice'
+     * @returns Query result
+     */
     addXP(member: GuildMember, reason: 'message' | 'voice'): Promise<any>;
 }
 //# sourceMappingURL=DatabaseClient.d.ts.map
