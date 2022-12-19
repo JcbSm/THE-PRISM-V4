@@ -1,5 +1,5 @@
 import "@sapphire/framework";
-import { PrismClient } from '#lib/Client';
+import { PrismClient } from '#lib/PrismClient';
 (await import('dotenv')).config();
 console.clear();
 console.log("Initialising...");
