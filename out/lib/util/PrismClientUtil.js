@@ -3,4 +3,4 @@ export class PrismClientUtil {
         this.client = client;
     }
 }
-//# sourceMappingURL=ClientUtil.js.map
+//# sourceMappingURL=PrismClientUtil.js.map

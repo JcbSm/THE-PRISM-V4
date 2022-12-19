@@ -18,6 +18,7 @@
         "paths": {
             "#structs/*": ["./lib/structures/*"],
             "#types/*": ["./lib/typedefs/*"],
+            "#util/*": ["./lib/util/*"],
             "#lib/*": ["./lib/*"]
         }
     },

@@ -5,4 +5,4 @@ export declare class PrismClientUtil {
 export interface PrismClientUtil {
     client: PrismClient;
 }
-//# sourceMappingURL=ClientUtil.d.ts.map
+//# sourceMappingURL=PrismClientUtil.d.ts.map
