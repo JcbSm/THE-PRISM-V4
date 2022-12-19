@@ -1,11 +1,11 @@
 import { Connection, createConnection, MysqlError, OkPacket } from 'mysql';
-import type { PrismClient } from '#lib/Client';
+import type { PrismClient } from '#lib/PrismClient';
 import type { Channel, Guild, GuildMember, User } from 'discord.js';
 import type { 
     DatabaseUser,
     DatabaseGuild,
     DatabaseMember
-} from './typedefs/database';
+} from '#types/database';
 
 export interface DatabaseClient {
     client: PrismClient;

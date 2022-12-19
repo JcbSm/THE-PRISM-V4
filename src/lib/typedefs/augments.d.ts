@@ -1,4 +1,4 @@
-import type { PrismClient } from "#lib/Client";
+import type { PrismClient } from "#lib/PrismClient";
 import type { DatabaseClient } from "#lib/DatabaseClient";
 
 declare module 'discord.js' {
