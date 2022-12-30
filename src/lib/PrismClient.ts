@@ -11,6 +11,7 @@ export class PrismClient extends SapphireClient {
         this.db = new DatabaseClient(this);
         console.log(process.env.DEV);
         this.dev = Boolean(process.env.DEV);
+        console.log(this.dev);
         this.util = new PrismClientUtil(this);
         this.devGuildId = '569556194612740115';
     }
