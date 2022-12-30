@@ -1,6 +1,9 @@
+import { getDirname } from "#helpers/files";
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators";
 import type { ChatInputCommand } from "@sapphire/framework";
+
+const dirname = getDirname(import.meta.url);
 
 @ApplyOptions<PrismCommand.Options>({
     name: 'cs',
@@ -16,10 +19,10 @@ export default class extends PrismCommand {
     public override registerApplicationCommands(registry: ChatInputCommand.Registry) {
         registry.registerChatInputCommand(command =>
             command //
-                .setName('cs')
+                .setName(this.name)
                 .setDescription('Load up noob'),
                 {
-                    guildIds: this.client.dev ? ['569556194612740115'] : ['742026925156860026'],
+                    guildIds: this.client.dev ? [this.client.devGuildId] : dirname ? [dirname] : [],
                     idHints: ['1050830508906528849', '1050832661184258048']
                 }
         )
