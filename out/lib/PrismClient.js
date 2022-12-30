@@ -7,6 +7,7 @@ export class PrismClient extends SapphireClient {
         this.db = new DatabaseClient(this);
         this.dev = Boolean(process.env.DEV);
         this.util = new PrismClientUtil(this);
+        this.devGuildId = '569556194612740115';
     }
 }
 //# sourceMappingURL=PrismClient.js.map

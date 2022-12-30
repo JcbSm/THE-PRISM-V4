@@ -12,7 +12,7 @@ let CountingListener = class CountingListener extends PrismListener {
         const { channel_id_counting, counting_count } = await this.db.fetchGuild(message.guild);
         // Check if right channel
         if (!channel_id_counting || message.channel.id !== channel_id_counting)
-            return console.log(`Wrong chanel ${channel_id_counting}`);
+            return;
         // If bot sent a number, don't care
         if (message.author.id === this.client.user?.id && !isNaN(Number(message.content)))
             return;
