@@ -15,16 +15,11 @@ export declare class DatabaseClient {
      */
     connect(): Promise<Connection | MysqlError>;
     /**
-     * Gets the Database URL from .env and creates the connection.
-     * @returns { Connection } MySQL Connection.
-     */
-    private getConnection;
-    /**
      * Run a query on the MySQL database
      * @param query Query to be ran
      * @returns Query result
      */
-    private query;
+    query(query: string): Promise<any>;
     /**
      * Converts options object into string useable with query
      * @param options Options to convert

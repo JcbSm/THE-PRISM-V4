@@ -10,5 +10,6 @@ export interface PrismClient {
     dev: boolean;
     util: PrismClientUtil;
     devGuildId: Snowflake;
+    ownerId: Snowflake;
 }
 //# sourceMappingURL=PrismClient.d.ts.map
