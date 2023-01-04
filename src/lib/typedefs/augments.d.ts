@@ -9,6 +9,7 @@ declare module 'discord.js' {
         dev: boolean;
         util: PrismClientUtil
         devGuildId: Snowflake;
+        ownerId: Snowflake;
     }
 }
 

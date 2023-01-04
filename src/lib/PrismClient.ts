@@ -12,6 +12,7 @@ export class PrismClient extends SapphireClient {
         this.dev = process.env.DEV == 'true'
         this.util = new PrismClientUtil(this);
         this.devGuildId = '569556194612740115';
+        this.ownerId = '227848397447626752'
     }
 }
 
@@ -20,4 +21,5 @@ export interface PrismClient {
     dev: boolean;
     util: PrismClientUtil;
     devGuildId: Snowflake;
+    ownerId: Snowflake;
 }
