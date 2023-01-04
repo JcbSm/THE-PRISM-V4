@@ -13,13 +13,17 @@ let client = new PrismClient({
     ],
     partials: [],
     logger: {
-        level: LogLevel.Info //Boolean(process.env.DEV) ? LogLevel.Debug : LogLevel.Info
+        level: process.env.DEV == 'true' ? LogLevel.Debug : LogLevel.Info
     },
     defaultPrefix: ['-'],
     allowedMentions: { parse: ['everyone']}
 });
 
-client.dev ? client.logger.info("Starting in dev mode...") : () => {};
+client.dev ? () => {
+    client.logger.info("Starting in dev mode...")
+} : () => {
+
+};
 
 client.logger.info("Logging in...");
 try {
