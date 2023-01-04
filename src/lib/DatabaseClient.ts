@@ -1,4 +1,4 @@
-import { Connection, createConnection, MysqlError, OkPacket } from 'mysql';
+import { Connection, createPool, MysqlError, OkPacket, Pool } from 'mysql';
 import type { PrismClient } from '#lib/PrismClient';
 import type { Channel, Guild, GuildMember, User } from 'discord.js';
 import type { 
@@ -10,6 +10,7 @@ import { rng } from '#helpers/numbers';
 
 export interface DatabaseClient {
     client: PrismClient;
+    pool: Pool;
     connection: Connection;
     db: DatabaseClient;
 }
@@ -18,28 +19,14 @@ export class DatabaseClient {
     constructor(client: PrismClient) {
         this.client = client;
         this.db = this.client.db;
-        this.connection = createConnection({
+        this.pool = createPool({
+            connectionLimit: 10,
             host: process.env.DB_HOST,
             port: 3306,
             user: process.env.DB_USER,
             password: process.env.DB_PASS,
             database: process.env.DB_NAME,
             supportBigNumbers: true,
-        });
-    }
-
-    /**
-     * Attempts to connect to the MySQL database.
-     * @returns { Promise<Connection | MysqlError> } The established connection
-     */
-    public async connect(): Promise<Connection | MysqlError> {
-
-        let connection = this.connection;
-
-        return new Promise((res, rej) => {
-            connection.connect((err) => {
-                err ? rej(err) : res(connection);
-            })
         })
     }
 
@@ -48,13 +35,29 @@ export class DatabaseClient {
      * @param query Query to be ran
      * @returns Query result
      */
-    async query(query: string): Promise<any> {
+    async query(query: string, retries = 0): Promise<any> {
+
+        const max_retries = 10
         
         const res = await new Promise((res, rej) => {
-            this.connection.query({ sql: query, timeout: 60 * 1000 }, (err, result) => {
+            this.pool.query({ sql: query, timeout: 1 }, async (err, result) => {
                 
                 if (err) {
-                    rej(err);
+
+                    if (retries < max_retries) {
+                    
+                        console.log(`Query Error: ${err.code}. Retrying...`)
+                        retries++;
+                        await this.query(query, retries);
+                        rej(err);
+                    
+                    } else {
+                    
+                        console.log(`Query failed after ${retries} retries`);
+                        rej(err)
+                    
+                    }
+                
                 } else
                     res(result);
 

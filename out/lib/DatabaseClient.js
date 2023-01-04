@@ -1,10 +1,11 @@
-import { createConnection } from 'mysql';
+import { createPool } from 'mysql';
 import { rng } from '#helpers/numbers';
 export class DatabaseClient {
     constructor(client) {
         this.client = client;
         this.db = this.client.db;
-        this.connection = createConnection({
+        this.pool = createPool({
+            connectionLimit: 10,
             host: process.env.DB_HOST,
             port: 3306,
             user: process.env.DB_USER,
@@ -14,27 +15,25 @@ export class DatabaseClient {
         });
     }
     /**
-     * Attempts to connect to the MySQL database.
-     * @returns { Promise<Connection | MysqlError> } The established connection
-     */
-    async connect() {
-        let connection = this.connection;
-        return new Promise((res, rej) => {
-            connection.connect((err) => {
-                err ? rej(err) : res(connection);
-            });
-        });
-    }
-    /**
      * Run a query on the MySQL database
      * @param query Query to be ran
      * @returns Query result
      */
-    async query(query) {
+    async query(query, retries = 0) {
+        const max_retries = 10;
         const res = await new Promise((res, rej) => {
-            this.connection.query({ sql: query, timeout: 60 * 1000 }, (err, result) => {
+            this.pool.query({ sql: query, timeout: 1 }, async (err, result) => {
                 if (err) {
-                    rej(err);
+                    if (retries < max_retries) {
+                        console.log(`Query Error: ${err.code}. Retrying...`);
+                        retries++;
+                        await this.query(query, retries);
+                        rej(err);
+                    }
+                    else {
+                        console.log(`Query failed after ${retries} retries`);
+                        rej(err);
+                    }
                 }
                 else
                     res(result);

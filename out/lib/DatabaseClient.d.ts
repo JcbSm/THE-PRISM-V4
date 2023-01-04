@@ -1,25 +1,21 @@
-import { Connection, MysqlError, OkPacket } from 'mysql';
+import { Connection, MysqlError, OkPacket, Pool } from 'mysql';
 import type { PrismClient } from '#lib/PrismClient';
 import type { Channel, Guild, GuildMember, User } from 'discord.js';
 import type { DatabaseUser, DatabaseGuild, DatabaseMember } from '#types/database';
 export interface DatabaseClient {
     client: PrismClient;
+    pool: Pool;
     connection: Connection;
     db: DatabaseClient;
 }
 export declare class DatabaseClient {
     constructor(client: PrismClient);
     /**
-     * Attempts to connect to the MySQL database.
-     * @returns { Promise<Connection | MysqlError> } The established connection
-     */
-    connect(): Promise<Connection | MysqlError>;
-    /**
      * Run a query on the MySQL database
      * @param query Query to be ran
      * @returns Query result
      */
-    query(query: string): Promise<any>;
+    query(query: string, retries?: number): Promise<any>;
     /**
      * Converts options object into string useable with query
      * @param options Options to convert
