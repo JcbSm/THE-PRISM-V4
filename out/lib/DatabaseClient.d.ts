@@ -15,7 +15,7 @@ export declare class DatabaseClient {
      * @param query Query to be ran
      * @returns Query result
      */
-    query(query: string, retries?: number): Promise<any>;
+    private query;
     /**
      * Converts options object into string useable with query
      * @param options Options to convert
@@ -40,6 +40,7 @@ export declare class DatabaseClient {
      * @returns Member data
      */
     fetchMember(member: GuildMember): Promise<DatabaseMember>;
+    fetchGuildMembers(guild: Guild): Promise<DatabaseMember[]>;
     /**
      * Update database values for a guild.
      * @param guild DatabaseGuild to update

@@ -5,4 +5,10 @@
  * @returns Random int
  */
 export declare function rng(min?: number, max?: number): number;
+/**
+ * Groups an integer into 3 digits separated by commas
+ * @param n Number to group
+ * @returns Formed string
+ */
+export declare function groupDigits(n: number): string;
 //# sourceMappingURL=numbers.d.ts.map

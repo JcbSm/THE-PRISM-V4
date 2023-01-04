@@ -27,7 +27,7 @@ export type DatabaseMember = {
     xp: number;
     xp_messages: number;
     xp_last_message_at: number;
-    xp_voice_minuets: number;
+    xp_voice_minutes: number;
     total_messages: number;
     total_voice_minutes: number;
     total_mute_minutes: number;

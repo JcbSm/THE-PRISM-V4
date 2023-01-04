@@ -81,6 +81,12 @@ export class DatabaseClient {
         res.voice = Boolean(res.voice);
         return res;
     }
+    async fetchGuildMembers(guild) {
+        // Ensure guild exists.
+        await this.fetchGuild(guild);
+        const res = await this.query(`SELECT * FROM members WHERE guild_id = ${guild.id}`);
+        return res;
+    }
     /**
      * Update database values for a guild.
      * @param guild DatabaseGuild to update
