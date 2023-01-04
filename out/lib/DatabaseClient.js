@@ -121,21 +121,15 @@ export class DatabaseClient {
         return await this.query(`UPDATE guilds SET channel_id_${feature} = ${channel.id} WHERE guild_id = ${guild.id}`);
     }
     /**
-     * Add xp to a DatabaseMember
-     * @param member Member to add xp to
-     * @param reason Reason for xp gain. 'message' or 'voice'
-     * @returns Query result
+     * Record a message for a guildmember.
+     * @param member_id Database member ID from table_members
+     * @param xp {boolean} if the user should earn xp from this message
+     * @returns
      */
-    async addXP(member, reason) {
-        const { member_id } = await this.fetchMember(member);
-        let xp = 0;
-        if (reason === 'message') {
-            xp = rng(3, 7);
-        }
-        if (reason === 'voice') {
-            xp = 5;
-        }
-        return await this.query(`UPDATE members SET xp = xp + ${xp} WHERE member_id = ${member_id};`);
+    async message(member_id, xp = false) {
+        const query = `UPDATE members SET total_messages = total_messages + 1 WHERE member_id = ${member_id}`;
+        const xp_query = `UPDATE members SET total_messages = total_messages + 1, xp = xp + ${rng(3, 7)}, xp_messages = xp_messages + 1, xp_last_message_at = ${Date.now()} WHERE member_id = ${member_id}`;
+        return await this.query(xp ? xp_query : query);
     }
 }
 //# sourceMappingURL=DatabaseClient.js.map
