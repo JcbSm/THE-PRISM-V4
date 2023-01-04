@@ -18,7 +18,14 @@ export class DatabaseClient {
     constructor(client: PrismClient) {
         this.client = client;
         this.db = this.client.db;
-        this.getConnection();
+        this.connection = createConnection({
+            host: process.env.DB_HOST,
+            port: 3306,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASS,
+            database: process.env.DB_NAME,
+            supportBigNumbers: true,
+        });
     }
 
     /**
@@ -37,39 +44,24 @@ export class DatabaseClient {
     }
 
     /**
-     * Gets the Database URL from .env and creates the connection.
-     * @returns { Connection } MySQL Connection.
-     */
-    private getConnection() {
-
-        // Check if DB_URL is provided in .env
-        if (!process.env.DB_URL) {
-            this.client.logger.fatal("No DB_URL found in .env. Exiting process.");
-            this.client.destroy();
-            process.exit(1);
-        }
-
-        this.connection = createConnection(process.env.DB_URL);
-        this.connection.config.supportBigNumbers = true;
-    }
-
-    /**
      * Run a query on the MySQL database
      * @param query Query to be ran
      * @returns Query result
      */
-    private async query(query: string): Promise<any> {
+    async query(query: string): Promise<any> {
         
-        return new Promise((res, rej) => {
-            this.connection.query(query, (err, result) => {
+        const res = await new Promise((res, rej) => {
+            this.connection.query({ sql: query, timeout: 10 * 1000 }, (err, result) => {
                 
                 if (err) {
                     rej(err);
                 } else
-                res(result);
-                
+                    res(result);
+
             })
         });
+
+        return res;
     }
 
     /**

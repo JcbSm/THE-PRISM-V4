@@ -21,19 +21,22 @@ let client = new PrismClient({
 
 client.dev ? client.logger.info("Starting in dev mode...") : () => {};
 
-client.logger.info("Attempting connection to MySQL database...");
+// client.logger.info("Attempting connection to MySQL database...");
 
-try {
+// try {
 
-    await client.db.connect();
-    client.logger.info("Connection established.");
+//     await client.db.connect();
+//     client.logger.info("Connection established.");
     
-} catch (err) {
+// } catch (err) {
 
-    console.log(err)
-    client.logger.fatal("Unable to establish connection to MySQL database. Exiting process.");
-    process.exit(1);
-}
+//     console.log(err)
+//     client.logger.fatal("Unable to establish connection to MySQL database. Exiting process.");
+//     process.exit(1);
+// }
+
+console.log(await client.db.query(`SELECT * FROM members LIMIT 1`))
+console.log(await client.db.query(`SELECT * FROM guilds LIMIT 1`))
 
 client.logger.info("Logging in...");
 try {
