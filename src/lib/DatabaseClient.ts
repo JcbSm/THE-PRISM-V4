@@ -160,7 +160,6 @@ export class DatabaseClient {
 
         // Set values
         return await this.query(`UPDATE guilds SET channel_id_${feature} = ${channel.id} WHERE guild_id = ${guild.id}`);
-
     }
 
     /**
@@ -175,6 +174,5 @@ export class DatabaseClient {
         const xp_query = `UPDATE members SET total_messages = total_messages + 1, xp = xp + ${rng(3, 7)}, xp_messages = xp_messages + 1, xp_last_message_at = ${Date.now()} WHERE member_id = ${member_id}`;
 
         return await this.query(xp ? xp_query : query);
-
     }
 }
