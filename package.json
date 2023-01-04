@@ -8,13 +8,17 @@
         "@sapphire/framework": "^3.1.4",
         "@sapphire/plugin-subcommands": "^3.2.4",
         "@sapphire/ts-config": "^3.3.4",
+        "canvas": "^2.9.3",
+        "color": "^4.2.3",
         "discord.js": "^13.12.0",
         "dotenv": "^16.0.3",
         "mysql": "^2.18.1",
         "path": "^0.12.7",
+        "stackblur-canvas": "^2.5.0",
         "url": "^0.11.0"
     },
     "devDependencies": {
+        "@types/color": "^3.0.3",
         "@types/mysql": "^2.15.21",
         "@typescript-eslint/eslint-plugin": "^5.46.1",
         "@typescript-eslint/parser": "^5.46.1",

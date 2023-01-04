@@ -35,7 +35,7 @@ export class DatabaseClient {
      * @param query Query to be ran
      * @returns Query result
      */
-    async query(query: string, retries = 0): Promise<any> {
+    private async query(query: string, retries = 0): Promise<any> {
 
         const max_retries = 10
         
@@ -110,6 +110,16 @@ export class DatabaseClient {
 
         // Convert TINYINT(1) to boolean
         res.voice = Boolean(res.voice);
+
+        return res;
+    }
+
+    public async fetchGuildMembers(guild: Guild): Promise<DatabaseMember[]> {
+
+        // Ensure guild exists.
+        await this.fetchGuild(guild);
+
+        const res = await this.query(`SELECT * FROM members WHERE guild_id = ${guild.id}`);
 
         return res;
     }
