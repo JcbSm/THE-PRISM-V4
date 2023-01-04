@@ -40,7 +40,7 @@ export class DatabaseClient {
         const max_retries = 10
         
         const res = await new Promise((res, rej) => {
-            this.pool.query({ sql: query, timeout: 1 }, async (err, result) => {
+            this.pool.query({ sql: query, timeout: 10*1000 }, async (err, result) => {
                 
                 if (err) {
 
