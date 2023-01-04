@@ -32,7 +32,7 @@ export class DatabaseClient {
      */
     async query(query) {
         const res = await new Promise((res, rej) => {
-            this.connection.query({ sql: query, timeout: 10 * 1000 }, (err, result) => {
+            this.connection.query({ sql: query, timeout: 60 * 1000 }, (err, result) => {
                 if (err) {
                     rej(err);
                 }
