@@ -11,6 +11,8 @@ import type { Snowflake } from "discord.js";
 export default class extends PrismListener {
     public async run() {
 
+        console.log("Online.")
+
         const members = await this.db.fetchVoiceMembers();
 
         for (const { user_id, guild_id } of members)
