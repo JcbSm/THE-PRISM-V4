@@ -4,7 +4,6 @@ import { Events } from "#types/events";
 import { ApplyOptions } from "@sapphire/decorators";
 let default_1 = class extends PrismListener {
     async run() {
-        console.log("Online.");
         const members = await this.db.fetchVoiceMembers();
         for (const { user_id, guild_id } of members)
             this.getAndTrackMemberVoice(user_id, guild_id);
