@@ -22,7 +22,7 @@ export class StatCommand extends PrismCommand {
                         .setRequired(false)),
             {
                 // [dev, prod]
-                idHints: ['870331312836341800']
+                idHints: ['870331312836341800', '1060623793346842625']
             });
     }
 
