@@ -199,7 +199,7 @@ export class DatabaseClient {
             if (member.voice.channelId) {
 
                 // If 5th minute and not defeaned and not alone
-                if (i % 5 == 0 && (!member.voice.deaf && member.voice.channel!.members.filter(m => !m.user.bot).size > 0)) {
+                if (i % 5 == 0 && (!member.voice.deaf && member.voice.channel!.members.filter(m => !m.user.bot).size > 1)) {
                     
                     this.client.logger.debug(`Adding xp to ${member.user.tag} in ${member.guild.name}`)
                     this.updateMember(member, {
