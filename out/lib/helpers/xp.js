@@ -2,13 +2,13 @@ import { createCanvas, registerFont, loadImage } from "canvas";
 import Color from 'color';
 import { canvasRGBA } from "stackblur-canvas";
 import { groupDigits } from "#helpers/numbers";
-export function requiredXP(level) {
+export function getRequiredXP(level) {
     return Math.floor(5 * Math.pow(135, 2) * ((Math.pow(10, 3) * Math.exp(-Math.pow(10, -3) * level) + level) - Math.pow(10, 3)));
 }
 ;
-export function levelCalc(xp) {
+export function getLevel(xp) {
     let level = 0;
-    while (xp > requiredXP(level + 1)) {
+    while (xp > getRequiredXP(level + 1)) {
         level++;
     }
     ;
@@ -96,11 +96,11 @@ export async function card(member, client) {
     ctx.lineWidth = 4;
     ctx.stroke();
     //Calc Level
-    const level = levelCalc(memberData.xp);
+    const level = getLevel(memberData.xp);
     //Bar constants
     const [barX, barY, barRad, barLen] = [192, 128, 16, 400];
-    const minXP = requiredXP(level);
-    const maxXP = requiredXP(level + 1);
+    const minXP = getRequiredXP(level);
+    const maxXP = getRequiredXP(level + 1);
     const currentXP = memberData.xp - minXP;
     const progress = (memberData.xp - minXP) / (maxXP - minXP);
     //Outline Bar

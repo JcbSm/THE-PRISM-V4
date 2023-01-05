@@ -13,7 +13,7 @@ let StatCommand = class StatCommand extends PrismCommand {
             .setDescription('User\'s stats to query')
             .setRequired(false)), {
             // [dev, prod]
-            idHints: ['870331312836341800']
+            idHints: ['870331312836341800', '1060623793346842625']
         });
     }
     async chatInputRun(interaction) {

@@ -58,7 +58,7 @@ let ChannelCommand = class ChannelCommand extends PrismSubcommand {
         }
         // Set channel
         await this.db.setChannel(interaction.guild, DatabaseGuild.Channels.LEVEL_UP, channel);
-        return interaction.reply({ content: `Set the \`${DatabaseGuild.Channels.LEVEL_UP.toUpperCase()}\` channel ID to ${channel.id}`, ephemeral: true });
+        return interaction.reply({ content: `Set the \`${DatabaseGuild.Channels.LEVEL_UP.toUpperCase()}\` channel ID to \`${channel.id}\``, ephemeral: true });
     }
 };
 ChannelCommand = __decorate([

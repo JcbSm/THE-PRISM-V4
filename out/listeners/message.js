@@ -1,4 +1,5 @@
 import { __decorate } from "tslib";
+import { getLevel } from "#helpers/xp";
 import { PrismListener } from "#structs/PrismListener";
 import { ApplyOptions } from "@sapphire/decorators";
 let default_1 = class extends PrismListener {
@@ -10,9 +11,14 @@ let default_1 = class extends PrismListener {
             return;
         if (!message.guild || !message.member)
             return;
-        const { member_id, xp_last_message_at } = await this.db.fetchMember(message.member);
-        // Log message for stats
-        this.db.message(member_id, message.createdTimestamp - xp_last_message_at > xp_cooldown);
+        const { member_id, xp: old_xp, xp_last_message_at } = await this.db.fetchMember(message.member);
+        // Log message for stats & xp
+        await this.db.message(member_id, message.createdTimestamp - xp_last_message_at > xp_cooldown);
+        const { xp: new_xp } = await this.db.fetchMember(message.member);
+        // Level up (?)
+        if (getLevel(old_xp) < getLevel(new_xp)) {
+            this.client.emit('memberLevelUp', message.member, getLevel(new_xp));
+        }
     }
 };
 default_1 = __decorate([
