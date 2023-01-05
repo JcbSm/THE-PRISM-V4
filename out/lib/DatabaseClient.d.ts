@@ -66,7 +66,7 @@ export declare class DatabaseClient {
     /**
      * Record a message for a guildmember.
      * @param member_id Database member ID from table_members
-     * @param xp {boolean} if the user should earn xp from this message
+     * @param xp if the user should earn xp from this message
      * @returns
      */
     message(member_id: number, xp?: boolean): Promise<any>;
