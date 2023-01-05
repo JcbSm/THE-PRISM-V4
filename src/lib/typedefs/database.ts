@@ -37,7 +37,7 @@ export type DatabaseMember = {
     xp_voice_minutes: number;
     total_messages: number;
     total_voice_minutes: number;
-    total_mute_minutes: number;
+    total_muted_minutes: number;
     voice: boolean;
     counting_counts: number;
     counting_last_message_url: string | null;
