@@ -1,0 +1,1 @@
+{"version":3,"file":"voiceStateUpdate.d.ts","sourceRoot":"","sources":["../../src/listeners/voiceStateUpdate.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,wBAAwB,CAAC;AAGvD,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,YAAY,CAAC;AAM7C,MAAM,CAAC,OAAO,MAAO,SAAQ,aAAa;IACzB,GAAG,CAAC,QAAQ,EAAE,UAAU,EAAE,QAAQ,EAAE,UAAU;CAuB9D"}

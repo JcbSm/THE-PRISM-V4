@@ -1,5 +1,6 @@
 import { __decorate } from "tslib";
 import { PrismListener } from "#structs/PrismListener";
+import { Events } from "#types/events";
 import { ApplyOptions } from "@sapphire/decorators";
 import { isTextBasedChannel } from "@sapphire/discord.js-utilities";
 import { MessageEmbed } from "discord.js";
@@ -17,7 +18,7 @@ let default_1 = class extends PrismListener {
 };
 default_1 = __decorate([
     ApplyOptions({
-        event: 'memberLevelUp'
+        event: Events.GuildMemberLevelUp
     })
 ], default_1);
 export default default_1;

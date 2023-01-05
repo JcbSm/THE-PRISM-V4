@@ -1,26 +1,14 @@
 import type { Snowflake } from "discord.js";
-export type DatabaseUser = {
+export type RawDatabaseUser = {
     user_id: Snowflake;
 };
-export type DatabaseGuild = {
+export type RawDatabaseGuild = {
     guild_id: Snowflake;
     channel_id_counting: Snowflake;
     channel_id_levelup: Snowflake;
     counting_count: number;
 };
-export declare namespace DatabaseGuild {
-    type Channels = 'counting' | 'levelup';
-    namespace Channels {
-        const COUNTING = "counting";
-        const LEVEL_UP = "levelup";
-    }
-    type Options = {
-        channel_id_counting?: Snowflake;
-        channel_id_levelup?: Snowflake;
-        counting_count?: number;
-    };
-}
-export type DatabaseMember = {
+export type RawDatabaseMember = {
     guild_id: Snowflake;
     user_id: Snowflake;
     member_id: number;
@@ -31,14 +19,8 @@ export type DatabaseMember = {
     total_messages: number;
     total_voice_minutes: number;
     total_muted_minutes: number;
-    voice: boolean;
+    tracking_voice: number;
     counting_counts: number;
     counting_last_message_url: string | null;
 };
-export declare namespace DatabaseMember {
-    type Options = {
-        counting_counts?: number | string;
-        counting_last_message_url?: string | null;
-    };
-}
 //# sourceMappingURL=database.d.ts.map

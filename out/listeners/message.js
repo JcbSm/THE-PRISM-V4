@@ -1,6 +1,7 @@
 import { __decorate } from "tslib";
 import { getLevel } from "#helpers/xp";
 import { PrismListener } from "#structs/PrismListener";
+import { Events } from "#types/events";
 import { ApplyOptions } from "@sapphire/decorators";
 let default_1 = class extends PrismListener {
     async run(message) {
@@ -23,7 +24,7 @@ let default_1 = class extends PrismListener {
 };
 default_1 = __decorate([
     ApplyOptions({
-        event: 'messageCreate'
+        event: Events.MessageCreate
     })
 ], default_1);
 export default default_1;

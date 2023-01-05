@@ -2,7 +2,7 @@ import { Command } from "@sapphire/framework";
 export declare abstract class PrismCommand extends Command {
     constructor(context: PrismCommand.Context, options: PrismCommand.Options);
     get client(): import("@sapphire/framework").SapphireClient<boolean>;
-    get db(): import("../DatabaseClient").DatabaseClient;
+    get db(): import("../database/DatabaseClient").DatabaseClient;
 }
 export declare namespace PrismCommand {
     type Options = Command.Options;

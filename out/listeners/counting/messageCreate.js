@@ -1,6 +1,7 @@
 import { __decorate } from "tslib";
 import { PrismListener } from "#structs/PrismListener";
 import { ApplyOptions } from "@sapphire/decorators";
+import { Events } from "#types/events";
 let CountingListener = class CountingListener extends PrismListener {
     async run(message) {
         // Message
@@ -44,7 +45,7 @@ let CountingListener = class CountingListener extends PrismListener {
 };
 CountingListener = __decorate([
     ApplyOptions({
-        event: 'messageCreate'
+        event: Events.MessageCreate
     })
 ], CountingListener);
 export { CountingListener };

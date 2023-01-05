@@ -1,5 +1,5 @@
 import { SapphireClient } from "@sapphire/framework";
-import { DatabaseClient } from "#lib/DatabaseClient";
+import { DatabaseClient } from "#lib/database/DatabaseClient";
 import { PrismClientUtil } from "#structs/PrismClientUtil";
 export class PrismClient extends SapphireClient {
     constructor(options) {

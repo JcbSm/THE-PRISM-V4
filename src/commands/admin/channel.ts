@@ -1,7 +1,7 @@
-import { DatabaseGuild } from "#lib/typedefs/database";
 import { PrismSubcommand } from "#structs/PrismSubcommand";
 import { ApplyOptions } from "@sapphire/decorators";
 import type { ChatInputCommand } from "@sapphire/framework";
+import { DatabaseGuild } from "#lib/database/DatabaseGuild";
 
 @ApplyOptions<PrismSubcommand.Options>({
     subcommands: [

@@ -70,5 +70,6 @@ export declare class DatabaseClient {
      * @returns
      */
     message(member_id: number, xp?: boolean): Promise<any>;
+    trackVoice(member: GuildMember): Promise<void>;
 }
 //# sourceMappingURL=DatabaseClient.d.ts.map

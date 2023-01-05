@@ -2,11 +2,13 @@ import { Connection, createPool, MysqlError, OkPacket, Pool } from 'mysql';
 import type { PrismClient } from '#lib/PrismClient';
 import type { Channel, Guild, GuildMember, User } from 'discord.js';
 import type { 
-    DatabaseUser,
-    DatabaseGuild,
-    DatabaseMember
+    RawDatabaseUser,
+    RawDatabaseGuild,
+    RawDatabaseMember,
 } from '#types/database';
 import { rng } from '#helpers/numbers';
+import { DatabaseMember } from '#lib/database/DatabaseMember';
+import type { DatabaseGuild } from '#lib/database/DatabaseGuild';
 
 export interface DatabaseClient {
     client: PrismClient;
@@ -82,7 +84,7 @@ export class DatabaseClient {
      * @param user User to fetch
      * @returns User data
      */
-    public async fetchUser(user: User): Promise<DatabaseUser> {
+    public async fetchUser(user: User): Promise<RawDatabaseUser> {
         return {...(await this.query(`SELECT * FROM users WHERE user_id = ${user.id};`))[0] || (await this.query(`INSERT INTO users (user_id) VALUES (${user.id}) RETURNING *`))[0]}
     }
 
@@ -91,8 +93,10 @@ export class DatabaseClient {
      * @param guild Guild to fetch
      * @returns Guild data
      */
-    public async fetchGuild(guild: Guild): Promise<DatabaseGuild> {
-        return {...(await this.query(`SELECT * FROM guilds WHERE guild_id = ${guild.id};`))[0] || (await this.query(`INSERT INTO guilds (guild_id) VALUES (${guild.id}) RETURNING *`))[0]};
+    public async fetchGuild(guild: Guild): Promise<RawDatabaseGuild> {
+        const data = {...(await this.query(`SELECT * FROM guilds WHERE guild_id = ${guild.id};`))[0] || (await this.query(`INSERT INTO guilds (guild_id) VALUES (${guild.id}) RETURNING *`))[0]} as RawDatabaseGuild;
+
+        return data;
     }
 
     /**
@@ -105,13 +109,11 @@ export class DatabaseClient {
         // Ensure guild and member exist first.
         await this.fetchGuild(member.guild); await this.fetchUser(member.user);
 
-        const res = {...(await this.query(`SELECT * FROM members WHERE user_id = ${member.user.id} AND guild_id = ${member.guild.id};`))[0] || //
-            (await this.query(`INSERT INTO members (user_id, guild_id) VALUES (${member.user.id}, ${member.guild.id}) RETURNING *;`))[0]};
+        const data = {...(await this.query(`SELECT * FROM members WHERE user_id = ${member.user.id} AND guild_id = ${member.guild.id};`))[0] || //
+            (await this.query(`INSERT INTO members (user_id, guild_id) VALUES (${member.user.id}, ${member.guild.id}) RETURNING *;`))[0]} as RawDatabaseMember;
 
-        // Convert TINYINT(1) to boolean
-        res.voice = Boolean(res.voice);
+        return new DatabaseMember(data);
 
-        return res;
     }
 
     public async fetchGuildMembers(guild: Guild): Promise<DatabaseMember[]> {
@@ -119,9 +121,17 @@ export class DatabaseClient {
         // Ensure guild exists.
         await this.fetchGuild(guild);
 
-        const res = await this.query(`SELECT * FROM members WHERE guild_id = ${guild.id}`);
+        const res = await this.query(`SELECT * FROM members WHERE guild_id = ${guild.id}`) as RawDatabaseMember[];
 
-        return res;
+        return res.map(data => new DatabaseMember(data));
+    }
+
+    public async fetchVoiceMembers(): Promise<DatabaseMember[]> {
+
+        const res = (await this.query(`SELECT * FROM members WHERE tracking_voice = true`)) as RawDatabaseMember[];
+
+        return res.map(data => new DatabaseMember(data));
+
     }
 
     /**
@@ -175,4 +185,50 @@ export class DatabaseClient {
 
         return await this.query(xp ? xp_query : query);
     }
+
+    public async trackVoice(member: GuildMember) {
+
+        this.client.logger.debug(`Tracking voice for ${member.user.tag} in ${member.guild.name}`)
+
+        let i = 0;
+
+        let interval = setInterval(async () => {
+
+            i++;
+
+            if (member.voice.channelId) {
+
+                // If 5th minute and not defeaned and not alone
+                if (i % 5 == 0 && (!member.voice.deaf && member.voice.channel!.members.filter(m => !m.user.bot).size > 0)) {
+                    
+                    this.client.logger.debug(`Adding xp to ${member.user.tag} in ${member.guild.name}`)
+                    this.updateMember(member, {
+                        total_voice_minutes: 'total_voice_minutes + 1',
+                        total_muted_minutes: member.voice.mute ? 'total_muted_minutes + 1' : 'total_muted_minutes',
+                        xp_voice_minutes: 'xp_voice_minutes + 5',
+                        xp: 'xp + 5',
+                        tracking_voice: true
+                    })
+
+                } else {
+
+                    this.client.logger.debug(`Just incrememneting mnutes`);
+                    this.updateMember(member, {
+                        total_voice_minutes: 'total_voice_minutes + 1',
+                        total_muted_minutes: member.voice.mute ? 'total_muted_minutes + 1' : 'total_muted_minutes',
+                        tracking_voice: true,
+                    })
+
+                }
+
+            } else {
+                
+                this.client.logger.debug(`Stopping voice tracking for ${member.user.tag} in ${member.guild.name}`)
+                await this.updateMember(member, { tracking_voice: false });
+                clearInterval(interval);
+            }
+
+        }, 60*1000);
+    }
+
 }

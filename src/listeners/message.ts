@@ -1,10 +1,11 @@
 import { getLevel } from "#helpers/xp";
 import { PrismListener } from "#structs/PrismListener";
+import { Events } from "#types/events";
 import { ApplyOptions } from "@sapphire/decorators";
 import type { Message } from "discord.js";
 
 @ApplyOptions<PrismListener.Options>({
-    event: 'messageCreate'
+    event: Events.MessageCreate
 })
 
 export default class extends PrismListener {

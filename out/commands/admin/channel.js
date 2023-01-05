@@ -1,7 +1,7 @@
 import { __decorate } from "tslib";
-import { DatabaseGuild } from "#lib/typedefs/database";
 import { PrismSubcommand } from "#structs/PrismSubcommand";
 import { ApplyOptions } from "@sapphire/decorators";
+import { DatabaseGuild } from "#lib/database/DatabaseGuild";
 let ChannelCommand = class ChannelCommand extends PrismSubcommand {
     registerApplicationCommands(registry) {
         registry.registerChatInputCommand((builder) => builder //

@@ -78,7 +78,7 @@ export class DatabaseClient {
         const res = { ...(await this.query(`SELECT * FROM members WHERE user_id = ${member.user.id} AND guild_id = ${member.guild.id};`))[0] || //
                 (await this.query(`INSERT INTO members (user_id, guild_id) VALUES (${member.user.id}, ${member.guild.id}) RETURNING *;`))[0] };
         // Convert TINYINT(1) to boolean
-        res.voice = Boolean(res.voice);
+        res.tracking_voice = Boolean(res.tracking_voice);
         return res;
     }
     async fetchGuildMembers(guild) {
@@ -130,6 +130,8 @@ export class DatabaseClient {
         const query = `UPDATE members SET total_messages = total_messages + 1 WHERE member_id = ${member_id};`;
         const xp_query = `UPDATE members SET total_messages = total_messages + 1, xp = xp + ${rng(3, 7)}, xp_messages = xp_messages + 1, xp_last_message_at = ${Date.now()} WHERE member_id = ${member_id};`;
         return await this.query(xp ? xp_query : query);
+    }
+    async trackVoice(member) {
     }
 }
 //# sourceMappingURL=DatabaseClient.js.map

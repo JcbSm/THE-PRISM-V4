@@ -1,9 +1,10 @@
 import { PrismListener } from "#structs/PrismListener";
 import { ApplyOptions } from "@sapphire/decorators";
+import { Events } from "#types/events";
 import type { Message } from "discord.js";
 
 @ApplyOptions<PrismListener.Options>({
-    event: 'messageCreate'
+    event: Events.MessageCreate
 })
 
 export class CountingListener extends PrismListener {

@@ -7,7 +7,8 @@ let client = new PrismClient({
     intents: [
         'GUILDS',
         'GUILD_MESSAGES',
-        'GUILD_PRESENCES'
+        'GUILD_PRESENCES',
+        'GUILD_VOICE_STATES'
     ],
     partials: [],
     logger: {
