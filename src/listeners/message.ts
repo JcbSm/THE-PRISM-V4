@@ -1,3 +1,4 @@
+import { getLevel } from "#helpers/xp";
 import { PrismListener } from "#structs/PrismListener";
 import { ApplyOptions } from "@sapphire/decorators";
 import type { Message } from "discord.js";
@@ -20,9 +21,16 @@ export default class extends PrismListener {
         if (!message.guild || !message.member)
             return;
 
-        const { member_id, xp_last_message_at } = await this.db.fetchMember(message.member);
+        const { member_id, xp: old_xp, xp_last_message_at } = await this.db.fetchMember(message.member);
 
-        // Log message for stats
-        this.db.message(member_id, message.createdTimestamp - xp_last_message_at > xp_cooldown)
+        // Log message for stats & xp
+        await this.db.message(member_id, message.createdTimestamp - xp_last_message_at > xp_cooldown)
+        
+        const { xp: new_xp } = await this.db.fetchMember(message.member);
+
+        // Level up (?)
+        if (getLevel(old_xp) < getLevel(new_xp)) {
+            this.client.emit('memberLevelUp', message.member, getLevel(new_xp));
+        }
     }
 }

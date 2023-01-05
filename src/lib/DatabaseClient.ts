@@ -170,8 +170,8 @@ export class DatabaseClient {
      */
     public async message(member_id: number, xp = false) {
 
-        const    query = `UPDATE members SET total_messages = total_messages + 1 WHERE member_id = ${member_id}`;
-        const xp_query = `UPDATE members SET total_messages = total_messages + 1, xp = xp + ${rng(3, 7)}, xp_messages = xp_messages + 1, xp_last_message_at = ${Date.now()} WHERE member_id = ${member_id}`;
+        const    query = `UPDATE members SET total_messages = total_messages + 1 WHERE member_id = ${member_id};`;
+        const xp_query = `UPDATE members SET total_messages = total_messages + 1, xp = xp + ${rng(3, 7)}, xp_messages = xp_messages + 1, xp_last_message_at = ${Date.now()} WHERE member_id = ${member_id};`;
 
         return await this.query(xp ? xp_query : query);
     }
