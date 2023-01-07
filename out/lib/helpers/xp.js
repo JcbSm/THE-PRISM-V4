@@ -49,11 +49,6 @@ export async function card(member, client) {
             break;
     }
     ctx.save();
-    // if (backgrounds.has(memberData.rank_card_bg_id)) {
-    //     const bg = backgrounds.get(memberData.rank_card_bg_id);
-    //     let img = await loadImage(`./src/assets/backgrounds/${bg.file}`);
-    //     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    // } else {
     //Fill BG
     ctx.fillStyle = colors.bg;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -66,7 +61,6 @@ export async function card(member, client) {
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     canvasRGBA(canvas, 0, 0, canvas.width, canvas.height, 15);
-    // }
     //Outline
     ctx.lineWidth = 10;
     ctx.strokeStyle = colors.border;
@@ -173,4 +167,40 @@ export async function card(member, client) {
     return canvas.toBuffer();
 }
 ;
+export async function leaderboard(members, guild, client) {
+    const maxNameWidth = 400;
+    const applyText = (canvas, text, size) => {
+        const ctx = canvas.getContext('2d');
+        let fontSize = size;
+        do {
+            ctx.font = `${fontSize -= 5}px "bahnschrift"`;
+        } while (ctx.measureText(text).width > maxNameWidth && fontSize > 0);
+        return ctx.font;
+    };
+    const canvas = createCanvas(1024, 1024);
+    const ctx = canvas.getContext('2d');
+    registerFont('./src/assets/fonts/bahnschrift-main.ttf', { family: 'bahnschrift' });
+    ctx.fillStyle = '#36393f';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 3;
+    const fontsize = 50;
+    ctx.font = `${fontsize}px "bahnschrift"`;
+    for (let i = 0; i < members.length; i++) {
+        const member = members[i];
+        const tag = await client.util.getDatabaseMemberUserTag(member);
+        const rank = i + 1;
+        const y = (rank * fontsize * 1.75);
+        ctx.font = `${fontsize}px "bahnschrift"`;
+        // Rank
+        ctx.strokeText(`${rank}.`, 40, y);
+        ctx.fillText(`${rank}.`, 40, y);
+        // Name
+        ctx.font = applyText(canvas, tag, fontsize);
+        ctx.strokeText(tag, 150, y);
+        ctx.fillText(tag, 150, y);
+    }
+    return canvas.toBuffer();
+}
 //# sourceMappingURL=xp.js.map

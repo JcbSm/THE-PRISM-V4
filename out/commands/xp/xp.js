@@ -4,12 +4,12 @@ import { groupDigits } from "#helpers/numbers";
 import { card, getLevel, getRequiredXP } from "#helpers/xp";
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators";
-import { MessageAttachment, MessageEmbed } from "discord.js";
+import { GuildMember, MessageAttachment, MessageEmbed } from "discord.js";
 let XpCommand = class XpCommand extends PrismCommand {
     registerApplicationCommands(registry) {
         registry.registerChatInputCommand((builder) => builder
-            .setName('xp')
-            .setDescription('Get xp.')
+            .setName(this.name)
+            .setDescription(this.description)
             .addUserOption((option) => option //
             .setName('user')
             .setDescription('User\'s xp to query')
@@ -17,15 +17,30 @@ let XpCommand = class XpCommand extends PrismCommand {
             // [dev, prod]
             idHints: ['870364167645831189']
         });
+        registry.registerContextMenuCommand((builder) => builder //
+            .setName(this.description)
+            .setType(2), {
+            idHints: ['1061034487384899584']
+        });
     }
     async chatInputRun(interaction) {
         if (!interaction.guild)
             return;
-        await interaction.deferReply();
         const user = interaction.options.getUser('user');
         const member = await interaction.guild.members.fetch(user ? user.id : interaction.user.id);
+        return this.reply(member, interaction);
+    }
+    async contextMenuRun(interaction) {
+        if (!interaction.guild)
+            return;
+        if (interaction.isUserContextMenu() && interaction.targetMember instanceof GuildMember) {
+            const member = interaction.targetMember;
+            this.reply(member, interaction, true);
+        }
+    }
+    async reply(member, interaction, ephemeral = false) {
         const { xp, xp_messages, xp_voice_minutes } = await this.db.fetchMember(member);
-        return await interaction.editReply({
+        return await interaction.reply({ ephemeral,
             files: [
                 new MessageAttachment(await card(member, this.client))
                     .setName('card.png')
@@ -61,7 +76,10 @@ let XpCommand = class XpCommand extends PrismCommand {
     }
 };
 XpCommand = __decorate([
-    ApplyOptions({})
+    ApplyOptions({
+        name: 'xp',
+        description: 'Get XP'
+    })
 ], XpCommand);
 export { XpCommand };
 //# sourceMappingURL=xp.js.map

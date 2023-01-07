@@ -1,1 +1,0 @@
-{"version":3,"file":"DataabaseGuild.js","sourceRoot":"","sources":["../../../src/lib/database/DataabaseGuild.ts"],"names":[],"mappings":"AAEA,MAAM,KAAW,aAAa,CAc7B;AAdD,WAAiB,aAAa;IAI1B,IAAiB,QAAQ,CAGxB;IAHD,WAAiB,QAAQ;QACR,iBAAQ,GAAG,UAAU,CAAC;QACtB,iBAAQ,GAAG,SAAS,CAAA;IACrC,CAAC,EAHgB,QAAQ,GAAR,sBAAQ,KAAR,sBAAQ,QAGxB;AAOL,CAAC,EAdgB,aAAa,KAAb,aAAa,QAc7B"}

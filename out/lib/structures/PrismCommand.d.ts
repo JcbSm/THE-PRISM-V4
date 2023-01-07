@@ -9,5 +9,6 @@ export declare namespace PrismCommand {
     type Context = Command.Context;
     type ChatInputCommand = Command.ChatInputInteraction;
     type ChatInputInteraction = Command.ChatInputInteraction;
+    type ContextMenuInteraction = Command.ContextMenuInteraction;
 }
 //# sourceMappingURL=PrismCommand.d.ts.map

@@ -21,4 +21,5 @@ export namespace PrismCommand {
     export type Context = Command.Context;
     export type ChatInputCommand = Command.ChatInputInteraction;
     export type ChatInputInteraction = Command.ChatInputInteraction;
+    export type ContextMenuInteraction = Command.ContextMenuInteraction
 }

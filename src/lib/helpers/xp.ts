@@ -1,9 +1,10 @@
 import type { PrismClient } from "#lib/PrismClient";
-import type { GuildMember } from "discord.js";
+import type { Guild, GuildMember } from "discord.js";
 import { createCanvas, registerFont, loadImage } from "canvas";
 import Color from 'color';
 import { canvasRGBA } from "stackblur-canvas";
 import { groupDigits } from "#helpers/numbers";
+import type { DatabaseMember } from "#lib/database/DatabaseMember";
 
 export function getRequiredXP(level: number): number {
     return Math.floor(5 * Math.pow(135, 2) * ((Math.pow(10, 3) * Math.exp(-Math.pow(10, -3)* level) + level) - Math.pow(10, 3)));
@@ -59,28 +60,18 @@ export async function card(member: GuildMember, client: PrismClient): Promise<Bu
 
     ctx.save()
     
-    // if (backgrounds.has(memberData.rank_card_bg_id)) {
+    //Fill BG
+    ctx.fillStyle = colors.bg
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    //     const bg = backgrounds.get(memberData.rank_card_bg_id);
-    //     let img = await loadImage(`./src/assets/backgrounds/${bg.file}`);
-    //     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(avatar, 180, -128, 512, 512)
+    //Transparent bg colour
+    colors.bga = Color(colors.bg).fade(1);
+    let grd = ctx.createLinearGradient(180, 0, canvas.width+500, 0); grd.addColorStop(0, colors.bg); grd.addColorStop(1, colors.bga.rgb().string());
 
-    // } else {
+    ctx.fillStyle = grd; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        //Fill BG
-        ctx.fillStyle = colors.bg
-        ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-        ctx.drawImage(avatar, 180, -128, 512, 512)
-        //Transparent bg colour
-        colors.bga = Color(colors.bg).fade(1);
-        let grd = ctx.createLinearGradient(180, 0, canvas.width+500, 0); grd.addColorStop(0, colors.bg); grd.addColorStop(1, colors.bga.rgb().string());
-
-        ctx.fillStyle = grd; ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        canvasRGBA(canvas as unknown as HTMLCanvasElement, 0, 0, canvas.width, canvas.height, 15)
-
-    // }
+    canvasRGBA(canvas as unknown as HTMLCanvasElement, 0, 0, canvas.width, canvas.height, 15)
     
     //Outline
     ctx.lineWidth = 10
@@ -205,3 +196,54 @@ export async function card(member: GuildMember, client: PrismClient): Promise<Bu
     return canvas.toBuffer()
 
 };
+
+export async function leaderboard(members: DatabaseMember[], guild: Guild, client: PrismClient) {
+
+    const maxNameWidth = 400
+
+    const applyText = (canvas: any, text: string, size: number) => {
+        const ctx = canvas.getContext('2d');
+        let fontSize = size;
+        do {
+            ctx.font = `${fontSize -= 5}px "bahnschrift"`;
+        } while (ctx.measureText(text).width > maxNameWidth && fontSize > 0);
+        return ctx.font;
+    };    
+    
+    const canvas = createCanvas(1024, 1024);
+    const ctx = canvas.getContext('2d');
+    registerFont('./src/assets/fonts/bahnschrift-main.ttf', {family: 'bahnschrift'});
+    
+    ctx.fillStyle = '#36393f'
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 3;
+
+    const fontsize = 50;
+    ctx.font = `${fontsize}px "bahnschrift"`;
+
+    for (let i = 0; i < members.length; i++) {
+
+        const member = members[i];
+        const tag = await client.util.getDatabaseMemberUserTag(member);
+        const rank = i + 1;
+        const y = (rank * fontsize * 1.75);
+        
+        ctx.font = `${fontsize}px "bahnschrift"`;
+
+        // Rank
+        ctx.strokeText(`${rank}.`, 40, y);
+        ctx.fillText(`${rank}.`, 40, y);
+        
+        // Name
+        ctx.font = applyText(canvas, tag, fontsize)
+        ctx.strokeText(tag, 150, y);
+        ctx.fillText(tag, 150, y);
+
+    }
+    
+    return canvas.toBuffer();
+
+}
