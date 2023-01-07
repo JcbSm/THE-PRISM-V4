@@ -1,7 +1,7 @@
 import { __decorate } from "tslib";
 import { blankFieldInline } from "#helpers/embeds";
 import { groupDigits } from "#helpers/numbers";
-import { card, getLevel, getRequiredXP } from "#helpers/xp";
+import { card, getLevel, getRequiredTotalXp } from "#helpers/xp";
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators";
 import { GuildMember, MessageAttachment, MessageEmbed } from "discord.js";
@@ -56,7 +56,7 @@ let XpCommand = class XpCommand extends PrismCommand {
                     blankFieldInline,
                     {
                         name: 'REMAINING XP',
-                        value: `\`${groupDigits(getRequiredXP(getLevel(xp) + 1) - xp)}\``,
+                        value: `\`${groupDigits(getRequiredTotalXp(getLevel(xp) + 1) - xp)}\``,
                         inline: true
                     },
                     {

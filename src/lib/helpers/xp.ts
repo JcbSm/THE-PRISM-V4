@@ -6,16 +6,24 @@ import { canvasRGBA } from "stackblur-canvas";
 import { groupDigits } from "#helpers/numbers";
 import type { DatabaseMember } from "#lib/database/DatabaseMember";
 
-export function getRequiredXP(level: number): number {
+export function getRequiredTotalXp(level: number): number {
     return Math.floor(5 * Math.pow(135, 2) * ((Math.pow(10, 3) * Math.exp(-Math.pow(10, -3)* level) + level) - Math.pow(10, 3)));
 };
 
+export function getRequiredLevelXp(level: number): number {
+    return level > 0 ? getRequiredTotalXp(level) - getRequiredTotalXp(level-1) : getRequiredTotalXp(level)
+}
+
 export function getLevel(xp: number): number {
     let level = 0;
-    while (xp > getRequiredXP(level + 1)) {
+    while (xp > getRequiredTotalXp(level + 1)) {
         level++;
     };
     return level;
+};
+
+export function currentLevelProgress(xp: number): number {
+    return xp - getRequiredTotalXp(getLevel(xp));
 };
 
 export async function card(member: GuildMember, client: PrismClient): Promise<Buffer> {
@@ -111,8 +119,8 @@ export async function card(member: GuildMember, client: PrismClient): Promise<Bu
     
     //Bar constants
     const [barX, barY, barRad, barLen] = [192, 128, 16, 400]
-    const minXP = getRequiredXP(level);
-    const maxXP = getRequiredXP(level+1);
+    const minXP = getRequiredTotalXp(level);
+    const maxXP = getRequiredTotalXp(level+1);
     const currentXP = memberData.xp-minXP;
     const progress = (memberData.xp - minXP)/(maxXP - minXP)
 
@@ -212,9 +220,6 @@ export async function leaderboard(members: DatabaseMember[], page: number, guild
         } while (ctx.measureText(text).width > maxWidth && fontSize > 0);
         return ctx.font;
     };    
-    
-    ctx.fillStyle = '#36393f'
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillStyle = '#fefefe';
     ctx.strokeStyle = '#000000';
@@ -250,6 +255,8 @@ export async function leaderboard(members: DatabaseMember[], page: number, guild
         const pos = rank - (page * 10);
         const y = 45 + (pos * fontsize * 1.5);
 
+        ctx.save();
+
         // Background
         ctx.beginPath();
         ctx.moveTo(10, y + 10);
@@ -262,12 +269,23 @@ export async function leaderboard(members: DatabaseMember[], page: number, guild
         ctx.lineTo(20, y + 20);
         ctx.arc(20, y + 10, 10, Math.PI/2, Math.PI);
         ctx.closePath();
-        
-        ctx.fillStyle = '#2f3136'
-        ctx.fill();
+        ctx.clip();
 
-        if (i >= members.length)
+        
+        ctx.fillStyle = '#3e3e42'
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        if (!m) {
+            ctx.restore();
             continue;
+        }
+        
+        const perc = (currentLevelProgress(m.xp) / getRequiredLevelXp(getLevel(m.xp) + 1))
+        ctx.fillStyle = '#2f3136'
+        ctx.fillRect(0, 0, canvas.width*perc, canvas.height);
+        ctx.restore();
+        
+
         
         // TEXT
         ctx.fillStyle = '#fefefe';
