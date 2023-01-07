@@ -168,9 +168,9 @@ export async function card(member, client) {
 }
 ;
 export async function leaderboard(members, page, guild, client) {
+    registerFont('./src/assets/fonts/bahnschrift-main.ttf', { family: 'bahnschrift' });
     const canvas = createCanvas(1024, 900);
     const ctx = canvas.getContext('2d');
-    registerFont('./src/assets/fonts/bahnschrift-main.ttf', { family: 'bahnschrift' });
     const fontsize = 55;
     const applyText = (text, maxWidth) => {
         let fontSize = fontsize;

@@ -199,9 +199,10 @@ export async function card(member: GuildMember, client: PrismClient): Promise<Bu
 
 export async function leaderboard(members: DatabaseMember[], page: number, guild: Guild, client: PrismClient) {
     
+    registerFont('./src/assets/fonts/bahnschrift-main.ttf', {family: 'bahnschrift'});
+    
     const canvas = createCanvas(1024, 900);
     const ctx = canvas.getContext('2d');
-    registerFont('./src/assets/fonts/bahnschrift-main.ttf', {family: 'bahnschrift'});
     const fontsize = 55;
 
     const applyText = (text: string, maxWidth: number) => {
