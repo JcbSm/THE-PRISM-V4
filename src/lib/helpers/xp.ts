@@ -236,7 +236,7 @@ export async function leaderboard(members: DatabaseMember[], page: number, guild
     ctx.strokeText('EXP', 850, 55);
     ctx.fillText('EXP', 850, 55);
     
-    for (let i = page * 10; i < (page + 1)*10 && i < members.length; i++) {
+    for (let i = page * 10; i < (page + 1)*10; i++) {
         
         const m = members[i];
 
@@ -264,6 +264,9 @@ export async function leaderboard(members: DatabaseMember[], page: number, guild
         
         ctx.fillStyle = '#2f3136'
         ctx.fill();
+
+        if (i >= members.length)
+            continue;
         
         // TEXT
         ctx.fillStyle = '#fefefe';

@@ -30,8 +30,14 @@ export class LeaderboardCommand extends PrismCommand {
         if (!interaction.guild)
             return;
 
-        const members = (await this.db.fetchMembers()).sort((a, b) => b.xp - a.xp);
-        const page = interaction.options.getInteger('page') || 1
+        const members = (await this.db.fetchGuildMembers(interaction.guild)).sort((a, b) => b.xp - a.xp);
+        const page = interaction.options.getInteger('page') || 1;
+
+        const maxPage = Math.ceil(members.length/10)
+
+        if (page > maxPage) {
+            return interaction.reply({ content: `Page out of range. Max: \`${maxPage}\``, ephemeral: true })
+        }
         
         await interaction.deferReply()
         await interaction.editReply({

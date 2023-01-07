@@ -198,7 +198,7 @@ export async function leaderboard(members, page, guild, client) {
     ctx.textAlign = 'center';
     ctx.strokeText('EXP', 850, 55);
     ctx.fillText('EXP', 850, 55);
-    for (let i = page * 10; i < (page + 1) * 10 && i < members.length; i++) {
+    for (let i = page * 10; i < (page + 1) * 10; i++) {
         const m = members[i];
         const user = await client.util.getDatabaseMemberUser(m);
         const tag = user?.tag || '`Deleted User`';
@@ -221,6 +221,8 @@ export async function leaderboard(members, page, guild, client) {
         ctx.closePath();
         ctx.fillStyle = '#2f3136';
         ctx.fill();
+        if (i >= members.length)
+            continue;
         // TEXT
         ctx.fillStyle = '#fefefe';
         ctx.strokeStyle = '#000000';
