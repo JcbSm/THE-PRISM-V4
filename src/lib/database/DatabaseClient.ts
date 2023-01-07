@@ -116,6 +116,21 @@ export class DatabaseClient {
 
     }
 
+    /**
+     * Fetch all database members
+     * @returns {DatabaseMember[]} Every member in the database
+     */
+    public async fetchMembers(): Promise<DatabaseMember[]> {
+
+        return (await this.query(`SELECT * FROM members`)).map((m: RawDatabaseMember) => new DatabaseMember(m));
+
+    }
+
+    /**
+     * Fetch all DatabaseMembers for a guild
+     * @param {Guild} guild Guild to fetch for
+     * @returns {Promise<DatabaseMember[]>} DatabaseMember array
+     */
     public async fetchGuildMembers(guild: Guild): Promise<DatabaseMember[]> {
 
         // Ensure guild exists.
@@ -126,6 +141,10 @@ export class DatabaseClient {
         return res.map(data => new DatabaseMember(data));
     }
 
+    /**
+     * Fetch all database members where tracking_voice = true
+     * @returns {DatabaseMember[]} Every member in the database where tracking_voice = true
+     */
     public async fetchVoiceMembers(): Promise<DatabaseMember[]> {
 
         const res = (await this.query(`SELECT * FROM members WHERE tracking_voice = true`)) as RawDatabaseMember[];

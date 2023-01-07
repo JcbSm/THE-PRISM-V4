@@ -86,6 +86,7 @@ export declare const Events: {
     readonly MessageCommandTypingError: "messageCommandTypingError";
     readonly ListenerError: "listenerError";
     readonly CommandApplicationCommandRegistryError: "commandApplicationCommandRegistryError";
+    readonly ApplicationCommandRegistriesRegistered: "applicationCommandRegistriesRegistered";
     readonly PiecePostLoad: "piecePostLoad";
     readonly PieceUnload: "pieceUnload";
     readonly PluginLoaded: "pluginLoaded";

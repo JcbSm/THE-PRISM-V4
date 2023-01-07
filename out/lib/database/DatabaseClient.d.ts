@@ -42,7 +42,21 @@ export declare class DatabaseClient {
      * @returns Member data
      */
     fetchMember(member: GuildMember): Promise<DatabaseMember>;
+    /**
+     * Fetch all database members
+     * @returns {DatabaseMember[]} Every member in the database
+     */
+    fetchMembers(): Promise<DatabaseMember[]>;
+    /**
+     * Fetch all DatabaseMembers for a guild
+     * @param {Guild} guild Guild to fetch for
+     * @returns {Promise<DatabaseMember[]>} DatabaseMember array
+     */
     fetchGuildMembers(guild: Guild): Promise<DatabaseMember[]>;
+    /**
+     * Fetch all database members where tracking_voice = true
+     * @returns {DatabaseMember[]} Every member in the database where tracking_voice = true
+     */
     fetchVoiceMembers(): Promise<DatabaseMember[]>;
     /**
      * Update database values for a guild.

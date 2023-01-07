@@ -81,12 +81,28 @@ export class DatabaseClient {
                 (await this.query(`INSERT INTO members (user_id, guild_id) VALUES (${member.user.id}, ${member.guild.id}) RETURNING *;`))[0] };
         return new DatabaseMember(data);
     }
+    /**
+     * Fetch all database members
+     * @returns {DatabaseMember[]} Every member in the database
+     */
+    async fetchMembers() {
+        return (await this.query(`SELECT * FROM members`)).map((m) => new DatabaseMember(m));
+    }
+    /**
+     * Fetch all DatabaseMembers for a guild
+     * @param {Guild} guild Guild to fetch for
+     * @returns {Promise<DatabaseMember[]>} DatabaseMember array
+     */
     async fetchGuildMembers(guild) {
         // Ensure guild exists.
         await this.fetchGuild(guild);
         const res = await this.query(`SELECT * FROM members WHERE guild_id = ${guild.id}`);
         return res.map(data => new DatabaseMember(data));
     }
+    /**
+     * Fetch all database members where tracking_voice = true
+     * @returns {DatabaseMember[]} Every member in the database where tracking_voice = true
+     */
     async fetchVoiceMembers() {
         const res = (await this.query(`SELECT * FROM members WHERE tracking_voice = true`));
         return res.map(data => new DatabaseMember(data));

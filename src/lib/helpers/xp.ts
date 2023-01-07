@@ -197,50 +197,109 @@ export async function card(member: GuildMember, client: PrismClient): Promise<Bu
 
 };
 
-export async function leaderboard(members: DatabaseMember[], guild: Guild, client: PrismClient) {
+export async function leaderboard(members: DatabaseMember[], page: number, guild: Guild, client: PrismClient) {
+    
+    const canvas = createCanvas(1024, 900);
+    const ctx = canvas.getContext('2d');
+    registerFont('./src/assets/fonts/bahnschrift-main.ttf', {family: 'bahnschrift'});
+    const fontsize = 55;
 
-    const maxNameWidth = 400
-
-    const applyText = (canvas: any, text: string, size: number) => {
-        const ctx = canvas.getContext('2d');
-        let fontSize = size;
+    const applyText = (text: string, maxWidth: number) => {
+        let fontSize = fontsize;
         do {
             ctx.font = `${fontSize -= 5}px "bahnschrift"`;
-        } while (ctx.measureText(text).width > maxNameWidth && fontSize > 0);
+        } while (ctx.measureText(text).width > maxWidth && fontSize > 0);
         return ctx.font;
     };    
     
-    const canvas = createCanvas(1024, 1024);
-    const ctx = canvas.getContext('2d');
-    registerFont('./src/assets/fonts/bahnschrift-main.ttf', {family: 'bahnschrift'});
-    
     ctx.fillStyle = '#36393f'
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    ctx.fillStyle = '#ffffff';
+
+    ctx.fillStyle = '#fefefe';
     ctx.strokeStyle = '#000000';
     ctx.lineWidth = 3;
+    
+    // Rank
+    ctx.textAlign = 'center'
+    ctx.font = applyText('RANK', 150);
+    ctx.strokeText('RANK', 100, 55);
+    ctx.fillText('RANK', 100, 55);
+    
+    // Name
+    ctx.textAlign = 'center'
+    ctx.font = applyText('USER', 400);
+    ctx.strokeText('USER', 450, 55);
+    ctx.fillText('USER', 450, 55);
 
-    const fontsize = 50;
-    ctx.font = `${fontsize}px "bahnschrift"`;
-
-    for (let i = 0; i < members.length; i++) {
-
-        const member = members[i];
-        const tag = await client.util.getDatabaseMemberUserTag(member);
-        const rank = i + 1;
-        const y = (rank * fontsize * 1.75);
+    // XP
+    ctx.textAlign = 'center';
+    ctx.strokeText('EXP', 850, 55);
+    ctx.fillText('EXP', 850, 55);
+    
+    for (let i = page * 10; i < (page + 1)*10 && i < members.length; i++) {
         
-        ctx.font = `${fontsize}px "bahnschrift"`;
+        const m = members[i];
 
+        const user = await client.util.getDatabaseMemberUser(m);
+        const tag = user?.tag || '`Deleted User`';
+        const member = user ? (await client.util.getMemberFromUser(user, guild)) : undefined;
+        const nameColor = member ? member.displayHexColor === '#000000' ? '#ffffff' : member.displayHexColor : '#ffffff';
+
+        const rank = (i + 1);
+        const pos = rank - (page * 10);
+        const y = 45 + (pos * fontsize * 1.5);
+
+        // Background
+        ctx.beginPath();
+        ctx.moveTo(10, y + 10);
+        ctx.lineTo(10, y - 40);
+        ctx.arc(20, y-40, 10, Math.PI, 3*Math.PI/2);
+        ctx.lineTo(canvas.width-20, y-50)
+        ctx.arc(canvas.width - 20, y - 40, 10, 3*Math.PI/2, 0);
+        ctx.lineTo(canvas.width-10, y - 40);
+        ctx.arc(canvas.width - 20, y + 10, 10, 0, Math.PI/2);
+        ctx.lineTo(20, y + 20);
+        ctx.arc(20, y + 10, 10, Math.PI/2, Math.PI);
+        ctx.closePath();
+        
+        ctx.fillStyle = '#2f3136'
+        ctx.fill();
+        
+        // TEXT
+        ctx.fillStyle = '#fefefe';
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 3;
+        
         // Rank
-        ctx.strokeText(`${rank}.`, 40, y);
-        ctx.fillText(`${rank}.`, 40, y);
+        let text = `${rank}`
+        ctx.textAlign = 'center'
+        ctx.font = applyText(text, 100);
+        ctx.strokeText(text, 100, y);
+        ctx.fillText(text, 100, y);
+
+        ctx.fillStyle = nameColor;
+
+        // Level
+        text = `[${getLevel(m.xp)}]`
+        ctx.textAlign = 'center'
+        ctx.font = applyText(text, 100);
+        ctx.strokeText(text, 250, y);
+        ctx.fillText(text, 250, y);
         
         // Name
-        ctx.font = applyText(canvas, tag, fontsize)
-        ctx.strokeText(tag, 150, y);
-        ctx.fillText(tag, 150, y);
+        text = tag;
+        ctx.textAlign = 'left'
+        ctx.font = applyText(text, 400);
+        ctx.strokeText(text, 300, y);
+        ctx.fillText(text, 300, y);
+
+        // XP
+        text = `${groupDigits(m.xp)} XP`
+        ctx.textAlign = 'right'
+        ctx.fillStyle = '#fefefe';
+        ctx.font = applyText(text, 300);
+        ctx.strokeText(text, canvas.width - 50, y);
+        ctx.fillText(text, canvas.width - 50, y);
 
     }
     

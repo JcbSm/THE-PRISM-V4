@@ -33,7 +33,7 @@ export class XpCommand extends PrismCommand {
                 .setName(this.description)
                 .setType(2),
             {
-                idHints: ['1061034487384899584']
+                idHints: ['1061034487384899584', '1061109917408301056']
             })
     }
 
