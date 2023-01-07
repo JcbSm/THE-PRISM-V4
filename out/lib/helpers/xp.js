@@ -225,6 +225,9 @@ export async function leaderboard(members, page, guild, client) {
         ctx.lineTo(20, y + 20);
         ctx.arc(20, y + 10, 10, Math.PI / 2, Math.PI);
         ctx.closePath();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#212121';
+        ctx.stroke();
         ctx.clip();
         ctx.fillStyle = '#3e3e42';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -238,8 +241,7 @@ export async function leaderboard(members, page, guild, client) {
         ctx.restore();
         // TEXT
         ctx.fillStyle = '#fefefe';
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 4;
         // Rank
         let text = `${rank}`;
         ctx.textAlign = 'center';
