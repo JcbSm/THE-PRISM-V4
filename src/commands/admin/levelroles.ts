@@ -51,7 +51,7 @@ export class LevelRolesCommand extends PrismSubcommand {
                         .setDescription('List and/or remove levelroles')),
 
             {
-                idHints: ['1061376823574933534']
+                idHints: ['1061376823574933534', '1061772996802519061']
             })
     }
 
