@@ -2,7 +2,7 @@ import { __decorate } from "tslib";
 import { leaderboard } from "#helpers/xp";
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators";
-import { MessageAttachment } from "discord.js";
+import { AttachmentBuilder } from "discord.js";
 let LeaderboardCommand = class LeaderboardCommand extends PrismCommand {
     registerApplicationCommands(registry) {
         registry.registerChatInputCommand((builder) => builder //
@@ -25,9 +25,9 @@ let LeaderboardCommand = class LeaderboardCommand extends PrismCommand {
             return interaction.reply({ content: `Page out of range. Max: \`${maxPage}\``, ephemeral: true });
         }
         await interaction.deferReply();
-        await interaction.editReply({
+        return await interaction.editReply({
             files: [
-                new MessageAttachment(await leaderboard(members, page - 1, interaction.guild, this.client))
+                new AttachmentBuilder(await leaderboard(members, page - 1, interaction.guild, this.client))
                     .setName('leaderboard.png')
             ]
         });

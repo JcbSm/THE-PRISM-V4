@@ -4,7 +4,7 @@ import { groupDigits } from "#helpers/numbers";
 import { card, getLevel, getRequiredTotalXp } from "#helpers/xp";
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators";
-import { GuildMember, MessageAttachment, MessageEmbed } from "discord.js";
+import { GuildMember, AttachmentBuilder, EmbedBuilder } from "discord.js";
 let XpCommand = class XpCommand extends PrismCommand {
     registerApplicationCommands(registry) {
         registry.registerChatInputCommand((builder) => builder
@@ -33,7 +33,7 @@ let XpCommand = class XpCommand extends PrismCommand {
     async contextMenuRun(interaction) {
         if (!interaction.guild)
             return;
-        if (interaction.isUserContextMenu() && interaction.targetMember instanceof GuildMember) {
+        if (interaction.isUserContextMenuCommand() && interaction.targetMember instanceof GuildMember) {
             const member = interaction.targetMember;
             this.reply(member, interaction, true);
         }
@@ -42,10 +42,10 @@ let XpCommand = class XpCommand extends PrismCommand {
         const { xp, xp_messages, xp_voice_minutes } = await this.db.fetchMember(member);
         return await interaction.reply({ ephemeral,
             files: [
-                new MessageAttachment(await card(member, this.client))
+                new AttachmentBuilder(await card(member, this.client))
                     .setName('card.png')
             ], embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                     .setImage('attachment://card.png')
                     .setFields([
                     {

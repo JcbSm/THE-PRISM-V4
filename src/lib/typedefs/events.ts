@@ -10,10 +10,4 @@ export const Events = {
      */
     GuildMemberLevelUp: 'guildMemberLevelUp' as const,
     
-} as const
-
-declare module 'discord.js' {
-    interface ClientEvents {
-        [Events.GuildMemberLevelUp]: [member: GuildMember, level: number];
-    }
-}
+} as const;

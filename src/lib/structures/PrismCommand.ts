@@ -19,7 +19,7 @@ export abstract class PrismCommand extends Command {
 export namespace PrismCommand {
     export type Options = Command.Options;
     export type Context = Command.Context;
-    export type ChatInputCommand = Command.ChatInputInteraction;
-    export type ChatInputInteraction = Command.ChatInputInteraction;
-    export type ContextMenuInteraction = Command.ContextMenuInteraction
+    export type ChatInputCommand = Command.ChatInputCommandInteraction;
+    export type ChatInputInteraction = Command.ChatInputCommandInteraction;
+    export type ContextMenuInteraction = Command.ContextMenuCommandInteraction
 }

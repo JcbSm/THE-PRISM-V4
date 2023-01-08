@@ -134,11 +134,11 @@ export class DatabaseClient {
      * @param channel ID of channel
      * @returns Query result
      */
-    async setChannel(guild, feature, channel) {
+    async setChannel(guild, feature, channelId) {
         // Ensure guild exists on database
         await this.fetchGuild(guild);
         // Set values
-        return await this.query(`UPDATE guilds SET channel_id_${feature} = ${channel.id} WHERE guild_id = ${guild.id}`);
+        return await this.query(`UPDATE guilds SET channel_id_${feature} = ${channelId} WHERE guild_id = ${guild.id}`);
     }
     /**
      * Record a message for a guildmember.
@@ -151,6 +151,10 @@ export class DatabaseClient {
         const xp_query = `UPDATE members SET total_messages = total_messages + 1, xp = xp + ${rng(3, 7)}, xp_messages = xp_messages + 1, xp_last_message_at = ${Date.now()} WHERE member_id = ${member_id};`;
         return await this.query(xp ? xp_query : query);
     }
+    /**
+     * Tracks the voice stats for a member
+     * @param {GuildMember} member Memebr to track
+     */
     async trackVoice(member) {
         this.client.logger.debug(`Tracking voice for ${member.user.tag} in ${member.guild.name}`);
         let i = 0;
@@ -183,6 +187,15 @@ export class DatabaseClient {
                 clearInterval(interval);
             }
         }, 60 * 1000);
+    }
+    async addLevelRole(role, guild, level) {
+        return (await this.query(`INSERT INTO level_roles (guild_id, role_id, level) VALUES (${guild.id}, ${role.id}, ${level}) RETURNING *`))[0];
+    }
+    async getLevelRoles(guild) {
+        return await this.query(`SELECT * FROM level_roles WHERE guild_id = ${guild.id}`);
+    }
+    async removeLevelRole(id) {
+        return await this.query(`DELETE FROM level_roles WHERE level_role_id = ${id}`);
     }
 }
 //# sourceMappingURL=DatabaseClient.js.map

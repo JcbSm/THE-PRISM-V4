@@ -7,6 +7,6 @@ export declare abstract class PrismSubcommand extends Subcommand {
 export declare namespace PrismSubcommand {
     type Options = Subcommand.Options & {};
     type Context = Subcommand.Context & {};
-    type ChatInputInteraction = Subcommand.ChatInputInteraction & {};
+    type ChatInputCommandInteraction = Subcommand.ChatInputCommandInteraction & {};
 }
 //# sourceMappingURL=PrismSubcommand.d.ts.map

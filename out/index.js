@@ -1,18 +1,18 @@
-import "@sapphire/framework";
+import { LogLevel } from "@sapphire/framework";
 import { PrismClient } from '#lib/PrismClient';
 (await import('dotenv')).config();
 console.clear();
 console.log("Initialising...");
 let client = new PrismClient({
     intents: [
-        'GUILDS',
-        'GUILD_MESSAGES',
-        'GUILD_PRESENCES',
-        'GUILD_VOICE_STATES'
+        'Guilds',
+        'GuildMessages',
+        'GuildPresences',
+        'GuildVoiceStates'
     ],
     partials: [],
     logger: {
-        level: process.env.DEV == 'true' ? 20 /* LogLevel.Debug */ : 30 /* LogLevel.Info */
+        level: process.env.DEV == 'true' ? LogLevel.Debug : LogLevel.Info
     },
     defaultPrefix: ['-'],
     allowedMentions: { parse: ['everyone'] }

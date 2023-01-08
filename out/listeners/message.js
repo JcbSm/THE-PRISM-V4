@@ -18,7 +18,7 @@ let default_1 = class extends PrismListener {
         const { xp: new_xp } = await this.db.fetchMember(message.member);
         // Level up (?)
         if (getLevel(old_xp) < getLevel(new_xp)) {
-            this.client.emit('memberLevelUp', message.member, getLevel(new_xp));
+            this.client.emit(Events.GuildMemberLevelUp, message.member, getLevel(new_xp));
         }
     }
 };

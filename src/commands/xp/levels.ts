@@ -2,7 +2,7 @@ import { leaderboard } from "#helpers/xp";
 import { PrismCommand } from "#structs/PrismCommand"
 import { ApplyOptions } from "@sapphire/decorators";
 import type { ChatInputCommand } from "@sapphire/framework";
-import { MessageAttachment } from "discord.js";
+import { AttachmentBuilder } from "discord.js";
 
 @ApplyOptions<PrismCommand.Options>({
 
@@ -40,9 +40,9 @@ export class LeaderboardCommand extends PrismCommand {
         }
         
         await interaction.deferReply()
-        await interaction.editReply({
+        return await interaction.editReply({
             files: [
-                new MessageAttachment(await leaderboard(members, page - 1, interaction.guild, this.client))
+                new AttachmentBuilder(await leaderboard(members, page - 1, interaction.guild, this.client))
                     .setName('leaderboard.png')
             ]
         })

@@ -2,7 +2,7 @@ import { __decorate } from "tslib";
 import { groupDigits } from "#helpers/numbers";
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators";
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 let StatCommand = class StatCommand extends PrismCommand {
     registerApplicationCommands(registry) {
         registry.registerChatInputCommand((builder) => builder
@@ -24,7 +24,7 @@ let StatCommand = class StatCommand extends PrismCommand {
         const member = await interaction.guild.members.fetch(user ? user.id : interaction.user.id);
         const { total_messages, total_voice_minutes, total_muted_minutes } = await this.db.fetchMember(member);
         return await interaction.editReply({ embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                     .setThumbnail(member.displayAvatarURL({ size: 128 }))
                     .setFields([
                     {

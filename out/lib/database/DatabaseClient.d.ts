@@ -1,7 +1,7 @@
 import { Connection, MysqlError, OkPacket, Pool } from 'mysql';
 import type { PrismClient } from '#lib/PrismClient';
-import type { Channel, Guild, GuildMember, User } from 'discord.js';
-import type { RawDatabaseUser, RawDatabaseGuild } from '#types/database';
+import type { Guild, GuildMember, Role, Snowflake, User } from 'discord.js';
+import type { RawDatabaseUser, RawDatabaseGuild, RawDatabaseLevelRole } from '#types/database';
 import { DatabaseMember } from '#lib/database/DatabaseMember';
 import type { DatabaseGuild } from '#lib/database/DatabaseGuild';
 export interface DatabaseClient {
@@ -79,7 +79,7 @@ export declare class DatabaseClient {
      * @param channel ID of channel
      * @returns Query result
      */
-    setChannel(guild: Guild, feature: DatabaseGuild.Channels, channel: Channel): Promise<OkPacket | MysqlError>;
+    setChannel(guild: Guild, feature: DatabaseGuild.Channels, channelId: Snowflake): Promise<OkPacket | MysqlError>;
     /**
      * Record a message for a guildmember.
      * @param member_id Database member ID from table_members
@@ -87,6 +87,13 @@ export declare class DatabaseClient {
      * @returns
      */
     message(member_id: number, xp?: boolean): Promise<any>;
+    /**
+     * Tracks the voice stats for a member
+     * @param {GuildMember} member Memebr to track
+     */
     trackVoice(member: GuildMember): Promise<void>;
+    addLevelRole(role: Role, guild: Guild, level: number): Promise<RawDatabaseLevelRole>;
+    getLevelRoles(guild: Guild): Promise<RawDatabaseLevelRole[]>;
+    removeLevelRole(id: number): Promise<any>;
 }
 //# sourceMappingURL=DatabaseClient.d.ts.map

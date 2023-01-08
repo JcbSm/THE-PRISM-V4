@@ -4,7 +4,7 @@ import { card, getLevel, getRequiredTotalXp } from "#helpers/xp";
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators"
 import type { ChatInputCommand } from "@sapphire/framework";
-import { GuildMember, MessageAttachment, MessageEmbed } from "discord.js";
+import { GuildMember, AttachmentBuilder, EmbedBuilder } from "discord.js";
 
 @ApplyOptions<PrismCommand.Options>({
     name: 'xp',
@@ -54,7 +54,7 @@ export class XpCommand extends PrismCommand {
         if (!interaction.guild)
             return;
 
-        if (interaction.isUserContextMenu() && interaction.targetMember instanceof GuildMember) {
+        if (interaction.isUserContextMenuCommand() && interaction.targetMember instanceof GuildMember) {
             const member = interaction.targetMember;
             
             this.reply(member, interaction, true);
@@ -68,10 +68,10 @@ export class XpCommand extends PrismCommand {
 
         return await interaction.reply({ ephemeral, 
             files: [
-                new MessageAttachment(await card(member, this.client))
+                new AttachmentBuilder(await card(member, this.client))
                     .setName('card.png')
             ], embeds: [ 
-                new MessageEmbed()
+                new EmbedBuilder()
                     .setImage('attachment://card.png')
                     .setFields([
                         {

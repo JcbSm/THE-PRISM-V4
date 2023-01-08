@@ -23,4 +23,10 @@ export type RawDatabaseMember = {
     counting_counts: number;
     counting_last_message_url: string | null;
 };
+export type RawDatabaseLevelRole = {
+    level_role_id: number;
+    guild_id: Snowflake;
+    role_id: Snowflake;
+    level: number;
+};
 //# sourceMappingURL=database.d.ts.map

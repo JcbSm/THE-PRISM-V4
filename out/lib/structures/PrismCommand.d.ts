@@ -7,8 +7,8 @@ export declare abstract class PrismCommand extends Command {
 export declare namespace PrismCommand {
     type Options = Command.Options;
     type Context = Command.Context;
-    type ChatInputCommand = Command.ChatInputInteraction;
-    type ChatInputInteraction = Command.ChatInputInteraction;
-    type ContextMenuInteraction = Command.ContextMenuInteraction;
+    type ChatInputCommand = Command.ChatInputCommandInteraction;
+    type ChatInputInteraction = Command.ChatInputCommandInteraction;
+    type ContextMenuInteraction = Command.ContextMenuCommandInteraction;
 }
 //# sourceMappingURL=PrismCommand.d.ts.map

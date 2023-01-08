@@ -2,7 +2,7 @@ import { groupDigits } from "#helpers/numbers";
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators"
 import type { ChatInputCommand } from "@sapphire/framework";
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 
 @ApplyOptions<PrismCommand.Options>({
 
@@ -43,7 +43,7 @@ export class StatCommand extends PrismCommand {
         } = await this.db.fetchMember(member);
 
         return await interaction.editReply({ embeds: [ 
-            new MessageEmbed()
+            new EmbedBuilder()
                 .setThumbnail(member.displayAvatarURL({ size: 128 }))
                 .setFields([
                     {

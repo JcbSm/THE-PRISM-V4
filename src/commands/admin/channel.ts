@@ -2,12 +2,14 @@ import { PrismSubcommand } from "#structs/PrismSubcommand";
 import { ApplyOptions } from "@sapphire/decorators";
 import type { ChatInputCommand } from "@sapphire/framework";
 import { DatabaseGuild } from "#lib/database/DatabaseGuild";
+import { ChannelType, TextBasedChannel } from "discord.js";
 
 @ApplyOptions<PrismSubcommand.Options>({
     subcommands: [
         { name: 'counting', chatInputRun: 'chatInputRunCounting' },
         { name: 'level-ups', chatInputRun: 'chatInputRunLevelUp' }
-    ]
+    ],
+    preconditions: []
 })
 
 export class ChannelCommand extends PrismSubcommand {
@@ -27,7 +29,8 @@ export class ChannelCommand extends PrismSubcommand {
 
                             option //
                                 .setName('channel')
-                                .setDescription('The channel to be used for counting.')))
+                                .setDescription('The channel to be used for counting.')
+                                .setRequired(true)))
 
                 .addSubcommand((command) =>
                     
@@ -38,33 +41,29 @@ export class ChannelCommand extends PrismSubcommand {
                             
                             option //
                                 .setName('channel')
-                                .setDescription('The channel where level-up messages will be sent'))),
+                                .setDescription('The channel where level-up messages will be sent')
+                                .setRequired(true))),
                                 
             {
                 idHints: ['1053315950759379034', '1053835411002236989']
             })
     }
 
-    public async chatInputRunCounting(interaction: PrismSubcommand.ChatInputInteraction) {
+    public async chatInputRunCounting(interaction: PrismSubcommand.ChatInputCommandInteraction) {
 
         if (!interaction.guild)
             return;
 
         // Get Channel
-        const channel = interaction.options.getChannel('channel');
-
-        // Check channel exists
-        if (!channel) {
-            return interaction.reply({ content: 'An error occurred while fetching Channel.', ephemeral: true });
-        }
+        const channel = interaction.options.getChannel('channel', true) as TextBasedChannel;
 
         // Check channel type
-        if (!(channel.type == 'GUILD_TEXT' || channel.type == 'GUILD_PUBLIC_THREAD' || channel.type == 'GUILD_PRIVATE_THREAD')) {
+        if (!(channel.type == ChannelType.GuildText || channel.type == ChannelType.PublicThread || channel.type == ChannelType.PrivateThread)) {
             return interaction.reply({ content: 'This channel is of the wrong type.', ephemeral: true });
         }
 
         // Set channel
-        await this.db.setChannel(interaction.guild, DatabaseGuild.Channels.COUNTING, channel);
+        await this.db.setChannel(interaction.guild, DatabaseGuild.Channels.COUNTING, channel.id);
 
         // Get data
         const { counting_count, channel_id_counting} = await this.db.fetchGuild(interaction.guild);
@@ -76,26 +75,21 @@ export class ChannelCommand extends PrismSubcommand {
 
     }
 
-    public async chatInputRunLevelUp(interaction: PrismSubcommand.ChatInputInteraction) {
+    public async chatInputRunLevelUp(interaction: PrismSubcommand.ChatInputCommandInteraction) {
         
         if (!interaction.guild)
             return;
 
         // Get Channel
-        const channel = interaction.options.getChannel('channel');
-
-        // Check channel exists
-        if (!channel) {
-            return interaction.reply({ content: 'An error occurred while fetching Channel.', ephemeral: true });
-        }
+        const channel = interaction.options.getChannel('channel', true) as TextBasedChannel;
 
         // Check channel type
-        if (!(channel.type == 'GUILD_TEXT' || channel.type == 'GUILD_PUBLIC_THREAD' || channel.type == 'GUILD_PRIVATE_THREAD')) {
+        if (!(channel.type == ChannelType.GuildText || channel.type == ChannelType.PublicThread || channel.type == ChannelType.PrivateThread)) {
             return interaction.reply({ content: 'This channel is of the wrong type.', ephemeral: true });
         }
 
         // Set channel
-        await this.db.setChannel(interaction.guild, DatabaseGuild.Channels.LEVEL_UP, channel);
+        await this.db.setChannel(interaction.guild, DatabaseGuild.Channels.LEVEL_UP, channel.id);
 
         return interaction.reply({ content: `Set the \`${DatabaseGuild.Channels.LEVEL_UP.toUpperCase()}\` channel ID to \`${channel.id}\``, ephemeral: true });
 

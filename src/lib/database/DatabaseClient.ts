@@ -1,10 +1,11 @@
 import { Connection, createPool, MysqlError, OkPacket, Pool } from 'mysql';
 import type { PrismClient } from '#lib/PrismClient';
-import type { Channel, Guild, GuildMember, User } from 'discord.js';
+import type { Guild, GuildMember, Role, Snowflake, User } from 'discord.js';
 import type { 
     RawDatabaseUser,
     RawDatabaseGuild,
     RawDatabaseMember,
+    RawDatabaseLevelRole,
 } from '#types/database';
 import { rng } from '#helpers/numbers';
 import { DatabaseMember } from '#lib/database/DatabaseMember';
@@ -182,13 +183,13 @@ export class DatabaseClient {
      * @param channel ID of channel
      * @returns Query result
      */
-    public async setChannel(guild: Guild, feature: DatabaseGuild.Channels, channel: Channel): Promise<OkPacket | MysqlError> {
+    public async setChannel(guild: Guild, feature: DatabaseGuild.Channels, channelId: Snowflake): Promise<OkPacket | MysqlError> {
 
         // Ensure guild exists on database
         await this.fetchGuild(guild);
 
         // Set values
-        return await this.query(`UPDATE guilds SET channel_id_${feature} = ${channel.id} WHERE guild_id = ${guild.id}`);
+        return await this.query(`UPDATE guilds SET channel_id_${feature} = ${channelId} WHERE guild_id = ${guild.id}`);
     }
 
     /**
@@ -205,6 +206,10 @@ export class DatabaseClient {
         return await this.query(xp ? xp_query : query);
     }
 
+    /**
+     * Tracks the voice stats for a member
+     * @param {GuildMember} member Memebr to track
+     */
     public async trackVoice(member: GuildMember) {
 
         this.client.logger.debug(`Tracking voice for ${member.user.tag} in ${member.guild.name}`)
@@ -248,6 +253,18 @@ export class DatabaseClient {
             }
 
         }, 60*1000);
+    }
+
+    public async addLevelRole(role: Role, guild: Guild, level: number): Promise<RawDatabaseLevelRole> {
+        return (await this.query(`INSERT INTO level_roles (guild_id, role_id, level) VALUES (${guild.id}, ${role.id}, ${level}) RETURNING *`))[0];
+    }
+
+    public async getLevelRoles(guild: Guild): Promise<RawDatabaseLevelRole[]> {
+        return await this.query(`SELECT * FROM level_roles WHERE guild_id = ${guild.id}`);
+    }
+
+    public async removeLevelRole(id: number) {
+        return await this.query(`DELETE FROM level_roles WHERE level_role_id = ${id}`);        
     }
 
 }

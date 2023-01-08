@@ -24,7 +24,7 @@ export namespace PrismSubcommand {
     export type Context = Subcommand.Context & {
 
     }
-    export type ChatInputInteraction = Subcommand.ChatInputInteraction & {
+    export type ChatInputCommandInteraction = Subcommand.ChatInputCommandInteraction & {
 
     }
 }
