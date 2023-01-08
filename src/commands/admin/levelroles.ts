@@ -10,7 +10,8 @@ import { ButtonInteraction, Guild, Message, ActionRowBuilder, ButtonBuilder, Emb
     subcommands: [
         { name: 'add', chatInputRun: 'chatInputRunAdd' },
         { name: 'manage', chatInputRun: 'chatInputRunManage' }
-    ]
+    ],
+    preconditions: ['Administrator']
 })
 
 export class LevelRolesCommand extends PrismSubcommand {

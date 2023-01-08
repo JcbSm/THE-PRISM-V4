@@ -165,7 +165,8 @@ LevelRolesCommand = __decorate([
         subcommands: [
             { name: 'add', chatInputRun: 'chatInputRunAdd' },
             { name: 'manage', chatInputRun: 'chatInputRunManage' }
-        ]
+        ],
+        preconditions: ['Administrator']
     })
 ], LevelRolesCommand);
 export { LevelRolesCommand };

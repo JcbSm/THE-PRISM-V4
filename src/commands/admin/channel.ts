@@ -9,7 +9,7 @@ import { ChannelType, TextBasedChannel } from "discord.js";
         { name: 'counting', chatInputRun: 'chatInputRunCounting' },
         { name: 'level-ups', chatInputRun: 'chatInputRunLevelUp' }
     ],
-    preconditions: []
+    preconditions: ['Administrator']
 })
 
 export class ChannelCommand extends PrismSubcommand {

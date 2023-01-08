@@ -62,7 +62,7 @@ ChannelCommand = __decorate([
             { name: 'counting', chatInputRun: 'chatInputRunCounting' },
             { name: 'level-ups', chatInputRun: 'chatInputRunLevelUp' }
         ],
-        preconditions: []
+        preconditions: ['Administrator']
     })
 ], ChannelCommand);
 export { ChannelCommand };
