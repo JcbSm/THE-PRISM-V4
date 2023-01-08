@@ -7,5 +7,6 @@ export declare class LevelRolesCommand extends PrismSubcommand {
     private listEmbed;
     private listButtons;
     private deleteMenu;
+    private updateMemberRoles;
 }
 //# sourceMappingURL=levelroles.d.ts.map

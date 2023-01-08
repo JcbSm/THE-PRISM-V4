@@ -7,6 +7,7 @@ let client = new PrismClient({
     intents: [
         'Guilds',
         'GuildMessages',
+        'GuildMembers',
         'GuildPresences',
         'GuildVoiceStates'
     ],

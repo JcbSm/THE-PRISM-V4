@@ -1,4 +1,5 @@
 import { __decorate } from "tslib";
+import { getLevel } from "#helpers/xp";
 import { PrismSubcommand } from "#structs/PrismSubcommand";
 import { ApplyOptions } from "@sapphire/decorators";
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ComponentType, ButtonStyle } from "discord.js";
@@ -84,6 +85,29 @@ let LevelRolesCommand = class LevelRolesCommand extends PrismSubcommand {
                     ]
                 });
             }
+            else if (i.customId == 'levelRoleUpdateMembers') {
+                await i.reply({ content: 'This could take a while...' });
+                const members = await guild.members.fetch();
+                let n = 0;
+                for (const [, member] of members) {
+                    i.editReply({ embeds: [
+                            new EmbedBuilder()
+                                .setTitle('Updating Member Level Roles')
+                                .setDescription(`Updating roles for ${member}...`)
+                                .addFields([
+                                {
+                                    name: 'Progress...',
+                                    value: `\`${Math.round(10000 * (n++ / members.size)) / 100}%\``
+                                }
+                            ])
+                        ] });
+                    await this.updateMemberRoles(member);
+                }
+                await i.editReply({ content: "Done!\nThis message will delete in 10 seconds...", embeds: [] });
+                setTimeout(() => {
+                    i.deleteReply();
+                }, 10 * 1000);
+            }
         })
             .on('end', () => {
             interaction.editReply({ components: [] });
@@ -151,7 +175,12 @@ let LevelRolesCommand = class LevelRolesCommand extends PrismSubcommand {
                 .setCustomId('levelRoleToggle')
                 .setLabel('Toggle stack type')
                 .setStyle(ButtonStyle.Primary)
-                .setEmoji('🏗️')
+                .setEmoji('🏗️'),
+            new ButtonBuilder()
+                .setCustomId('levelRoleUpdateMembers')
+                .setLabel('Update members')
+                .setStyle(ButtonStyle.Danger)
+                .setEmoji('🔁')
         ]);
     }
     async deleteMenu(guild) {
@@ -171,6 +200,34 @@ let LevelRolesCommand = class LevelRolesCommand extends PrismSubcommand {
                 };
             }))
         ]);
+    }
+    updateMemberRoles(member) {
+        return new Promise(async (res) => {
+            const { xp } = await this.db.fetchMember(member);
+            const level = getLevel(xp);
+            let levelRoles = (await this.db.getLevelRoles(member.guild)).sort((a, b) => b.level - a.level);
+            let add = [];
+            let rem = [];
+            await member.fetch();
+            if ((await this.db.fetchGuild(member.guild)).level_roles_stack) {
+                add = levelRoles.filter(r => r.level <= level && !member.roles.cache.has(r.role_id));
+                rem = levelRoles.filter(r => r.level > level && member.roles.cache.has(r.role_id));
+            }
+            else {
+                const max = levelRoles.filter(r => r.level <= level)[0].level;
+                add = levelRoles.filter(r => r.level === max && !member.roles.cache.has(r.role_id));
+                rem = levelRoles.filter(r => r.level !== max && member.roles.cache.has(r.role_id));
+            }
+            ;
+            // For some reason only this works
+            for (const id of add.map(r => r.role_id)) {
+                await member.roles.add(id);
+            }
+            for (const id of rem.map(r => r.role_id)) {
+                await member.roles.remove(id);
+            }
+            return res(null);
+        });
     }
 };
 LevelRolesCommand = __decorate([

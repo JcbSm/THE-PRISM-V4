@@ -9,6 +9,7 @@ let client = new PrismClient({
     intents: [ // For a list: https://discord.com/developers/docs/topics/gateway#list-of-intents
         'Guilds',
         'GuildMessages',
+        'GuildMembers',
         'GuildPresences',
         'GuildVoiceStates'
     ],
