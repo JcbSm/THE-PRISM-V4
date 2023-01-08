@@ -1,9 +1,9 @@
 import { Connection, MysqlError, OkPacket, Pool } from 'mysql';
 import type { PrismClient } from '#lib/PrismClient';
 import type { Guild, GuildMember, Role, Snowflake, User } from 'discord.js';
-import type { RawDatabaseUser, RawDatabaseGuild, RawDatabaseLevelRole } from '#types/database';
+import type { RawDatabaseUser, RawDatabaseLevelRole } from '#types/database';
 import { DatabaseMember } from '#lib/database/DatabaseMember';
-import type { DatabaseGuild } from '#lib/database/DatabaseGuild';
+import { DatabaseGuild } from '#lib/database/DatabaseGuild';
 export interface DatabaseClient {
     client: PrismClient;
     pool: Pool;
@@ -35,7 +35,7 @@ export declare class DatabaseClient {
      * @param guild Guild to fetch
      * @returns Guild data
      */
-    fetchGuild(guild: Guild): Promise<RawDatabaseGuild>;
+    fetchGuild(guild: Guild): Promise<DatabaseGuild>;
     /**
      * Get member data. Will insert if none found
      * @param member GuildMember to fetch

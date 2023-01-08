@@ -9,7 +9,7 @@ import type {
 } from '#types/database';
 import { rng } from '#helpers/numbers';
 import { DatabaseMember } from '#lib/database/DatabaseMember';
-import type { DatabaseGuild } from '#lib/database/DatabaseGuild';
+import { DatabaseGuild } from '#lib/database/DatabaseGuild';
 
 export interface DatabaseClient {
     client: PrismClient;
@@ -94,10 +94,10 @@ export class DatabaseClient {
      * @param guild Guild to fetch
      * @returns Guild data
      */
-    public async fetchGuild(guild: Guild): Promise<RawDatabaseGuild> {
+    public async fetchGuild(guild: Guild): Promise<DatabaseGuild> {
         const data = {...(await this.query(`SELECT * FROM guilds WHERE guild_id = ${guild.id};`))[0] || (await this.query(`INSERT INTO guilds (guild_id) VALUES (${guild.id}) RETURNING *`))[0]} as RawDatabaseGuild;
 
-        return data;
+        return new DatabaseGuild(data);
     }
 
     /**
@@ -266,5 +266,4 @@ export class DatabaseClient {
     public async removeLevelRole(id: number) {
         return await this.query(`DELETE FROM level_roles WHERE level_role_id = ${id}`);        
     }
-
 }

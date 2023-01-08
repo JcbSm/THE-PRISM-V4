@@ -63,14 +63,12 @@ export class LevelRolesCommand extends PrismSubcommand {
 
         await interaction.deferReply({ ephemeral: true });
 
-        let levelRoles = await this.getLevelRoles(guild);
-
         const msg = await interaction.editReply({ 
             embeds: [
-                await this.listEmbed(levelRoles)
+                await this.listEmbed(guild)
             ],
             components: [
-                this.listButton()
+                await this.listButtons()
             ]
         }) as Message;
 
@@ -78,45 +76,61 @@ export class LevelRolesCommand extends PrismSubcommand {
         msg.createMessageComponentCollector({ componentType: ComponentType.Button, time: 60 * 1000 })
             .on('collect', async (i: ButtonInteraction) => {
 
-                // Disable button
-                await interaction.editReply({ components: [
-                    this.listButton(true)
-                ]});
+                if (i.customId == 'levelRoleRemove') {
 
-                // Send delete message
-                await i.reply({ ephemeral: true, content: 'Select which level roles you with to remove:', components: [
-                    this.deleteMenu(levelRoles)
-                ]});
+                    // Disable button
+                    await interaction.editReply({ components: [
+                        this.listButtons(true)
+                    ]});
 
-                // Get reply
-                const reply = await i.fetchReply() as Message;
-                
-                // Wait for response
-                const res = await reply.awaitMessageComponent({ componentType: ComponentType.StringSelect, time: 60 * 1000}).catch(() => undefined);
-                
-                // No response
-                if (!res) {
-                    i.editReply({ content: 'Time expired. You can dissmiss this message.', components: []});
-                    return;
+                    // Send delete message
+                    await i.reply({ ephemeral: true, content: 'Select which level roles you with to remove:', components: [
+                        await this.deleteMenu(guild)
+                    ]});
+
+                    // Get reply
+                    const reply = await i.fetchReply() as Message;
+                    
+                    // Wait for response
+                    const res = await reply.awaitMessageComponent({ componentType: ComponentType.StringSelect, time: 60 * 1000}).catch(() => undefined);
+                    
+                    // No response
+                    if (!res) {
+                        i.editReply({ content: 'Time expired. You can dissmiss this message.', components: []});
+                        return;
+                    }
+
+                    // Delete level roles
+                    for (const id of res.values)
+                        this.db.removeLevelRole(Number(id));
+
+                    // Remove select menu
+                    await i.editReply({ content: 'Level roles deleted. You can dissmiss this message.', components: [] });
+
+                    // Update original embed
+                    await interaction.editReply({ 
+                        embeds: [
+                            await this.listEmbed(guild)
+                        ],
+                        components: [
+                            this.listButtons()
+                        ]
+                    })
                 }
 
-                // Delete level roles
-                for (const id of res.values)
-                    this.db.removeLevelRole(Number(id));
+                else if (i.customId == 'levelRoleToggle') {
 
-                // Remove select menu
-                await i.editReply({ content: 'Level roles deleted. You can dissmiss this message.', components: [] });
-                levelRoles = await this.getLevelRoles(guild);
+                    const { level_roles_stack } = await this.db.fetchGuild(guild);
 
-                // Update original embed
-                await interaction.editReply({ 
-                    embeds: [
-                        await this.listEmbed(levelRoles)
-                    ],
-                    components: [
-                        this.listButton()
-                    ]
-                })
+                    await this.db.updateGuild(guild, { level_roles_stack: !level_roles_stack });
+                    
+                    await i.update({
+                        embeds: [
+                            await this.listEmbed(guild)
+                        ]
+                    })
+
+                }
 
             })
             .on('end', () => {
@@ -157,9 +171,11 @@ export class LevelRolesCommand extends PrismSubcommand {
         ] })
     }
 
-    private async listEmbed(levelRoles: RawDatabaseLevelRole[]) {
+    private async listEmbed(guild: Guild) {
 
+        const levelRoles = (await this.db.getLevelRoles(guild)).sort((a, b) => b.level - a.level)
         const fields: { level: number, roles: RawDatabaseLevelRole[] }[] = [];
+        const { level_roles_stack } = await this.db.fetchGuild(guild);
 
         for (const lr of levelRoles) {
 
@@ -173,6 +189,7 @@ export class LevelRolesCommand extends PrismSubcommand {
         }
 
         return new EmbedBuilder()
+            .setDescription(`${level_roles_stack ? '☑' : '⬛'} - Stack previous level roles\n${!level_roles_stack ? '☑' : '⬛'} - Remove previous level roles`,)
             .setFields(fields.map(f => {
                 return {
                     name: `Level ${f.level}`,
@@ -182,7 +199,7 @@ export class LevelRolesCommand extends PrismSubcommand {
             }))
     }
 
-    private listButton(disabled = false) {
+    private listButtons(disabled = false) {
 
         return new ActionRowBuilder<ButtonBuilder>()
             .addComponents([
@@ -191,11 +208,18 @@ export class LevelRolesCommand extends PrismSubcommand {
                     .setLabel('Remove Level Role(s)')
                     .setStyle(ButtonStyle.Secondary)
                     .setEmoji('❌')
-                    .setDisabled(disabled)
+                    .setDisabled(disabled),
+                new ButtonBuilder()
+                    .setCustomId('levelRoleToggle')
+                    .setLabel('Toggle stack type')
+                    .setStyle(ButtonStyle.Primary)
+                    .setEmoji('🏗️')
             ])
     }
 
-    private deleteMenu(levelroles: RawDatabaseLevelRole[]) {
+    private async deleteMenu(guild: Guild) {
+
+        const levelroles = (await this.db.getLevelRoles(guild)).sort((a, b) => b.level - a.level)
 
         return new ActionRowBuilder<StringSelectMenuBuilder>()
             .addComponents([
@@ -213,9 +237,5 @@ export class LevelRolesCommand extends PrismSubcommand {
                     }))
             ])
 
-    }
-
-    private async getLevelRoles(guild: Guild) {
-        return (await this.db.getLevelRoles(guild)).sort((a, b) => b.level - a.level)
     }
 }

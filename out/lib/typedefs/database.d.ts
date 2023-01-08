@@ -7,6 +7,7 @@ export type RawDatabaseGuild = {
     channel_id_counting: Snowflake;
     channel_id_levelup: Snowflake;
     counting_count: number;
+    level_roles_stack: number;
 };
 export type RawDatabaseMember = {
     guild_id: Snowflake;

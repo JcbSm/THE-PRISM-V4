@@ -1,6 +1,7 @@
 import { createPool } from 'mysql';
 import { rng } from '#helpers/numbers';
 import { DatabaseMember } from '#lib/database/DatabaseMember';
+import { DatabaseGuild } from '#lib/database/DatabaseGuild';
 export class DatabaseClient {
     constructor(client) {
         this.client = client;
@@ -66,7 +67,7 @@ export class DatabaseClient {
      */
     async fetchGuild(guild) {
         const data = { ...(await this.query(`SELECT * FROM guilds WHERE guild_id = ${guild.id};`))[0] || (await this.query(`INSERT INTO guilds (guild_id) VALUES (${guild.id}) RETURNING *`))[0] };
-        return data;
+        return new DatabaseGuild(data);
     }
     /**
      * Get member data. Will insert if none found

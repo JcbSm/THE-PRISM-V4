@@ -5,8 +5,7 @@ export declare class LevelRolesCommand extends PrismSubcommand {
     chatInputRunManage(interaction: PrismSubcommand.ChatInputCommandInteraction): Promise<void>;
     chatInputRunAdd(interaction: PrismSubcommand.ChatInputCommandInteraction): Promise<import("discord.js").InteractionResponse<boolean> | undefined>;
     private listEmbed;
-    private listButton;
+    private listButtons;
     private deleteMenu;
-    private getLevelRoles;
 }
 //# sourceMappingURL=levelroles.d.ts.map
