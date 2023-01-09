@@ -73,7 +73,7 @@ let XpCommand = class XpCommand extends PrismCommand {
 XpCommand = __decorate([
     ApplyOptions({
         name: 'xp',
-        description: 'Get XP'
+        description: 'View XP'
     })
 ], XpCommand);
 export { XpCommand };

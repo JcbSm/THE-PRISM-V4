@@ -90,6 +90,42 @@ export class DatabaseClient {
     }
 
     /**
+     * Sums all the member data for a specified user
+     * @param {User} user User to query for
+     * @returns All the summations available in the DatabseMember class
+     */
+    public async sumUserMembers(user: User) {
+
+        const query = `
+            SELECT 
+            user_id,
+            COUNT(user_id) as count,
+            SUM(xp) as xp,
+            SUM(xp_messages) as xp_messages,
+            SUM(xp_voice_minutes) as xp_voice_minutes,
+            SUM(total_messages) as total_messages,
+            SUM(total_voice_minutes) as total_voice_minutes,
+            SUM(total_muted_minutes) as total_muted_minutes,
+            SUM(counting_counts) as counting_counts
+            FROM members WHERE user_id = ${user.id}
+        `
+
+        const data = (await this.query(query))[0] as {
+            user_id: Snowflake;
+            count: number;
+            xp: number;
+            xp_messages: number;
+            xp_voice_minuets: number;
+            total_messages: number;
+            total_voice_minutes: number;
+            total_muted_minutes: number;
+            counting_counts: number;
+        }
+
+        return data;
+    }
+
+    /**
      * Get a guild from the database. Will insert guild if none found.
      * @param guild Guild to fetch
      * @returns Guild data

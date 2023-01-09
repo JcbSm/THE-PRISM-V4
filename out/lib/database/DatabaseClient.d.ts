@@ -31,6 +31,22 @@ export declare class DatabaseClient {
      */
     fetchUser(user: User): Promise<RawDatabaseUser>;
     /**
+     * Sums all the member data for a specified user
+     * @param {User} user User to query for
+     * @returns All the summations available in the DatabseMember class
+     */
+    sumUserMembers(user: User): Promise<{
+        user_id: Snowflake;
+        count: number;
+        xp: number;
+        xp_messages: number;
+        xp_voice_minuets: number;
+        total_messages: number;
+        total_voice_minutes: number;
+        total_muted_minutes: number;
+        counting_counts: number;
+    }>;
+    /**
      * Get a guild from the database. Will insert guild if none found.
      * @param guild Guild to fetch
      * @returns Guild data

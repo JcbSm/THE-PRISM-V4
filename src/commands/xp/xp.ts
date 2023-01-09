@@ -8,7 +8,7 @@ import { GuildMember, AttachmentBuilder, EmbedBuilder, ApplicationCommandType } 
 
 @ApplyOptions<PrismCommand.Options>({
     name: 'xp',
-    description: 'Get XP'
+    description: 'View XP'
 })
 
 export class XpCommand extends PrismCommand {
