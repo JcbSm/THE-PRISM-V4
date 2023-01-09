@@ -4,7 +4,7 @@ import { card, getLevel, getRequiredTotalXp } from "#helpers/xp";
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators"
 import type { ChatInputCommand } from "@sapphire/framework";
-import { GuildMember, AttachmentBuilder, EmbedBuilder } from "discord.js";
+import { GuildMember, AttachmentBuilder, EmbedBuilder, ApplicationCommandType } from "discord.js";
 
 @ApplyOptions<PrismCommand.Options>({
     name: 'xp',
@@ -27,7 +27,7 @@ export class XpCommand extends PrismCommand {
         registry.registerContextMenuCommand((builder) =>
             builder //
                 .setName(this.description)
-                .setType(2))
+                .setType(ApplicationCommandType.User))  
     }
 
     public async chatInputRun(interaction: PrismCommand.ChatInputInteraction): Promise<unknown> {

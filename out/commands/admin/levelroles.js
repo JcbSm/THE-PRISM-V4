@@ -2,12 +2,13 @@ import { __decorate } from "tslib";
 import { getLevel } from "#helpers/xp";
 import { PrismSubcommand } from "#structs/PrismSubcommand";
 import { ApplyOptions } from "@sapphire/decorators";
-import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ComponentType, ButtonStyle } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ComponentType, ButtonStyle, PermissionsBitField } from "discord.js";
 let LevelRolesCommand = class LevelRolesCommand extends PrismSubcommand {
     registerApplicationCommands(registry) {
         registry.registerChatInputCommand((builder) => builder //
             .setName(this.name)
             .setDescription(this.description)
+            .setDefaultMemberPermissions(PermissionsBitField.resolve('Administrator'))
             .addSubcommand((command) => command //
             .setName('add')
             .setDescription('Add a new level role')
@@ -235,8 +236,7 @@ LevelRolesCommand = __decorate([
         subcommands: [
             { name: 'add', chatInputRun: 'chatInputRunAdd' },
             { name: 'manage', chatInputRun: 'chatInputRunManage' }
-        ],
-        preconditions: ['Administrator']
+        ]
     })
 ], LevelRolesCommand);
 export { LevelRolesCommand };

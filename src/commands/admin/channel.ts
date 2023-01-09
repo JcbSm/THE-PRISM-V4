@@ -2,14 +2,13 @@ import { PrismSubcommand } from "#structs/PrismSubcommand";
 import { ApplyOptions } from "@sapphire/decorators";
 import type { ChatInputCommand } from "@sapphire/framework";
 import { DatabaseGuild } from "#lib/database/DatabaseGuild";
-import { ChannelType, TextBasedChannel } from "discord.js";
+import { ChannelType, PermissionsBitField, TextBasedChannel } from "discord.js";
 
 @ApplyOptions<PrismSubcommand.Options>({
     subcommands: [
         { name: 'counting', chatInputRun: 'chatInputRunCounting' },
         { name: 'level-ups', chatInputRun: 'chatInputRunLevelUp' }
-    ],
-    preconditions: ['Administrator']
+    ]
 })
 
 export class ChannelCommand extends PrismSubcommand {
@@ -19,6 +18,7 @@ export class ChannelCommand extends PrismSubcommand {
             builder //
                 .setName('channel')
                 .setDescription('Set a channel for a specific purpose.')
+                .setDefaultMemberPermissions(PermissionsBitField.resolve('Administrator'))
 
                 .addSubcommand((command) =>
 

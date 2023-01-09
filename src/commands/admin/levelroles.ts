@@ -3,7 +3,7 @@ import { PrismSubcommand } from "#structs/PrismSubcommand";
 import type { RawDatabaseLevelRole } from "#types/database";
 import { ApplyOptions } from "@sapphire/decorators";
 import type { ChatInputCommand } from "@sapphire/framework";
-import { ButtonInteraction, Guild, Message, ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ComponentType, ButtonStyle, GuildMember } from "discord.js";
+import { ButtonInteraction, Guild, Message, ActionRowBuilder, ButtonBuilder, EmbedBuilder, StringSelectMenuBuilder, ComponentType, ButtonStyle, GuildMember, PermissionsBitField } from "discord.js";
 
 @ApplyOptions<PrismSubcommand.Options>({
     name: 'levelroles',
@@ -11,8 +11,7 @@ import { ButtonInteraction, Guild, Message, ActionRowBuilder, ButtonBuilder, Emb
     subcommands: [
         { name: 'add', chatInputRun: 'chatInputRunAdd' },
         { name: 'manage', chatInputRun: 'chatInputRunManage' }
-    ],
-    preconditions: ['Administrator']
+    ]
 })
 
 export class LevelRolesCommand extends PrismSubcommand {
@@ -22,6 +21,7 @@ export class LevelRolesCommand extends PrismSubcommand {
             builder //
                 .setName(this.name)
                 .setDescription(this.description)
+                .setDefaultMemberPermissions(PermissionsBitField.resolve('Administrator'))
 
                 .addSubcommand((command) =>
 

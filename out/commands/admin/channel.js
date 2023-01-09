@@ -2,12 +2,13 @@ import { __decorate } from "tslib";
 import { PrismSubcommand } from "#structs/PrismSubcommand";
 import { ApplyOptions } from "@sapphire/decorators";
 import { DatabaseGuild } from "#lib/database/DatabaseGuild";
-import { ChannelType } from "discord.js";
+import { ChannelType, PermissionsBitField } from "discord.js";
 let ChannelCommand = class ChannelCommand extends PrismSubcommand {
     registerApplicationCommands(registry) {
         registry.registerChatInputCommand((builder) => builder //
             .setName('channel')
             .setDescription('Set a channel for a specific purpose.')
+            .setDefaultMemberPermissions(PermissionsBitField.resolve('Administrator'))
             .addSubcommand((command) => command //
             .setName('counting')
             .setDescription('Counting channel.')
@@ -59,8 +60,7 @@ ChannelCommand = __decorate([
         subcommands: [
             { name: 'counting', chatInputRun: 'chatInputRunCounting' },
             { name: 'level-ups', chatInputRun: 'chatInputRunLevelUp' }
-        ],
-        preconditions: ['Administrator']
+        ]
     })
 ], ChannelCommand);
 export { ChannelCommand };

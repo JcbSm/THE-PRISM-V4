@@ -4,7 +4,7 @@ import { groupDigits } from "#helpers/numbers";
 import { card, getLevel, getRequiredTotalXp } from "#helpers/xp";
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators";
-import { GuildMember, AttachmentBuilder, EmbedBuilder } from "discord.js";
+import { GuildMember, AttachmentBuilder, EmbedBuilder, ApplicationCommandType } from "discord.js";
 let XpCommand = class XpCommand extends PrismCommand {
     registerApplicationCommands(registry) {
         registry.registerChatInputCommand((builder) => builder
@@ -16,7 +16,7 @@ let XpCommand = class XpCommand extends PrismCommand {
             .setRequired(false)));
         registry.registerContextMenuCommand((builder) => builder //
             .setName(this.description)
-            .setType(2));
+            .setType(ApplicationCommandType.User));
     }
     async chatInputRun(interaction) {
         if (!interaction.guild)
