@@ -68,52 +68,58 @@ export class StatCommand extends PrismCommand {
             total_muted_minutes
         } = await this.db.sumUserMembers(member.user);
 
+        let fields: { name: string, value: string, inline?: boolean }[] = [
+            {
+                value: `__***${member.guild.name.toUpperCase()} STATS***__`,
+                name: '\u200b'
+            },
+            {
+                name: 'MESSAGES',
+                value: `\`${groupDigits(messages)}\``,
+                inline: true
+            },
+            {
+                name: 'VOICE',
+                value: `\`${groupDigits(voice_minutes)} minutes\``,
+                inline: true
+            },
+            {
+                name: 'MUTED',
+                value: `\`${groupDigits(muted_minutes)} minutes\``,
+                inline: true
+            }
+        ];
+
+        if (count > 1)
+            fields.push(...[                    
+            {
+                value: '__***GLOBAL STATS***__',
+                name: '\u200b'
+            },
+            {
+                name: 'MESSAGES',
+                value: `\`${groupDigits(total_messages)}\``,
+                inline: true
+            },
+            {
+                name: 'VOICE',
+                value: `\`${groupDigits(total_voice_minutes)} minutes\``,
+                inline: true
+            },
+            {
+                name: 'MUTED',
+                value: `\`${groupDigits(total_muted_minutes)} minutes\``,
+                inline: true
+            }
+        ])
+
         return await interaction.reply({ ephemeral, embeds: [ 
             new EmbedBuilder()
                 .setTitle(`${member.displayName}'s Statistics`)
                 .setDescription(`${this.client.user} has \`${count}\` records of ${member}`)
                 .setThumbnail(member.displayAvatarURL({ size: 128 }))
-                .setFooter({ text: '(Global stats only include servers you share with the bot)' })
-                .setFields([
-                    {
-                        value: `__***${member.guild.name.toUpperCase()} STATS***__`,
-                        name: '\u200b'
-                    },
-                    {
-                        name: 'MESSAGES',
-                        value: `\`${groupDigits(messages)}\``,
-                        inline: true
-                    },
-                    {
-                        name: 'VOICE',
-                        value: `\`${groupDigits(voice_minutes)} minutes\``,
-                        inline: true
-                    },
-                    {
-                        name: 'MUTED',
-                        value: `\`${groupDigits(muted_minutes)} minutes\``,
-                        inline: true
-                    },
-                    {
-                        value: '__***GLOBAL STATS***__',
-                        name: '\u200b'
-                    },
-                    {
-                        name: 'MESSAGES',
-                        value: `\`${groupDigits(total_messages)}\``,
-                        inline: true
-                    },
-                    {
-                        name: 'VOICE',
-                        value: `\`${groupDigits(total_voice_minutes)} minutes\``,
-                        inline: true
-                    },
-                    {
-                        name: 'MUTED',
-                        value: `\`${groupDigits(total_muted_minutes)} minutes\``,
-                        inline: true
-                    }
-                ])
+                .setFooter(count > 1 ? { text: '(Global stats only include servers you share with the bot)' } : null)
+                .setFields(fields)
             ]
         })
     }
