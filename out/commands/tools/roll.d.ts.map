@@ -1,0 +1,1 @@
+{"version":3,"file":"roll.d.ts","sourceRoot":"","sources":["../../../src/commands/tools/roll.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,YAAY,EAAE,MAAM,uBAAuB,CAAC;AAErD,OAAO,KAAK,EAAE,0BAA0B,EAAE,gBAAgB,EAAE,MAAM,qBAAqB,CAAC;AAGxF,qBAKa,WAAY,SAAQ,YAAY;IACzB,2BAA2B,CAAC,QAAQ,EAAE,0BAA0B;IAahE,YAAY,CAAC,WAAW,EAAE,gBAAgB,CAAC,WAAW;CAIzE"}
