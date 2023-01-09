@@ -11,10 +11,7 @@ let StatCommand = class StatCommand extends PrismCommand {
             .addUserOption((option) => option //
             .setName('user')
             .setDescription('User\'s stats to query')
-            .setRequired(false)), {
-            // [dev, prod]
-            idHints: ['870331312836341800', '1060623793346842625']
-        });
+            .setRequired(false)));
     }
     async chatInputRun(interaction) {
         if (!interaction.guild)

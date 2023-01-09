@@ -11,9 +11,7 @@ let LeaderboardCommand = class LeaderboardCommand extends PrismCommand {
             .addIntegerOption((option) => option //
             .setName('page')
             .setDescription('Page of the leaderboard to view')
-            .setMinValue(1)), {
-            idHints: ['868234547471462451', '1061308557867364412']
-        });
+            .setMinValue(1)));
     }
     async chatInputRun(interaction) {
         if (!interaction.guild)

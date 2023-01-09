@@ -5,10 +5,7 @@ let PingCommand = class PingCommand extends PrismCommand {
     registerApplicationCommands(registry) {
         registry.registerChatInputCommand((builder) => builder
             .setName('ping')
-            .setDescription('Ping the bot.'), {
-            // [dev, prod]
-            idHints: ['868234547471462453', '1050050625771163688']
-        });
+            .setDescription('Ping the bot.'));
     }
     async chatInputRun(interaction) {
         await interaction.reply({ content: `Pinging...`, ephemeral: true, fetchReply: true });

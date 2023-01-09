@@ -12,11 +12,7 @@ export class PingCommand extends PrismCommand {
         registry.registerChatInputCommand(
             (builder) => builder
                 .setName('ping')
-                .setDescription('Ping the bot.'),
-            {
-                // [dev, prod]
-                idHints: ['868234547471462453', '1050050625771163688']
-            });
+                .setDescription('Ping the bot.'));
     }
 
     public async chatInputRun(interaction: PrismCommand.ChatInputInteraction): Promise<unknown> {

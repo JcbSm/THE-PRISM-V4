@@ -19,11 +19,7 @@ export class StatCommand extends PrismCommand {
                     option //
                         .setName('user')
                         .setDescription('User\'s stats to query')
-                        .setRequired(false)),
-            {
-                // [dev, prod]
-                idHints: ['870331312836341800', '1060623793346842625']
-            });
+                        .setRequired(false)));
     }
 
     public async chatInputRun(interaction: PrismCommand.ChatInputInteraction): Promise<unknown> {

@@ -13,15 +13,10 @@ let XpCommand = class XpCommand extends PrismCommand {
             .addUserOption((option) => option //
             .setName('user')
             .setDescription('User\'s xp to query')
-            .setRequired(false)), {
-            // [dev, prod]
-            idHints: ['870364167645831189']
-        });
+            .setRequired(false)));
         registry.registerContextMenuCommand((builder) => builder //
             .setName(this.description)
-            .setType(2), {
-            idHints: ['1061034487384899584', '1061109917408301056']
-        });
+            .setType(2));
     }
     async chatInputRun(interaction) {
         if (!interaction.guild)

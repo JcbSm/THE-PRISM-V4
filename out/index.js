@@ -1,8 +1,9 @@
-import { LogLevel } from "@sapphire/framework";
+import { ApplicationCommandRegistries, LogLevel, RegisterBehavior } from "@sapphire/framework";
 import { PrismClient } from '#lib/PrismClient';
 (await import('dotenv')).config();
 console.clear();
 console.log("Initialising...");
+ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.BulkOverwrite);
 let client = new PrismClient({
     intents: [
         'Guilds',

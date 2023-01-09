@@ -29,8 +29,7 @@ export default class extends PrismCommand {
                         .setMinLength(1)
                         .setRequired(true)),
                 {
-                    guildIds: this.client.dev ? [this.client.devGuildId] : dirname ? [dirname] : [],
-                    idHints: ['1058528121156022412', '1058531413101654086']
+                    guildIds: this.client.dev ? [this.client.devGuildId] : dirname ? [dirname] : []
                 }
         )
     }

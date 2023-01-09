@@ -23,9 +23,7 @@ let LevelRolesCommand = class LevelRolesCommand extends PrismSubcommand {
             .setRequired(true)))
             .addSubcommand((command) => command //
             .setName('manage')
-            .setDescription('List and/or remove levelroles')), {
-            idHints: ['1061376823574933534', '1061772996802519061']
-        });
+            .setDescription('List and/or remove levelroles')));
     }
     async chatInputRunManage(interaction) {
         if (!interaction.guild)

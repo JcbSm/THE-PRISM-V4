@@ -19,10 +19,7 @@ export class LeaderboardCommand extends PrismCommand {
                     option //
                         .setName('page')
                         .setDescription('Page of the leaderboard to view')
-                        .setMinValue(1)),
-            {
-                idHints: ['868234547471462451', '1061308557867364412']
-            })
+                        .setMinValue(1)))
     }
 
     public async chatInputRun(interaction: PrismCommand.ChatInputInteraction) {

@@ -11,8 +11,7 @@ let default_1 = class extends PrismCommand {
         registry.registerChatInputCommand(command => command //
             .setName(this.name)
             .setDescription('Load up noob'), {
-            guildIds: this.client.dev ? [this.client.devGuildId] : dirname ? [dirname] : [],
-            idHints: ['1050830508906528849', '1050832661184258048']
+            guildIds: this.client.dev ? [this.client.devGuildId] : dirname ? [dirname] : []
         });
     }
     async chatInputRun(interaction) {
