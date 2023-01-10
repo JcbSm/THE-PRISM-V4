@@ -10,8 +10,8 @@
 
         // Compilation directories
         "rootDir": "src",
-        "outDir": "out",
-        "tsBuildInfoFile": "out/.tsbuildinfo",
+        "outDir": "dist",
+        "tsBuildInfoFile": "dist/.tsbuildinfo",
 
         // Paths and such
         "baseUrl": "./src",

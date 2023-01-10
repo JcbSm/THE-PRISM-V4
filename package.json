@@ -1,6 +1,6 @@
 {
     "name": "the-prism-v4",
-    "main": "out/index.js",
+    "main": "dist/index.js",
     "type": "module",
     "dependencies": {
         "@sapphire/decorators": "^6.0.0",
@@ -27,13 +27,13 @@
     },
     "scripts": {
         "build": "tsc",
-        "start": "node out/index.js"
+        "start": "node dist/index.js"
     },
     "imports": {
-        "#structs/*": "./out/lib/structures/*.js",
-        "#types/*": "./out/lib/typedefs/*.js",
-        "#helpers/*": "./out/lib/helpers/*.js",
-        "#lib/*": "./out/lib/*.js",
-        "#root/*": "./out/*.js"
+        "#structs/*": "./dist/lib/structures/*.js",
+        "#types/*": "./dist/lib/typedefs/*.js",
+        "#helpers/*": "./dist/lib/helpers/*.js",
+        "#lib/*": "./dist/lib/*.js",
+        "#root/*": "./dist/*.js"
     }
 }
