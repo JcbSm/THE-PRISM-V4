@@ -21,6 +21,7 @@ let XpCommand = class XpCommand extends PrismCommand {
     async chatInputRun(interaction) {
         if (!interaction.guild)
             return;
+        await interaction.deferReply();
         const user = interaction.options.getUser('user');
         const member = await interaction.guild.members.fetch(user ? user.id : interaction.user.id);
         return this.reply(member, interaction);
@@ -28,14 +29,15 @@ let XpCommand = class XpCommand extends PrismCommand {
     async contextMenuRun(interaction) {
         if (!interaction.guild)
             return;
+        await interaction.deferReply({ ephemeral: true });
         if (interaction.isUserContextMenuCommand() && interaction.targetMember instanceof GuildMember) {
             const member = interaction.targetMember;
-            this.reply(member, interaction, true);
+            this.reply(member, interaction);
         }
     }
-    async reply(member, interaction, ephemeral = false) {
+    async reply(member, interaction) {
         const { xp, xp_messages, xp_voice_minutes } = await this.db.fetchMember(member);
-        return await interaction.reply({ ephemeral,
+        return await interaction.editReply({
             files: [
                 new AttachmentBuilder(await card(member, this.client))
                     .setName('card.png')

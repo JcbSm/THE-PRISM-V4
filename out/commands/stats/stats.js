@@ -19,6 +19,7 @@ let StatCommand = class StatCommand extends PrismCommand {
     async chatInputRun(interaction) {
         if (!interaction.guild)
             return;
+        await interaction.deferReply();
         const user = interaction.options.getUser('user') ?? interaction.user;
         const member = await interaction.guild.members.fetch(user);
         return this.reply(interaction, member);
@@ -26,12 +27,13 @@ let StatCommand = class StatCommand extends PrismCommand {
     async contextMenuRun(interaction) {
         if (!interaction.guild)
             return;
+        await interaction.deferReply({ ephemeral: true });
         if (interaction.isUserContextMenuCommand() && interaction.targetMember instanceof GuildMember) {
-            return this.reply(interaction, interaction.targetMember, true);
+            return this.reply(interaction, interaction.targetMember);
         }
         return;
     }
-    async reply(interaction, member, ephemeral = false) {
+    async reply(interaction, member) {
         const { total_messages: messages, total_voice_minutes: voice_minutes, total_muted_minutes: muted_minutes } = await this.db.fetchMember(member);
         const { count, total_messages, total_voice_minutes, total_muted_minutes } = await this.db.sumUserMembers(member.user);
         let fields = [
@@ -77,7 +79,7 @@ let StatCommand = class StatCommand extends PrismCommand {
                     inline: true
                 }
             ]);
-        return await interaction.reply({ ephemeral, embeds: [
+        return await interaction.editReply({ embeds: [
                 new EmbedBuilder()
                     .setTitle(`${member.displayName}'s Statistics`)
                     .setDescription(`${this.client.user} has \`${count}\` records of ${member}`)

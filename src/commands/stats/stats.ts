@@ -32,6 +32,8 @@ export class StatCommand extends PrismCommand {
 
         if (!interaction.guild)
             return;
+        
+        await interaction.deferReply();
 
         const user = interaction.options.getUser('user') ?? interaction.user;
         const member = await interaction.guild.members.fetch(user);
@@ -45,15 +47,17 @@ export class StatCommand extends PrismCommand {
         if(!interaction.guild)
             return;
 
+        await interaction.deferReply({ ephemeral: true });
+
         if (interaction.isUserContextMenuCommand() && interaction.targetMember instanceof GuildMember) {
-            return this.reply(interaction, interaction.targetMember, true);
+            return this.reply(interaction, interaction.targetMember);
         }
 
         return;
 
     }
 
-    private async reply(interaction: PrismCommand.ChatInputCommand | PrismCommand.ContextMenuInteraction, member: GuildMember, ephemeral = false) {
+    private async reply(interaction: PrismCommand.ChatInputCommand | PrismCommand.ContextMenuInteraction, member: GuildMember) {
 
         const { 
             total_messages: messages,
@@ -113,7 +117,7 @@ export class StatCommand extends PrismCommand {
             }
         ])
 
-        return await interaction.reply({ ephemeral, embeds: [ 
+        return await interaction.editReply({ embeds: [ 
             new EmbedBuilder()
                 .setTitle(`${member.displayName}'s Statistics`)
                 .setDescription(`${this.client.user} has \`${count}\` records of ${member}`)
