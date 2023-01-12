@@ -9,11 +9,12 @@ ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior
 
 let client = new PrismClient({
     intents: [ // For a list: https://discord.com/developers/docs/topics/gateway#list-of-intents
+        'MessageContent',
         'Guilds',
         'GuildMessages',
         'GuildMembers',
         'GuildPresences',
-        'GuildVoiceStates'
+        'GuildVoiceStates',
     ],
     partials: [],
     logger: {

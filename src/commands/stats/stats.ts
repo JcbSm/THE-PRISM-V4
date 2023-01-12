@@ -2,7 +2,7 @@ import { groupDigits } from "#helpers/numbers";
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators"
 import type { ChatInputCommand, ContextMenuCommand } from "@sapphire/framework";
-import { ApplicationCommandType, EmbedBuilder, GuildMember } from "discord.js";
+import { ApplicationCommandType, EmbedBuilder, GuildMember, time, TimestampStyles } from "discord.js";
 
 @ApplyOptions<PrismCommand.Options>({
     name: 'stats',
@@ -120,7 +120,7 @@ export class StatCommand extends PrismCommand {
         return await interaction.editReply({ embeds: [ 
             new EmbedBuilder()
                 .setTitle(`${member.displayName}'s Statistics`)
-                .setDescription(`${this.client.user} has \`${count}\` records of ${member}`)
+                .setDescription(`${this.client.user} has \`${count}\` records of ${member}\n\nJoined on ${time(Math.round((member.joinedTimestamp ?? 0)/1000), TimestampStyles.LongDate)}`)
                 .setThumbnail(member.displayAvatarURL({ size: 128 }))
                 .setFooter(count > 1 ? { text: '(Global stats only include servers you share with the bot)' } : null)
                 .setFields(fields)

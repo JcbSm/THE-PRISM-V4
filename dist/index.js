@@ -6,11 +6,12 @@ console.log("Initialising...");
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.BulkOverwrite);
 let client = new PrismClient({
     intents: [
+        'MessageContent',
         'Guilds',
         'GuildMessages',
         'GuildMembers',
         'GuildPresences',
-        'GuildVoiceStates'
+        'GuildVoiceStates',
     ],
     partials: [],
     logger: {
