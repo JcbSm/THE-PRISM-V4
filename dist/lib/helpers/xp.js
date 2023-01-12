@@ -32,7 +32,7 @@ export async function card(member, client) {
         highlight: '#ffffff',
         highlightDark: '#ababab',
         border: '#1c1c1c',
-        main: '#f1f1f1'
+        main: member.displayHexColor === '#000000' ? '#f1f1f1' : member.displayHexColor
     };
     registerFont('./src/assets/fonts/bahnschrift-main.ttf', { family: 'bahnschrift' });
     const canvas = createCanvas(640, 192);
