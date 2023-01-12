@@ -2,21 +2,21 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 export type File = {
-    __filename: string;
-    __dirname: string;
+    filepath: string;
+    dirpath: string;
 }
 
 /**
- * Converts import.meta.url to standard __dirname __filename format.
+ * Converts import.meta.url to standard dirpath filepath format.
  * @param url import.meta.url
  * @returns File
  */
 export function parseURL(url: string): File {
 
-    const __filename = fileURLToPath(url);
-    const __dirname = path.dirname(__filename);
+    const filepath = fileURLToPath(url);
+    const dirpath = path.dirname(filepath);
 
-    return { __filename, __dirname }
+    return { filepath, dirpath }
 
 }
 
@@ -26,7 +26,7 @@ export function parseURL(url: string): File {
  * @returns Directory name
  */
 export function dirname(file: File) {
-    return file.__dirname.split(path.sep).pop();
+    return file.dirpath.split(path.sep).pop();
 }
 
 /**
@@ -34,6 +34,6 @@ export function dirname(file: File) {
  * @param url 
  * @returns Directory name
  */
-export function getDirname(url: string) {
+export function parseDirname(url: string) {
     return dirname(parseURL(url))
 }

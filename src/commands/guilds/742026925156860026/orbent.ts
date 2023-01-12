@@ -1,9 +1,9 @@
-import { getDirname } from "#helpers/files";
+import { parseDirname } from "#helpers/files";
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators";
 import type { ChatInputCommand } from "@sapphire/framework";
 
-const dirname = getDirname(import.meta.url);
+const dirname = parseDirname(import.meta.url);
 
 @ApplyOptions<PrismCommand.Options>({
     name: 'cs',

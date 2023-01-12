@@ -1,8 +1,8 @@
 import { __decorate, __metadata } from "tslib";
-import { getDirname } from "#helpers/files";
+import { parseDirname } from "#helpers/files";
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators";
-const dirname = getDirname(import.meta.url);
+const dirname = parseDirname(import.meta.url);
 let default_1 = class extends PrismCommand {
     constructor(context, { ...options }) {
         super(context, { ...options, name: 'orbent', aliases: ['orbent'] });

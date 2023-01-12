@@ -1,9 +1,9 @@
 export type File = {
-    __filename: string;
-    __dirname: string;
+    filepath: string;
+    dirpath: string;
 };
 /**
- * Converts import.meta.url to standard __dirname __filename format.
+ * Converts import.meta.url to standard dirpath filepath format.
  * @param url import.meta.url
  * @returns File
  */
@@ -19,5 +19,5 @@ export declare function dirname(file: File): string | undefined;
  * @param url
  * @returns Directory name
  */
-export declare function getDirname(url: string): string | undefined;
+export declare function parseDirname(url: string): string | undefined;
 //# sourceMappingURL=files.d.ts.map
