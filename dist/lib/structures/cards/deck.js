@@ -1,4 +1,5 @@
 import { Card } from "#structs/cards/card";
+import arrayShuffle from "array-shuffle";
 export class Deck {
     constructor() {
         this.cards = this.initCards();
@@ -43,6 +44,12 @@ export class Deck {
                 this.hands.forEach(h => h.draw());
             }
         }
+    }
+    /**
+     * Shuffled the cards
+     */
+    shuffle() {
+        this.cards = arrayShuffle(this.cards);
     }
     get size() {
         return this.cards.length;

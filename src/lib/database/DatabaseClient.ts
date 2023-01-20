@@ -1,6 +1,6 @@
 import { Connection, createPool, MysqlError, OkPacket, Pool } from 'mysql';
 import type { PrismClient } from '#lib/PrismClient';
-import type { Guild, GuildMember, Role, Snowflake, User } from 'discord.js';
+import type { Channel, Guild, GuildMember, Role, Snowflake, User, VoiceChannel } from 'discord.js';
 import type { 
     RawDatabaseUser,
     RawDatabaseGuild,
@@ -10,6 +10,7 @@ import type {
 import { rng } from '#helpers/numbers';
 import { DatabaseMember } from '#lib/database/DatabaseMember';
 import { DatabaseGuild } from '#lib/database/DatabaseGuild';
+import { DatabaseCall } from '#lib/database/DatabaseCall';
 
 export interface DatabaseClient {
     client: PrismClient;
@@ -301,5 +302,34 @@ export class DatabaseClient {
 
     public async removeLevelRole(id: number) {
         return await this.query(`DELETE FROM level_roles WHERE level_role_id = ${id}`);        
+    }
+
+    /**
+     * Create a call
+     * @param guild Guild
+     * @param user User who created
+     * @param channel The voice channel
+     * @returns The created call
+     */
+    public async addCall(guild: Guild, user: User, channel: VoiceChannel) {
+        return new DatabaseCall((await this.query(`INSERT INTO calls (guild_id, user_id, channel_id) VALUES (${guild.id}, ${user.id}, ${channel.id}) RETURNING *`))[0], this.client);
+    }
+
+    /**
+     * Deletes a call
+     * @param id Call id
+     * @returns 
+     */
+    public async deleteCall(id: number) {
+        return await this.query(`DELETE FROM calls WHERE call_id = ${id}`);
+    }
+
+    /**
+     * Get a call from the database
+     * @param channel Voice channel
+     * @returns Call
+     */
+    public async getCall(channel: Channel) {
+        return new DatabaseCall((await this.query(`SELECT * FROM calls WHERE channel_id = ${channel.id}`))[0], this.client);
     }
 }

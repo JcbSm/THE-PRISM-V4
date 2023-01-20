@@ -6,6 +6,7 @@ export type RawDatabaseGuild = {
     guild_id: Snowflake;
     channel_id_counting: Snowflake;
     channel_id_levelup: Snowflake;
+    channel_id_calls: Snowflake;
     counting_count: number;
     level_roles_stack: number;
 };
@@ -29,5 +30,12 @@ export type RawDatabaseLevelRole = {
     guild_id: Snowflake;
     role_id: Snowflake;
     level: number;
+};
+export type RawDatabaseCall = {
+    call_id: number;
+    guild_id: Snowflake;
+    user_id: Snowflake;
+    channel_id: Snowflake;
+    persistent: number;
 };
 //# sourceMappingURL=database.d.ts.map

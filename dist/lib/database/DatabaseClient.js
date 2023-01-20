@@ -2,6 +2,7 @@ import { createPool } from 'mysql';
 import { rng } from '#helpers/numbers';
 import { DatabaseMember } from '#lib/database/DatabaseMember';
 import { DatabaseGuild } from '#lib/database/DatabaseGuild';
+import { DatabaseCall } from '#lib/database/DatabaseCall';
 export class DatabaseClient {
     constructor(client) {
         this.client = client;
@@ -219,6 +220,32 @@ export class DatabaseClient {
     }
     async removeLevelRole(id) {
         return await this.query(`DELETE FROM level_roles WHERE level_role_id = ${id}`);
+    }
+    /**
+     * Create a call
+     * @param guild Guild
+     * @param user User who created
+     * @param channel The voice channel
+     * @returns The created call
+     */
+    async addCall(guild, user, channel) {
+        return new DatabaseCall((await this.query(`INSERT INTO calls (guild_id, user_id, channel_id) VALUES (${guild.id}, ${user.id}, ${channel.id}) RETURNING *`))[0], this.client);
+    }
+    /**
+     * Deletes a call
+     * @param id Call id
+     * @returns
+     */
+    async deleteCall(id) {
+        return await this.query(`DELETE FROM calls WHERE call_id = ${id}`);
+    }
+    /**
+     * Get a call from the database
+     * @param channel Voice channel
+     * @returns Call
+     */
+    async getCall(channel) {
+        return new DatabaseCall((await this.query(`SELECT * FROM calls WHERE channel_id = ${channel.id}`))[0], this.client);
     }
 }
 //# sourceMappingURL=DatabaseClient.js.map

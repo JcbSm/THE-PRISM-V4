@@ -16,6 +16,10 @@ export declare class Deck {
      * @returns {Card[][]} Array of array of dealt cards.
      */
     deal(count?: number): void;
+    /**
+     * Shuffled the cards
+     */
+    shuffle(): void;
     get size(): number;
 }
 export interface Deck {

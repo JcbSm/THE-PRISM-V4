@@ -5,20 +5,22 @@ export declare class DatabaseGuild {
 }
 export interface DatabaseGuild {
     guild_id: Snowflake;
-    channel_id_counting: Snowflake;
-    channel_id_levelup: Snowflake;
+    channel_id_counting: Snowflake | null;
+    channel_id_levelup: Snowflake | null;
+    channel_id_calls: Snowflake | null;
     counting_count: number;
     level_roles_stack: Boolean;
 }
 export declare namespace DatabaseGuild {
-    type Channels = 'counting' | 'levelup';
-    namespace Channels {
-        const COUNTING = "counting";
-        const LEVEL_UP = "levelup";
+    enum Channels {
+        COUNTING = "counting",
+        LEVEL_UP = "levelup",
+        CALLS = "calls"
     }
     type Options = {
         channel_id_counting?: Snowflake;
         channel_id_levelup?: Snowflake;
+        channel_id_calls?: Snowflake;
         counting_count?: number;
         level_roles_stack?: boolean;
     };

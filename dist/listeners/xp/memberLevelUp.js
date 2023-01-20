@@ -34,6 +34,8 @@ let default_1 = class extends PrismListener {
     }
     async levelUpMessage(member, level) {
         const { channel_id_levelup: channel_id } = await this.db.fetchGuild(member.guild);
+        if (!channel_id)
+            return;
         const channel = await member.guild.channels.fetch(channel_id);
         if (!channel || !isTextBasedChannel(channel))
             return;
