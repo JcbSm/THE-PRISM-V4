@@ -7,9 +7,9 @@ let default_1 = class extends PrismListener {
         const members = await this.db.fetchVoiceMembers();
         for (const { user_id, guild_id } of members)
             this.getAndTrackMemberVoice(user_id, guild_id);
+        this.client.calls.init();
     }
     async getAndTrackMemberVoice(user_id, guild_id) {
-        console.log(`Attempting voice tracking for user ${user_id} in guild ${guild_id}`);
         try {
             const member = await (await this.client.guilds.fetch(guild_id)).members.fetch(user_id);
             if (member) {
@@ -17,7 +17,6 @@ let default_1 = class extends PrismListener {
             }
         }
         catch {
-            console.log(`Missing access for user ${user_id} in guild ${guild_id}.`);
         }
     }
 };

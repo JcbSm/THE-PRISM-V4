@@ -16,11 +16,11 @@ export default class extends PrismListener {
         for (const { user_id, guild_id } of members)
             this.getAndTrackMemberVoice(user_id, guild_id);
 
+        this.client.calls.init();
+
     }
 
     private async getAndTrackMemberVoice(user_id: Snowflake, guild_id: Snowflake) {
-
-        console.log(`Attempting voice tracking for user ${user_id} in guild ${guild_id}`);
 
         try {
             const member = await (await this.client.guilds.fetch(guild_id)).members.fetch(user_id);
@@ -29,7 +29,6 @@ export default class extends PrismListener {
                 this.db.trackVoice(member);
             }
         } catch {
-            console.log(`Missing access for user ${user_id} in guild ${guild_id}.`);
         }
 
     }

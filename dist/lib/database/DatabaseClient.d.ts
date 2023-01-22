@@ -1,10 +1,9 @@
 import { Connection, MysqlError, OkPacket, Pool } from 'mysql';
 import type { PrismClient } from '#lib/PrismClient';
 import type { Channel, Guild, GuildMember, Role, Snowflake, User, VoiceChannel } from 'discord.js';
-import type { RawDatabaseUser, RawDatabaseLevelRole } from '#types/database';
+import type { RawDatabaseUser, RawDatabaseLevelRole, RawDatabaseCall } from '#types/database';
 import { DatabaseMember } from '#lib/database/DatabaseMember';
 import { DatabaseGuild } from '#lib/database/DatabaseGuild';
-import { DatabaseCall } from '#lib/database/DatabaseCall';
 export interface DatabaseClient {
     client: PrismClient;
     pool: Pool;
@@ -119,7 +118,7 @@ export declare class DatabaseClient {
      * @param channel The voice channel
      * @returns The created call
      */
-    addCall(guild: Guild, user: User, channel: VoiceChannel): Promise<DatabaseCall>;
+    createCall(guild: Guild, user: User, channel: VoiceChannel): Promise<RawDatabaseCall>;
     /**
      * Deletes a call
      * @param id Call id
@@ -131,6 +130,7 @@ export declare class DatabaseClient {
      * @param channel Voice channel
      * @returns Call
      */
-    getCall(channel: Channel): Promise<DatabaseCall>;
+    fetchCall(channel: Channel): Promise<any>;
+    fetchCalls(guild?: Guild): Promise<RawDatabaseCall[]>;
 }
 //# sourceMappingURL=DatabaseClient.d.ts.map

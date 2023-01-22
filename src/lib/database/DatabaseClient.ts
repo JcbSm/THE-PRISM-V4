@@ -6,11 +6,11 @@ import type {
     RawDatabaseGuild,
     RawDatabaseMember,
     RawDatabaseLevelRole,
+    RawDatabaseCall,
 } from '#types/database';
 import { rng } from '#helpers/numbers';
 import { DatabaseMember } from '#lib/database/DatabaseMember';
 import { DatabaseGuild } from '#lib/database/DatabaseGuild';
-import { DatabaseCall } from '#lib/database/DatabaseCall';
 
 export interface DatabaseClient {
     client: PrismClient;
@@ -311,8 +311,8 @@ export class DatabaseClient {
      * @param channel The voice channel
      * @returns The created call
      */
-    public async addCall(guild: Guild, user: User, channel: VoiceChannel) {
-        return new DatabaseCall((await this.query(`INSERT INTO calls (guild_id, user_id, channel_id) VALUES (${guild.id}, ${user.id}, ${channel.id}) RETURNING *`))[0], this.client);
+    public async createCall(guild: Guild, user: User, channel: VoiceChannel): Promise<RawDatabaseCall> {
+        return (await this.query(`INSERT INTO calls (guild_id, user_id, channel_id) VALUES (${guild.id}, ${user.id}, ${channel.id}) RETURNING *`))[0];
     }
 
     /**
@@ -329,7 +329,13 @@ export class DatabaseClient {
      * @param channel Voice channel
      * @returns Call
      */
-    public async getCall(channel: Channel) {
-        return new DatabaseCall((await this.query(`SELECT * FROM calls WHERE channel_id = ${channel.id}`))[0], this.client);
+    public async fetchCall(channel: Channel) {
+        return (await this.query(`SELECT * FROM calls WHERE channel_id = ${channel.id}`))[0]
+    }
+
+    public async fetchCalls(guild?: Guild) {
+        return guild 
+            ? ((await this.query(`SELECT * FROM calls WHERE guild_id = ${guild.id}`)) as RawDatabaseCall[])
+            : ((await this.query(`SELECT * FROM calls`)) as RawDatabaseCall[])
     }
 }

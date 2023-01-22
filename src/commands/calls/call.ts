@@ -1,7 +1,7 @@
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators";
 import type { ApplicationCommandRegistry } from "@sapphire/framework";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, GuildMember } from "discord.js";
+import { ChannelType, EmbedBuilder, GuildMember, PermissionFlagsBits } from "discord.js";
 
 @ApplyOptions<PrismCommand.Options>({
     name: 'call',
@@ -42,13 +42,14 @@ export class CallComand extends PrismCommand {
 
         if (!channel_id_calls) return interaction.reply({ ephemeral: true, content: 'No parent channel set, calls will be unavailable.' });
 
-        await interaction.deferReply({ ephemeral: true });
+        const priv = interaction.options.getBoolean('private', false) ?? false;
+        
+        await interaction.deferReply({ ephemeral: priv });
 
         if (!(interaction.member) || !(interaction.member instanceof GuildMember)) return;
 
         const userLimit = interaction.options.getInteger('userlimit', false) ?? 0;
         const channelName = interaction.options.getString('name', false) ?? `${interaction.member.displayName}'s Channel`;
-        const priv = interaction.options.getBoolean('private', false) ?? false;
 
         const vc = await interaction.guild.channels.create({
             userLimit,
@@ -66,38 +67,26 @@ export class CallComand extends PrismCommand {
                 },
                 {
                     id: interaction.guild.roles.everyone.id,
-                    allow: priv ? [] : ['ViewChannel'],
-                    deny: priv ? ['ViewChannel'] : []
+                    allow: priv ? [] : [PermissionFlagsBits.ViewChannel],
+                    deny: priv ? [PermissionFlagsBits.ViewChannel] : []
                 }
             ]
         });
 
-        await this.db.addCall(interaction.guild, interaction.user, vc);
+        const call = await this.client.calls.create(interaction.guild, interaction.user, vc);
 
-        const msg = await vc.send({
-            embeds: [
-                new EmbedBuilder()
-                    .setTitle('Call Options')
-            ],
-            components: [
-                new ActionRowBuilder<ButtonBuilder>()
-                    .addComponents([
-                        new ButtonBuilder()
-                            .setCustomId('callEnd')
-                            .setLabel('END')
-                            .setStyle(ButtonStyle.Danger)
-                    ])
-            ]
-        });
+        const msg = await call.sendOptionsMessage();
 
-        return await interaction.editReply({
-            embeds: [
-                new EmbedBuilder()
-                    .setTitle(`Call created`)
-                    .setDescription(' Click above to go to your text channel')
-                    .setURL(msg.url)
-            ]
-        })
+        return msg 
+            ? await interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle(`Call created`)
+                        .setDescription(' Click above to go to your text channel')
+                        .setURL(msg.url)
+                ]
+            }) 
+            : null;
 
     }
 

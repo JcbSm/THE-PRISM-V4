@@ -2,7 +2,6 @@ import { createPool } from 'mysql';
 import { rng } from '#helpers/numbers';
 import { DatabaseMember } from '#lib/database/DatabaseMember';
 import { DatabaseGuild } from '#lib/database/DatabaseGuild';
-import { DatabaseCall } from '#lib/database/DatabaseCall';
 export class DatabaseClient {
     constructor(client) {
         this.client = client;
@@ -228,8 +227,8 @@ export class DatabaseClient {
      * @param channel The voice channel
      * @returns The created call
      */
-    async addCall(guild, user, channel) {
-        return new DatabaseCall((await this.query(`INSERT INTO calls (guild_id, user_id, channel_id) VALUES (${guild.id}, ${user.id}, ${channel.id}) RETURNING *`))[0], this.client);
+    async createCall(guild, user, channel) {
+        return (await this.query(`INSERT INTO calls (guild_id, user_id, channel_id) VALUES (${guild.id}, ${user.id}, ${channel.id}) RETURNING *`))[0];
     }
     /**
      * Deletes a call
@@ -244,8 +243,13 @@ export class DatabaseClient {
      * @param channel Voice channel
      * @returns Call
      */
-    async getCall(channel) {
-        return new DatabaseCall((await this.query(`SELECT * FROM calls WHERE channel_id = ${channel.id}`))[0], this.client);
+    async fetchCall(channel) {
+        return (await this.query(`SELECT * FROM calls WHERE channel_id = ${channel.id}`))[0];
+    }
+    async fetchCalls(guild) {
+        return guild
+            ? (await this.query(`SELECT * FROM calls WHERE guild_id = ${guild.id}`))
+            : (await this.query(`SELECT * FROM calls`));
     }
 }
 //# sourceMappingURL=DatabaseClient.js.map
