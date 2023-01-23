@@ -7,6 +7,7 @@ export declare class Call {
     constructor(data: RawDatabaseCall, client: PrismClient);
     get guild(): Guild;
     get isPublic(): boolean;
+    get userLimit(): number;
     /**
      * Fetch voice channel
      * @returns {VoiceChannel | null} The channel, if there is one.
@@ -27,7 +28,17 @@ export declare class Call {
      * @returns {void} call#deleted
      */
     end(): Promise<void>;
+    /**
+     * Toggles the visibility of the voice channel for @everyone
+     * @returns {boolean} New permission value
+     */
     toggleVisibility(): Promise<boolean>;
+    /**
+     * Update call voice channel user limit
+     * @param {number} n The new user limit
+     * @returns The channel
+     */
+    setUserLimit(n: number): Promise<VoiceChannel>;
     private getOptionsEmbed;
     private getOptionsComponents;
 }

@@ -18,6 +18,9 @@ export class Call {
     get isPublic() {
         return isChannelPublic(this.channel);
     }
+    get userLimit() {
+        return this.channel.userLimit;
+    }
     /**
      * Fetch voice channel
      * @returns {VoiceChannel | null} The channel, if there is one.
@@ -58,7 +61,7 @@ export class Call {
         const channel = this.getChannel();
         const msg = await channel?.send({
             embeds: [this.getOptionsEmbed()],
-            components: [this.getOptionsComponents()]
+            components: this.getOptionsComponents()
         });
         return msg;
     }
@@ -71,9 +74,23 @@ export class Call {
         this.client.db.deleteCall(this.id);
         this.deleted = true;
     }
+    /**
+     * Toggles the visibility of the voice channel for @everyone
+     * @returns {boolean} New permission value
+     */
     async toggleVisibility() {
         await this.channel.permissionOverwrites.edit(this.guild.roles.everyone.id, { ViewChannel: !this.isPublic });
         return !this.isPublic;
+    }
+    /**
+     * Update call voice channel user limit
+     * @param {number} n The new user limit
+     * @returns The channel
+     */
+    async setUserLimit(n) {
+        if (n < 0 || n > 99)
+            throw 'User limit out of range';
+        return await this.channel.setUserLimit(n);
     }
     getOptionsEmbed() {
         return new EmbedBuilder()
@@ -81,17 +98,38 @@ export class Call {
             .setDescription('Configure your call here.');
     }
     getOptionsComponents() {
-        return new ActionRowBuilder()
-            .addComponents([
-            new ButtonBuilder()
-                .setCustomId('callEnd')
-                .setLabel('End')
-                .setStyle(ButtonStyle.Danger),
-            new ButtonBuilder()
-                .setCustomId('callToggleVisibility')
-                .setLabel('Toggle Visibility')
-                .setStyle(ButtonStyle.Primary)
-        ]);
+        return [
+            new ActionRowBuilder()
+                .addComponents([
+                new ButtonBuilder()
+                    .setCustomId('callEnd')
+                    .setLabel('End')
+                    .setStyle(ButtonStyle.Danger),
+                new ButtonBuilder()
+                    .setCustomId('callToggleVisibility')
+                    .setLabel('Toggle Visibility')
+                    .setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder()
+                    .setCustomId('callRename')
+                    .setLabel('Rename')
+                    .setStyle(ButtonStyle.Secondary)
+            ]),
+            new ActionRowBuilder()
+                .addComponents([
+                new ButtonBuilder()
+                    .setCustomId('callIncUserLimit')
+                    .setLabel('(1) user limit')
+                    .setStyle(ButtonStyle.Primary)
+                    .setEmoji('➕')
+                    .setDisabled(this.userLimit == 99 ? true : false),
+                new ButtonBuilder()
+                    .setCustomId('callDecUserLimit')
+                    .setLabel('(1) user limit')
+                    .setStyle(ButtonStyle.Primary)
+                    .setEmoji('➖')
+                    .setDisabled(this.userLimit == 0 ? true : false)
+            ])
+        ];
     }
 }
 //# sourceMappingURL=Call.js.map
