@@ -97,7 +97,7 @@ export class StatCommand extends PrismCommand {
 
         if (rps_wins + rps_draws + rps_losses > 0)
             fields.push({
-                name: 'RPS',
+                name: 'ROCK PAPER SCISSORS',
                 value: `\`\`\`W: ${rps_wins}\nD: ${rps_draws}\nL: ${rps_losses}\`\`\``
             })
 
