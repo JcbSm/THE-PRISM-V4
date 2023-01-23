@@ -1,0 +1,1 @@
+{"version":3,"file":"handgrab.d.ts","sourceRoot":"","sources":["../../../src/commands/fun/handgrab.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,YAAY,EAAE,MAAM,uBAAuB,CAAC;AAErD,OAAO,KAAK,EAAE,0BAA0B,EAAE,MAAM,qBAAqB,CAAC;AAEtE,qBAKa,eAAgB,SAAQ,YAAY;IAC7B,2BAA2B,CAAC,SAAS,EAAE,0BAA0B;IAgB3D,YAAY,CAAC,WAAW,EAAE,YAAY,CAAC,oBAAoB;IAqBjF,OAAO,CAAC,OAAO;CAuBlB"}
