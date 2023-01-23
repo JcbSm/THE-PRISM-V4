@@ -96,7 +96,7 @@ export class RockPaperScissorsCommand extends PrismCommand {
 
     private async rps(interaction: ButtonInteraction, user: User, opponent: User) {
 
-        console.log("Starting RPS")
+        if (!interaction.guild) return;
 
         const msg = await interaction.update({ content: '\u200b',
             allowedMentions: { users: [user.id, opponent.id]},
@@ -169,6 +169,8 @@ export class RockPaperScissorsCommand extends PrismCommand {
             ],
             components: []
         })
+
+        this.db.rps(interaction.guild, user, opponent, outcome);
     }
 
     private winner(responses: [number, number]) {

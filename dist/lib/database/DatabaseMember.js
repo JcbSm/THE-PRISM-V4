@@ -13,6 +13,9 @@ export class DatabaseMember {
         this.tracking_voice = Boolean(data.tracking_voice);
         this.counting_counts = data.counting_counts;
         this.counting_last_message_url = data.counting_last_message_url;
+        this.rps_draws = data.rps_draws;
+        this.rps_losses = data.rps_losses;
+        this.rps_wins = data.rps_wins;
     }
 }
 //# sourceMappingURL=DatabaseMember.js.map

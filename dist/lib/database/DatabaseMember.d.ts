@@ -17,6 +17,9 @@ export interface DatabaseMember {
     tracking_voice: boolean;
     counting_counts: number;
     counting_last_message_url: string | null;
+    rps_wins: number;
+    rps_losses: number;
+    rps_draws: number;
 }
 export declare namespace DatabaseMember {
     type Options = {

@@ -338,4 +338,11 @@ export class DatabaseClient {
             ? ((await this.query(`SELECT * FROM calls WHERE guild_id = ${guild.id}`)) as RawDatabaseCall[])
             : ((await this.query(`SELECT * FROM calls`)) as RawDatabaseCall[])
     }
+
+    public async rps(guild: Guild, user: User, opponent: User, outcome: number) {
+        const userfield = outcome > 0 ? 'wins' : outcome < 0 ? 'losses' : 'draws'
+        const oponentfield = outcome < 0 ? 'wins' : outcome > 0 ? 'losses' : 'draws'
+        this.query(`UPDATE members SET rps_${userfield} = rps_${userfield} + 1 WHERE user_id = ${user.id} AND guild_id = ${guild.id}`);
+        this.query(`UPDATE members SET rps_${oponentfield} = rps_${oponentfield} + 1 WHERE user_id = ${opponent.id} AND guild_id = ${guild.id}`);
+    }
 }

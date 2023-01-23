@@ -62,7 +62,8 @@ export class StatCommand extends PrismCommand {
         const { 
             total_messages: messages,
             total_voice_minutes: voice_minutes,
-            total_muted_minutes: muted_minutes
+            total_muted_minutes: muted_minutes,
+            rps_wins, rps_draws, rps_losses
         } = await this.db.fetchMember(member);
 
         const {
@@ -93,6 +94,12 @@ export class StatCommand extends PrismCommand {
                 inline: true
             }
         ];
+
+        if (rps_wins + rps_draws + rps_losses > 0)
+            fields.push({
+                name: 'RPS',
+                value: `\`\`\`W: ${rps_wins}\nD: ${rps_draws}\nL: ${rps_losses}\`\`\``
+            })
 
         if (count > 1)
             fields.push(...[                    

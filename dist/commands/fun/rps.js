@@ -72,7 +72,8 @@ let RockPaperScissorsCommand = class RockPaperScissorsCommand extends PrismComma
         return;
     }
     async rps(interaction, user, opponent) {
-        console.log("Starting RPS");
+        if (!interaction.guild)
+            return;
         const msg = await interaction.update({ content: '\u200b',
             allowedMentions: { users: [user.id, opponent.id] },
             embeds: [
@@ -141,6 +142,7 @@ let RockPaperScissorsCommand = class RockPaperScissorsCommand extends PrismComma
             ],
             components: []
         });
+        this.db.rps(interaction.guild, user, opponent, outcome);
     }
     winner(responses) {
         return [[0, -1, 1], [1, 0, -1], [-1, 1, 0]][responses[0]][responses[1]];

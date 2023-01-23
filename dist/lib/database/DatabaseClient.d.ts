@@ -132,5 +132,6 @@ export declare class DatabaseClient {
      */
     fetchCall(channel: Channel): Promise<any>;
     fetchCalls(guild?: Guild): Promise<RawDatabaseCall[]>;
+    rps(guild: Guild, user: User, opponent: User, outcome: number): Promise<void>;
 }
 //# sourceMappingURL=DatabaseClient.d.ts.map

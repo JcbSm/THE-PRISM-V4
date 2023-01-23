@@ -27,6 +27,9 @@ export type RawDatabaseMember = {
     tracking_voice: number;
     counting_counts: number;
     counting_last_message_url: string | null;
+    rps_wins: number;
+    rps_losses: number;
+    rps_draws: number;
 }
 
 export type RawDatabaseLevelRole = {
