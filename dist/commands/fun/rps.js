@@ -124,13 +124,11 @@ let RockPaperScissorsCommand = class RockPaperScissorsCommand extends PrismComma
             new Promise(async (resolve) => {
                 const res = await msg.awaitMessageComponent({ time: 20 * 1000, componentType: ComponentType.Button, filter: (interaction) => interaction.user.id == user.id }).catch(() => null);
                 await res?.update({});
-                console.log(res);
                 return res?.customId == 'rpsRock' ? resolve(0) : res?.customId == 'rpsPaper' ? resolve(1) : res?.customId == 'rpsScissors' ? resolve(2) : resolve(null);
             }),
             new Promise(async (resolve) => {
                 const res = await msg.awaitMessageComponent({ time: 20 * 1000, componentType: ComponentType.Button, filter: (interaction) => interaction.user.id == opponent.id }).catch(() => null);
                 await res?.update({});
-                console.log(res);
                 return res?.customId == 'rpsRock' ? resolve(0) : res?.customId == 'rpsPaper' ? resolve(1) : res?.customId == 'rpsScissors' ? resolve(2) : resolve(null);
             }),
         ]);
