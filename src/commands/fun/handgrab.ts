@@ -57,7 +57,7 @@ export class HandgrabCommand extends PrismCommand {
 
         } else if (type.toLowerCase() === 'laser') {
             
-            top = 'https://i.imgur.com/Ngx8zDt.png',
+            top = 'https://i.imgur.com/0S5zqIn.png',
             bot = 'https://i.imgur.com/iyyggjV.png'
 
         } else {

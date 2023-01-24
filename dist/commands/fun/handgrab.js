@@ -36,7 +36,7 @@ let HandgrabCommand = class HandgrabCommand extends PrismCommand {
                 bot = 'https://i.imgur.com/d5TxlJo.png';
         }
         else if (type.toLowerCase() === 'laser') {
-            top = 'https://i.imgur.com/Ngx8zDt.png',
+            top = 'https://i.imgur.com/0S5zqIn.png',
                 bot = 'https://i.imgur.com/iyyggjV.png';
         }
         else {

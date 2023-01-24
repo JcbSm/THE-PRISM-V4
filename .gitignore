@@ -5,5 +5,5 @@
 .env
 
 # Don't push the debug command 
-/out/commands/debug.*
+/dist/commands/debug.*
 /src/commands/debug.*
