@@ -147,11 +147,13 @@ export class RockPaperScissorsCommand extends PrismCommand {
             new Promise(async (resolve: (res: number | null) => void) => {
                 const res = await msg.awaitMessageComponent({ time: 20*1000, componentType: ComponentType.Button, filter: (interaction: ButtonInteraction) => interaction.user.id == user.id }).catch(() => null);
                 await res?.update({})
+                console.log(res);
                 return res?.customId == 'rpsRock' ? resolve(0) : res?.customId == 'rpsPaper' ? resolve(1) : res?.customId == 'rpsScissors' ? resolve(2) : resolve(null);
             }),
             new Promise(async (resolve: (res: number | null) => void) => {
                 const res = await msg.awaitMessageComponent({ time: 20*1000, componentType: ComponentType.Button, filter: (interaction: ButtonInteraction) => interaction.user.id == opponent.id }).catch(() => null);
                 await res?.update({});
+                console.log(res)
                 return res?.customId == 'rpsRock' ? resolve(0) : res?.customId == 'rpsPaper' ? resolve(1) : res?.customId == 'rpsScissors' ? resolve(2) : resolve(null);
             }),
         ])
@@ -166,12 +168,12 @@ export class RockPaperScissorsCommand extends PrismCommand {
                     .setFields([
                         {
                             name: 'Challenger',
-                            value: `${user}\n${responses[0] ? ['🪨 ROCK', '📃 PAPER', '✂️ SCISSORS'][responses[0]] : 'No choice...'}`,
+                            value: `${user}\n${responses[0] !== null ? ['🪨 ROCK', '📃 PAPER', '✂️ SCISSORS'][responses[0]] : 'No choice...'}`,
                             inline: true
                         },
                         {
                             name: 'Opponent',
-                            value: `${opponent}\n${responses[1] ? ['🪨 ROCK', '📃 PAPER', '✂️ SCISSORS'][responses[1]] : 'No choice...'}`,
+                            value: `${opponent}\n${responses[1] !== null ? ['🪨 ROCK', '📃 PAPER', '✂️ SCISSORS'][responses[1]] : 'No choice...'}`,
                             inline: true
                         }
                     ])
