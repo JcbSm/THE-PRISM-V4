@@ -50,7 +50,7 @@ export class RockPaperScissorsCommand extends PrismCommand {
 
             const reply = await interaction.fetchReply();
 
-            reply.awaitMessageComponent({ componentType: ComponentType.Button, filter: (interaction: ButtonInteraction) => interaction.user.id == opponent.id }).then((interaction: ButtonInteraction) => {
+            reply.awaitMessageComponent({ componentType: ComponentType.Button, filter: (interaction: ButtonInteraction) => interaction.user.id == opponent.id, time: 300*1000 }).then((interaction: ButtonInteraction) => {
 
                 if (!interaction.channel) return;
 
@@ -63,6 +63,12 @@ export class RockPaperScissorsCommand extends PrismCommand {
                         break;
                 }
 
+            }).catch(async () => {
+                await interaction.editReply({ content: `${user}, your opponent didn't respond in time.`, components: [], allowedMentions: { users: [user.id] } });
+
+                setTimeout(async () => {
+                    await interaction.deleteReply().catch(() => {});
+                }, 5 * 1000)
             })
 
         } else {
@@ -80,15 +86,18 @@ export class RockPaperScissorsCommand extends PrismCommand {
             const reply = await interaction.fetchReply();
 
             reply.awaitMessageComponent({
-
                 componentType: ComponentType.Button,
-                filter: (i: ButtonInteraction) => i.user.id != user.id
-
+                filter: (i: ButtonInteraction) => i.user.id != user.id,
+                time: 300*1000
             }).then(async (interaction: ButtonInteraction) => {
                 if (!interaction.channel) return;
                 this.rps(interaction, user, interaction.user);
+            }).catch(async () => {
+                await interaction.editReply({ content: `${interaction.user}, nobody wants to play with you :(...`, allowedMentions: { users: [user.id] }, components: []});
+                setTimeout(async () => {
+                    await interaction.deleteReply().catch(() => {});
+                }, 5 * 1000);
             })
-
         }
 
         return;
@@ -135,15 +144,15 @@ export class RockPaperScissorsCommand extends PrismCommand {
         ]})
 
         const responses = await Promise.all([
-            new Promise(async (resolve: (res: number) => void, reject: (reason: any) => void) => {
-                const res = await msg.awaitMessageComponent({ componentType: ComponentType.Button, filter: (interaction: ButtonInteraction) => interaction.user.id == user.id });
-                await res.update({})
-                return res.customId == 'rpsRock' ? resolve(0) : res.customId == 'rpsPaper' ? resolve(1) : res.customId == 'rpsScissors' ? resolve(2) : reject(null);
+            new Promise(async (resolve: (res: number | null) => void) => {
+                const res = await msg.awaitMessageComponent({ time: 20*1000, componentType: ComponentType.Button, filter: (interaction: ButtonInteraction) => interaction.user.id == user.id }).catch(() => null);
+                await res?.update({})
+                return res?.customId == 'rpsRock' ? resolve(0) : res?.customId == 'rpsPaper' ? resolve(1) : res?.customId == 'rpsScissors' ? resolve(2) : resolve(null);
             }),
-            new Promise(async (resolve: (res: number) => void, reject: (reason: any) => void) => {
-                const res = await msg.awaitMessageComponent({ componentType: ComponentType.Button, filter: (interaction: ButtonInteraction) => interaction.user.id == opponent.id });
-                await res.update({});
-                return res.customId == 'rpsRock' ? resolve(0) : res.customId == 'rpsPaper' ? resolve(1) : res.customId == 'rpsScissors' ? resolve(2) : reject(null);
+            new Promise(async (resolve: (res: number | null) => void) => {
+                const res = await msg.awaitMessageComponent({ time: 20*1000, componentType: ComponentType.Button, filter: (interaction: ButtonInteraction) => interaction.user.id == opponent.id }).catch(() => null);
+                await res?.update({});
+                return res?.customId == 'rpsRock' ? resolve(0) : res?.customId == 'rpsPaper' ? resolve(1) : res?.customId == 'rpsScissors' ? resolve(2) : resolve(null);
             }),
         ])
 
@@ -157,12 +166,12 @@ export class RockPaperScissorsCommand extends PrismCommand {
                     .setFields([
                         {
                             name: 'Challenger',
-                            value: `${user}\n${['🪨 ROCK', '📃 PAPER', '✂️ SCISSORS'][responses[0]]}`,
+                            value: `${user}\n${responses[0] ? ['🪨 ROCK', '📃 PAPER', '✂️ SCISSORS'][responses[0]] : 'No choice...'}`,
                             inline: true
                         },
                         {
                             name: 'Opponent',
-                            value: `${opponent}\n${['🪨 ROCK', '📃 PAPER', '✂️ SCISSORS'][responses[1]]}`,
+                            value: `${opponent}\n${responses[1] ? ['🪨 ROCK', '📃 PAPER', '✂️ SCISSORS'][responses[1]] : 'No choice...'}`,
                             inline: true
                         }
                     ])
@@ -173,9 +182,15 @@ export class RockPaperScissorsCommand extends PrismCommand {
         this.db.rps(interaction.guild, user, opponent, outcome);
     }
 
-    private winner(responses: [number, number]) {
+    private winner(responses: [number | null, number | null]) {
 
-        return [[0, -1, 1], [1, 0, -1], [-1, 1, 0]][responses[0]][responses[1]];
+        if (responses[0] == null && responses[1] == null) {
+            return 0
+        } else if (responses[0] == null) {
+            return -1
+        } else if (responses[1] == null) {
+            return 1
+        } else return [[0, -1, 1], [1, 0, -1], [-1, 1, 0]][responses[0]][responses[1]];
 
     }
 }
