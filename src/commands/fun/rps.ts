@@ -145,12 +145,12 @@ export class RockPaperScissorsCommand extends PrismCommand {
 
         const responses = await Promise.all([
             new Promise(async (resolve: (res: number | null) => void) => {
-                const res = await msg.awaitMessageComponent({ time: 20*1000, componentType: ComponentType.Button, filter: (interaction: ButtonInteraction) => interaction.user.id == user.id }).catch(() => null);
+                const res = await msg.awaitMessageComponent({ time: 60*1000, componentType: ComponentType.Button, filter: (interaction: ButtonInteraction) => interaction.user.id == user.id }).catch(() => null);
                 await res?.update({})
                 return res?.customId == 'rpsRock' ? resolve(0) : res?.customId == 'rpsPaper' ? resolve(1) : res?.customId == 'rpsScissors' ? resolve(2) : resolve(null);
             }),
             new Promise(async (resolve: (res: number | null) => void) => {
-                const res = await msg.awaitMessageComponent({ time: 20*1000, componentType: ComponentType.Button, filter: (interaction: ButtonInteraction) => interaction.user.id == opponent.id }).catch(() => null);
+                const res = await msg.awaitMessageComponent({ time: 60*1000, componentType: ComponentType.Button, filter: (interaction: ButtonInteraction) => interaction.user.id == opponent.id }).catch(() => null);
                 await res?.update({});
                 return res?.customId == 'rpsRock' ? resolve(0) : res?.customId == 'rpsPaper' ? resolve(1) : res?.customId == 'rpsScissors' ? resolve(2) : resolve(null);
             }),
