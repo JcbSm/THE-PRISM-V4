@@ -30,3 +30,7 @@ export function updateMessageComponents(message: Message, options: UpdateMessage
 export function isChannelPublic(channel: GuildChannel) {
     return channel.permissionsFor(channel.guild.roles.everyone.id)?.serialize().ViewChannel || false;
 }
+
+export function getIdFromMention(mention: string) {
+    return mention.replace(/\D/gi, '');
+}

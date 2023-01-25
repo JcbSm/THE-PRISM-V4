@@ -2,14 +2,12 @@ import { __decorate } from "tslib";
 import { updateMessageComponents } from "#helpers/discord";
 import { PrismListener } from "#structs/PrismListener";
 import { ApplyOptions } from "@sapphire/decorators";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } from "discord.js";
 let CallEndListener = class CallEndListener extends PrismListener {
     async run(interaction) {
-        if (!(interaction.isButton() && interaction.customId == 'callEnd' && interaction.channel))
+        if (!(interaction.isButton() && interaction.customId == 'callEnd' && interaction.channel && interaction.guild && interaction.channel.type == ChannelType.GuildVoice))
             return;
-        const call = this.client.calls.get(interaction.channel.id);
-        if (!call)
-            return;
+        const call = this.client.calls.get(interaction.channel.id) || await this.client.calls.recreate(interaction, interaction.guild, interaction.channel);
         await interaction.update({
             components: updateMessageComponents(interaction.message, [{
                     customId: 'callEnd',

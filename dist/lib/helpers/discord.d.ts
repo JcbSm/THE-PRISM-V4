@@ -7,4 +7,5 @@ export interface UpdateMessageComponentsOptions {
 }
 export declare function updateMessageComponents(message: Message, options: UpdateMessageComponentsOptions[]): ActionRowBuilder<ActionRowComponentBuilders>[];
 export declare function isChannelPublic(channel: GuildChannel): boolean;
+export declare function getIdFromMention(mention: string): string;
 //# sourceMappingURL=discord.d.ts.map

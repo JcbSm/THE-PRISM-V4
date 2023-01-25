@@ -1,6 +1,6 @@
 import { PrismListener } from "#structs/PrismListener";
 import { ApplyOptions } from "@sapphire/decorators";
-import type { Interaction } from "discord.js";
+import { ChannelType, Interaction } from "discord.js";
 
 @ApplyOptions<PrismListener.Options>({
     event: 'interactionCreate'
@@ -9,13 +9,13 @@ import type { Interaction } from "discord.js";
 export class CallEndListener extends PrismListener {
     public async run(interaction: Interaction) {
 
-        if (!(interaction.isButton() && interaction.customId == 'callToggleVisibility' && interaction.channel)) return;
+        if (!(interaction.isButton() && interaction.customId == 'callToggleVisibility' && interaction.channel && interaction.guild && interaction.channel.type == ChannelType.GuildVoice)) return;
 
-        const call = this.client.calls.get(interaction.channel.id);
-        if (!call) return;
+        const call = this.client.calls.get(interaction.channel.id) || await this.client.calls.recreate(interaction, interaction.guild, interaction.channel);
 
         const visibility = await call.toggleVisibility();
 
-        await interaction.reply({ ephemeral: true, content: `Channel perms for \`@everyone\` set to \`${visibility}\``}) 
+        await interaction.update({ embeds: [await call.getOptionsEmbed() ]});
+        await interaction.followUp({ ephemeral: true, content: `\`VIEW CHANNEL\` perms for \`@everyone\` set to \`${visibility}\``}) 
     }
 }

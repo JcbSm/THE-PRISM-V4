@@ -1,6 +1,6 @@
 import type { PrismClient } from "#lib/PrismClient";
 import type { RawDatabaseCall } from "#types/database";
-import { Guild, User, VoiceChannel } from "discord.js";
+import { EmbedBuilder, Guild, User, VoiceChannel } from "discord.js";
 export declare class Call {
     private channel_id;
     private user_id;
@@ -39,7 +39,11 @@ export declare class Call {
      * @returns The channel
      */
     setUserLimit(n: number): Promise<VoiceChannel>;
-    private getOptionsEmbed;
+    /**
+     * Get the Options Embed
+     * @returns {EmbedBuilder} Embed
+     */
+    getOptionsEmbed(): Promise<EmbedBuilder>;
     private getOptionsComponents;
 }
 export interface Call {

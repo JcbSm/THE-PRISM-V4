@@ -1,4 +1,5 @@
 import { isChannelPublic } from "#helpers/discord";
+import { blankFieldInline } from "#helpers/embeds";
 import type { PrismClient } from "#lib/PrismClient";
 import type { RawDatabaseCall } from "#types/database";
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, Guild, User, VoiceChannel } from "discord.js";
@@ -81,7 +82,7 @@ export class Call {
         const channel = this.getChannel();
 
         const msg = await channel?.send({
-            embeds: [ this.getOptionsEmbed() ],
+            embeds: [ await this.getOptionsEmbed() ],
             components: this.getOptionsComponents()
         });
 
@@ -103,8 +104,9 @@ export class Call {
      * @returns {boolean} New permission value
      */
     public async toggleVisibility() {
-        await this.channel.permissionOverwrites.edit(this.guild.roles.everyone.id, { ViewChannel: !this.isPublic })
-        return !this.isPublic
+        const priv = !this.isPublic;
+        await this.channel.permissionOverwrites.edit(this.guild.roles.everyone.id, { ViewChannel: priv })
+        return priv
     }
 
     /**
@@ -117,10 +119,20 @@ export class Call {
         return await this.channel.setUserLimit(n)
     }
 
-    private getOptionsEmbed() {
+    /**
+     * Get the Options Embed
+     * @returns {EmbedBuilder} Embed
+     */
+    public async getOptionsEmbed() {
         return new EmbedBuilder()
             .setTitle('Call Options')
             .setDescription('Configure your call here.')
+            .addFields([
+                { name: 'Created By', value: `${await this.fetchUser()}`, inline: true },
+                blankFieldInline,
+                { name: 'Visibility', value: this.isPublic ? '🔓 Public' : '🔒 Private', inline: true},
+                { name: 'User Limit', value: `\`${this.userLimit > 0 ? this.userLimit : '0 (unlimited)' }\``, inline: true }
+            ])
     }
 
     private getOptionsComponents() {
@@ -134,10 +146,6 @@ export class Call {
                     new ButtonBuilder()
                         .setCustomId('callToggleVisibility')
                         .setLabel('Toggle Visibility')
-                        .setStyle(ButtonStyle.Secondary),
-                    new ButtonBuilder()
-                        .setCustomId('callRename')
-                        .setLabel('Rename')
                         .setStyle(ButtonStyle.Secondary)
                 ]),
             new ActionRowBuilder<ButtonBuilder>()

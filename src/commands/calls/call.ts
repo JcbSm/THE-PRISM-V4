@@ -73,7 +73,7 @@ export class CallComand extends PrismCommand {
             ]
         });
 
-        const call = await this.client.calls.create(interaction.guild, interaction.user, vc);
+        const call = await this.client.calls.create(interaction.guild, interaction.user.id, vc);
 
         const msg = await call.sendOptionsMessage();
 

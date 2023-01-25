@@ -2,13 +2,12 @@ import { __decorate } from "tslib";
 import { updateMessageComponents } from "#helpers/discord";
 import { PrismListener } from "#structs/PrismListener";
 import { ApplyOptions } from "@sapphire/decorators";
+import { ChannelType } from "discord.js";
 let CallIncUserLimitListener = class CallIncUserLimitListener extends PrismListener {
     async run(interaction) {
-        if (!(interaction.isButton() && interaction.customId == 'callIncUserLimit' && interaction.channel))
+        if (!(interaction.isButton() && interaction.customId == 'callIncUserLimit' && interaction.channel && interaction.guild && interaction.channel.type == ChannelType.GuildVoice))
             return;
-        const call = this.client.calls.get(interaction.channel.id);
-        if (!call)
-            return;
+        const call = this.client.calls.get(interaction.channel.id) || await this.client.calls.recreate(interaction, interaction.guild, interaction.channel);
         await interaction.update({
             components: updateMessageComponents(interaction.message, [
                 {
@@ -27,6 +26,7 @@ let CallIncUserLimitListener = class CallIncUserLimitListener extends PrismListe
         });
         await call.setUserLimit(call.userLimit + 1);
         await interaction.editReply({
+            embeds: [await call.getOptionsEmbed()],
             components: updateMessageComponents(interaction.message, [
                 {
                     customId: 'callIncUserLimit',

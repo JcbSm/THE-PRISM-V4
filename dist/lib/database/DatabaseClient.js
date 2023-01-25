@@ -227,8 +227,8 @@ export class DatabaseClient {
      * @param channel The voice channel
      * @returns The created call
      */
-    async createCall(guild, user, channel) {
-        return (await this.query(`INSERT INTO calls (guild_id, user_id, channel_id) VALUES (${guild.id}, ${user.id}, ${channel.id}) RETURNING *`))[0];
+    async createCall(guild, userId, channel) {
+        return (await this.query(`INSERT INTO calls (guild_id, user_id, channel_id) VALUES (${guild.id}, ${userId}, ${channel.id}) RETURNING *`))[0];
     }
     /**
      * Deletes a call

@@ -311,8 +311,8 @@ export class DatabaseClient {
      * @param channel The voice channel
      * @returns The created call
      */
-    public async createCall(guild: Guild, user: User, channel: VoiceChannel): Promise<RawDatabaseCall> {
-        return (await this.query(`INSERT INTO calls (guild_id, user_id, channel_id) VALUES (${guild.id}, ${user.id}, ${channel.id}) RETURNING *`))[0];
+    public async createCall(guild: Guild, userId: Snowflake, channel: VoiceChannel): Promise<RawDatabaseCall> {
+        return (await this.query(`INSERT INTO calls (guild_id, user_id, channel_id) VALUES (${guild.id}, ${userId}, ${channel.id}) RETURNING *`))[0];
     }
 
     /**

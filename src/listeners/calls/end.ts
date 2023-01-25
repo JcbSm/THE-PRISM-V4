@@ -1,7 +1,7 @@
 import { updateMessageComponents } from "#helpers/discord";
 import { PrismListener } from "#structs/PrismListener";
 import { ApplyOptions } from "@sapphire/decorators";
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Interaction } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Interaction } from "discord.js";
 
 @ApplyOptions<PrismListener.Options>({
     event: 'interactionCreate'
@@ -10,10 +10,9 @@ import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Intera
 export class CallEndListener extends PrismListener {
     public async run(interaction: Interaction) {
 
-        if (!(interaction.isButton() && interaction.customId == 'callEnd' && interaction.channel)) return;
+        if (!(interaction.isButton() && interaction.customId == 'callEnd' && interaction.channel && interaction.guild && interaction.channel.type == ChannelType.GuildVoice)) return;
 
-        const call = this.client.calls.get(interaction.channel.id);
-        if (!call) return;
+        const call = this.client.calls.get(interaction.channel.id)  || await this.client.calls.recreate(interaction, interaction.guild, interaction.channel);
 
         await interaction.update({
             components: updateMessageComponents(interaction.message, [{

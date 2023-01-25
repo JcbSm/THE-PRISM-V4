@@ -1,7 +1,7 @@
 import { updateMessageComponents } from "#helpers/discord";
 import { PrismListener } from "#structs/PrismListener";
 import { ApplyOptions } from "@sapphire/decorators";
-import type { ButtonBuilder, Interaction } from "discord.js";
+import { ButtonBuilder, ChannelType, Interaction } from "discord.js";
 
 @ApplyOptions<PrismListener.Options>({
     event: 'interactionCreate'
@@ -10,10 +10,9 @@ import type { ButtonBuilder, Interaction } from "discord.js";
 export class CallIncUserLimitListener extends PrismListener {
     public async run(interaction: Interaction) {
 
-        if (!(interaction.isButton() && interaction.customId == 'callIncUserLimit' && interaction.channel)) return;
+        if (!(interaction.isButton() && interaction.customId == 'callIncUserLimit' && interaction.channel && interaction.guild && interaction.channel.type == ChannelType.GuildVoice)) return;
 
-        const call = this.client.calls.get(interaction.channel.id);
-        if (!call) return;
+        const call = this.client.calls.get(interaction.channel.id)  || await this.client.calls.recreate(interaction, interaction.guild, interaction.channel);
 
         await interaction.update({
             components: updateMessageComponents(interaction.message, [
@@ -35,6 +34,7 @@ export class CallIncUserLimitListener extends PrismListener {
         await call.setUserLimit(call.userLimit + 1);
 
         await interaction.editReply({
+            embeds: [ await call.getOptionsEmbed() ],
             components: updateMessageComponents(interaction.message, [
                 {
                     customId: 'callIncUserLimit',

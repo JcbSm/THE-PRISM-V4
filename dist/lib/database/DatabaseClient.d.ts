@@ -118,7 +118,7 @@ export declare class DatabaseClient {
      * @param channel The voice channel
      * @returns The created call
      */
-    createCall(guild: Guild, user: User, channel: VoiceChannel): Promise<RawDatabaseCall>;
+    createCall(guild: Guild, userId: Snowflake, channel: VoiceChannel): Promise<RawDatabaseCall>;
     /**
      * Deletes a call
      * @param id Call id

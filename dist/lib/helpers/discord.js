@@ -11,4 +11,7 @@ export function updateMessageComponents(message, options) {
 export function isChannelPublic(channel) {
     return channel.permissionsFor(channel.guild.roles.everyone.id)?.serialize().ViewChannel || false;
 }
+export function getIdFromMention(mention) {
+    return mention.replace(/\D/gi, '');
+}
 //# sourceMappingURL=discord.js.map
