@@ -15,7 +15,7 @@ let CallComand = class CallComand extends PrismCommand {
             .addStringOption(option => option //
             .setName('name')
             .setDescription('The name of the voice channel.')
-            .setMaxLength(20)
+            .setMaxLength(30)
             .setMinLength(1))
             .addBooleanOption(option => option //
             .setName('private')
