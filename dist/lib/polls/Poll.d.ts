@@ -1,28 +1,33 @@
-import type { Duration } from "#helpers/duration";
-import { GuildMember, MessageCreateOptions, TextBasedChannel, User } from "discord.js";
+import { Duration } from "#helpers/duration";
+import type { PrismClient } from "#lib/PrismClient";
+import { GuildMember, ModalSubmitInteraction, TextBasedChannel, User } from "discord.js";
 export type PollOptions = {
     question: string;
     options: string[];
-    duration: Duration;
+    duration?: Duration;
+    max?: number;
 };
 export declare abstract class Poll {
-    constructor(author: User | GuildMember, channel: TextBasedChannel, { question, options, duration }: PollOptions);
+    constructor(interaction: ModalSubmitInteraction, channel: TextBasedChannel, { question, options, duration, max }: PollOptions, client: PrismClient);
+    get db(): import("../database/DatabaseClient").DatabaseClient;
     abstract send(): any;
-    abstract getMessageOptions(): MessageCreateOptions;
 }
 export interface Poll {
+    client: PrismClient;
     author: User | GuildMember;
+    max: number;
     question: string;
     options: string[];
     duration: Duration;
     channel: TextBasedChannel;
+    interaction: ModalSubmitInteraction;
 }
 export declare class SimplePoll extends Poll {
     send(): Promise<void>;
-    getMessageOptions(): MessageCreateOptions;
+    private getReplyOptions;
 }
 export declare class StandardPoll extends Poll {
-    send(): void;
-    getMessageOptions(): MessageCreateOptions;
+    send(): Promise<void>;
+    private getReplyOptions;
 }
 //# sourceMappingURL=Poll.d.ts.map

@@ -104,8 +104,12 @@ export class Duration {
         return n
     }
 
+    public endTimestamp() {
+        return Date.now() + this.toMilli();
+    }
+
     public toDate() {
-        return new Date(Date.now() + this.toMilli())
+        return new Date(this.endTimestamp())
     }
 
     public toMention(style: TimestampStylesString = 'f') {

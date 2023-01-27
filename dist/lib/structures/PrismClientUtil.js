@@ -1,3 +1,4 @@
+import { updateMessageComponents } from "#helpers/discord";
 export class PrismClientUtil {
     constructor(client) {
         this.client = client;
@@ -58,6 +59,30 @@ export class PrismClientUtil {
                 resolve(undefined);
             }
         });
+    }
+    async fetchMessageFromURL(url) {
+        try {
+            let arr = url.match(/\d[\d\/]+/)[0].split('/');
+            return await (await this.client.channels.fetch(arr[1]))?.messages.fetch(arr[2]);
+        }
+        catch {
+            return undefined;
+        }
+    }
+    async trackPoll(poll) {
+        this.client.logger.debug(`Tracking poll ${poll.poll_id}`);
+        const message = await this.client.util.fetchMessageFromURL(poll.message_url);
+        const timer = poll.end_timestamp - Date.now();
+        setTimeout(() => {
+            message?.edit({ components: updateMessageComponents(message, [
+                    {
+                        customId: 'pollVote',
+                        update(builder) {
+                            builder.setDisabled(true);
+                        }
+                    }
+                ]) });
+        }, timer);
     }
 }
 //# sourceMappingURL=PrismClientUtil.js.map

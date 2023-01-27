@@ -21,4 +21,15 @@ export function groupDigits(n) {
     return arr.reverse().join("");
 }
 ;
+export function factors(n) {
+    let factors = [];
+    for (let i = 0; i < n; i++)
+        if (n % i == 0)
+            factors.push(i);
+    return factors;
+}
+export function pad(n, size) {
+    let s = new Array(size).fill('0').join("") + n;
+    return s.substring(s.length - size);
+}
 //# sourceMappingURL=numbers.js.map

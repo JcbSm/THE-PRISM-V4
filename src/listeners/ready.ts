@@ -12,9 +12,15 @@ export default class extends PrismListener {
     public async run() {
 
         const members = await this.db.fetchVoiceMembers();
+        const polls = await this.db.fetchActivePolls();
 
-        for (const { user_id, guild_id } of members)
+        for (const poll of polls) {
+            this.client.util.trackPoll(poll)
+        }
+
+        for (const { user_id, guild_id } of members) {
             this.getAndTrackMemberVoice(user_id, guild_id);
+        }
 
         this.client.calls.init();
 

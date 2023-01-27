@@ -1,7 +1,7 @@
 import { Connection, MysqlError, OkPacket, Pool } from 'mysql';
 import type { PrismClient } from '#lib/PrismClient';
-import type { Channel, Guild, GuildMember, Role, Snowflake, User, VoiceChannel } from 'discord.js';
-import type { RawDatabaseUser, RawDatabaseLevelRole, RawDatabaseCall } from '#types/database';
+import type { Channel, Guild, GuildMember, Message, Role, Snowflake, User, VoiceChannel } from 'discord.js';
+import type { RawDatabaseUser, RawDatabaseLevelRole, RawDatabaseCall, RawDatabasePoll, RawDatabaseVote } from '#types/database';
 import { DatabaseMember } from '#lib/database/DatabaseMember';
 import { DatabaseGuild } from '#lib/database/DatabaseGuild';
 export interface DatabaseClient {
@@ -133,5 +133,10 @@ export declare class DatabaseClient {
     fetchCall(channel: Channel): Promise<any>;
     fetchCalls(guild?: Guild): Promise<RawDatabaseCall[]>;
     rps(guild: Guild, user: User, opponent: User, outcome: number): Promise<void>;
+    createPoll(message: Message, user: User, maxchoices: number, end: EpochTimeStamp | null): Promise<RawDatabasePoll>;
+    fetchPoll(message: Message): Promise<RawDatabasePoll>;
+    vote(pollId: number, user_id: Snowflake, vote: number): Promise<any>;
+    fetchVotes(pollId: number): Promise<RawDatabaseVote[]>;
+    fetchActivePolls(): Promise<RawDatabasePoll[]>;
 }
 //# sourceMappingURL=DatabaseClient.d.ts.map

@@ -1,8 +1,9 @@
 import { __decorate } from "tslib";
 import { PrismCommand } from "#structs/PrismCommand";
+import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders";
 import { ApplyOptions } from "@sapphire/decorators";
-import { ActionRowBuilder, ApplicationCommandType, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
-let PollCommand = class PollCommand extends PrismCommand {
+import { ApplicationCommandType, TextInputStyle } from "discord.js";
+let SimplePollCommand = class SimplePollCommand extends PrismCommand {
     registerApplicationCommands(registry) {
         registry.registerChatInputCommand(command => command // 
             .setName(this.name)
@@ -21,7 +22,7 @@ let PollCommand = class PollCommand extends PrismCommand {
     }
     getModal(question) {
         return new ModalBuilder()
-            .setCustomId('pollModal')
+            .setCustomId('pollSimpleModal')
             .setTitle('Poll Options')
             .setComponents([
             new ActionRowBuilder()
@@ -43,34 +44,15 @@ let PollCommand = class PollCommand extends PrismCommand {
                     .setStyle(TextInputStyle.Paragraph)
                     .setMaxLength(256)
                     .setRequired(true)
-            ]),
-            new ActionRowBuilder()
-                .setComponents([
-                new TextInputBuilder()
-                    .setCustomId('pollTimer')
-                    .setLabel('Duration')
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(false)
-                    .setPlaceholder('Ex: 10 minutes | 4h | ...')
-            ]),
-            new ActionRowBuilder()
-                .setComponents([
-                new TextInputBuilder()
-                    .setCustomId('pollMaxChoices')
-                    .setLabel('Max Choices')
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(true)
-                    .setValue('1')
-                    .setMaxLength(2)
             ])
         ]);
     }
 };
-PollCommand = __decorate([
+SimplePollCommand = __decorate([
     ApplyOptions({
-        name: 'poll',
-        description: 'Create a poll'
+        name: 'simplepoll',
+        description: 'Create a reaction-based poll.'
     })
-], PollCommand);
-export { PollCommand };
-//# sourceMappingURL=poll.js.map
+], SimplePollCommand);
+export { SimplePollCommand };
+//# sourceMappingURL=simplepoll.js.map

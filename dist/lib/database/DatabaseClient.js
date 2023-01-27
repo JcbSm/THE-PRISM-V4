@@ -257,5 +257,20 @@ export class DatabaseClient {
         this.query(`UPDATE members SET rps_${userfield} = rps_${userfield} + 1 WHERE user_id = ${user.id} AND guild_id = ${guild.id}`);
         this.query(`UPDATE members SET rps_${oponentfield} = rps_${oponentfield} + 1 WHERE user_id = ${opponent.id} AND guild_id = ${guild.id}`);
     }
+    async createPoll(message, user, maxchoices, end) {
+        return (await this.query(`INSERT INTO polls (message_url, user_id, end_timestamp, max_choices) VALUES ('${message.url}', ${user.id}, ${end}, ${maxchoices}) RETURNING *`))[0];
+    }
+    async fetchPoll(message) {
+        return (await this.query(`SELECT * FROM polls WHERE message_url = '${message.url}'`))[0];
+    }
+    async vote(pollId, user_id, vote) {
+        return (await this.query(`REPLACE INTO poll_votes (poll_id, user_id, vote) VALUES (${pollId}, ${user_id}, ${vote})`));
+    }
+    async fetchVotes(pollId) {
+        return (await this.query(`SELECT * FROM poll_votes WHERE poll_id = ${pollId}`));
+    }
+    async fetchActivePolls() {
+        return (await this.query(`SELECT * FROM polls WHERE end_timestamp > ${Date.now()}`));
+    }
 }
 //# sourceMappingURL=DatabaseClient.js.map

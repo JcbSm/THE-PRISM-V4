@@ -79,8 +79,11 @@ export class Duration {
         n += this.s * 1000;
         return n;
     }
+    endTimestamp() {
+        return Date.now() + this.toMilli();
+    }
     toDate() {
-        return new Date(Date.now() + this.toMilli());
+        return new Date(this.endTimestamp());
     }
     toMention(style = 'f') {
         return time(this.toDate(), style);

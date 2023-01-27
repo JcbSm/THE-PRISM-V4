@@ -1,12 +1,14 @@
 import { Connection, createPool, MysqlError, OkPacket, Pool } from 'mysql';
 import type { PrismClient } from '#lib/PrismClient';
-import type { Channel, Guild, GuildMember, Role, Snowflake, User, VoiceChannel } from 'discord.js';
+import type { Channel, Guild, GuildMember, Message, Role, Snowflake, User, VoiceChannel } from 'discord.js';
 import type { 
     RawDatabaseUser,
     RawDatabaseGuild,
     RawDatabaseMember,
     RawDatabaseLevelRole,
     RawDatabaseCall,
+    RawDatabasePoll,
+    RawDatabaseVote,
 } from '#types/database';
 import { rng } from '#helpers/numbers';
 import { DatabaseMember } from '#lib/database/DatabaseMember';
@@ -344,5 +346,25 @@ export class DatabaseClient {
         const oponentfield = outcome < 0 ? 'wins' : outcome > 0 ? 'losses' : 'draws'
         this.query(`UPDATE members SET rps_${userfield} = rps_${userfield} + 1 WHERE user_id = ${user.id} AND guild_id = ${guild.id}`);
         this.query(`UPDATE members SET rps_${oponentfield} = rps_${oponentfield} + 1 WHERE user_id = ${opponent.id} AND guild_id = ${guild.id}`);
+    }
+
+    public async createPoll(message: Message, user: User, maxchoices: number, end: EpochTimeStamp | null): Promise<RawDatabasePoll> {
+        return (await this.query(`INSERT INTO polls (message_url, user_id, end_timestamp, max_choices) VALUES ('${message.url}', ${user.id}, ${end}, ${maxchoices}) RETURNING *`))[0];
+    }
+
+    public async fetchPoll(message: Message): Promise<RawDatabasePoll> {
+        return (await this.query(`SELECT * FROM polls WHERE message_url = '${message.url}'`))[0];
+    }
+
+    public async vote(pollId: number, user_id: Snowflake, vote: number) {
+        return (await this.query(`REPLACE INTO poll_votes (poll_id, user_id, vote) VALUES (${pollId}, ${user_id}, ${vote})`))
+    }
+
+    public async fetchVotes(pollId: number): Promise<RawDatabaseVote[]> {
+        return (await this.query(`SELECT * FROM poll_votes WHERE poll_id = ${pollId}`))
+    }
+
+    public async fetchActivePolls(): Promise<RawDatabasePoll[]> {
+        return (await this.query(`SELECT * FROM polls WHERE end_timestamp > ${Date.now()}`))
     }
 }

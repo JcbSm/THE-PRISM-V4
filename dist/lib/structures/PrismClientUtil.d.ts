@@ -1,5 +1,6 @@
 import type { DatabaseMember } from "#lib/database/DatabaseMember";
 import type { PrismClient } from "#lib/PrismClient";
+import type { RawDatabasePoll } from "#types/database";
 import type { Guild, GuildMember, User } from "discord.js";
 export declare class PrismClientUtil {
     constructor(client: PrismClient);
@@ -23,6 +24,8 @@ export declare class PrismClientUtil {
      * @returns {Promise<GuildMember | undefined>} Returns GuildMember, if no member exists, returns undefined.
      */
     getMemberFromUser(user: User, guild: Guild): Promise<GuildMember | undefined>;
+    fetchMessageFromURL(url: string): Promise<import("discord.js").Message<true> | import("discord.js").Message<false> | undefined>;
+    trackPoll(poll: RawDatabasePoll): Promise<void>;
 }
 export interface PrismClientUtil {
     client: PrismClient;

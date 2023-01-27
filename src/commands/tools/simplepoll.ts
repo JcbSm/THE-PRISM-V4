@@ -1,14 +1,15 @@
 import { PrismCommand } from "#structs/PrismCommand";
+import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders";
 import { ApplyOptions } from "@sapphire/decorators";
 import type { ApplicationCommandRegistry } from "@sapphire/framework";
-import { ActionRowBuilder, ApplicationCommandType, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ApplicationCommandType, TextInputStyle } from "discord.js";
 
 @ApplyOptions<PrismCommand.Options>({
-    name: 'poll',
-    description: 'Create a poll'
+    name: 'simplepoll',
+    description: 'Create a reaction-based poll.'
 })
 
-export class PollCommand extends PrismCommand {
+export class SimplePollCommand extends PrismCommand {
     public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
         registry.registerChatInputCommand(command =>
             command // 
@@ -35,7 +36,7 @@ export class PollCommand extends PrismCommand {
 
     private getModal(question?: string) {
         return new ModalBuilder()
-            .setCustomId('pollModal')
+            .setCustomId('pollSimpleModal')
             .setTitle('Poll Options')
             .setComponents([
                 new ActionRowBuilder<TextInputBuilder>()
@@ -57,26 +58,7 @@ export class PollCommand extends PrismCommand {
                             .setStyle(TextInputStyle.Paragraph)
                             .setMaxLength(256)
                             .setRequired(true)
-                        ]),
-                new ActionRowBuilder<TextInputBuilder>()
-                    .setComponents([
-                        new TextInputBuilder()
-                            .setCustomId('pollTimer')
-                            .setLabel('Duration')
-                            .setStyle(TextInputStyle.Short)
-                            .setRequired(false)
-                            .setPlaceholder('Ex: 10 minutes | 4h | ...')
-                    ]),
-                new ActionRowBuilder<TextInputBuilder>()
-                    .setComponents([
-                        new TextInputBuilder()
-                            .setCustomId('pollMaxChoices')
-                            .setLabel('Max Choices')
-                            .setStyle(TextInputStyle.Short)
-                            .setRequired(true)
-                            .setValue('1')
-                            .setMaxLength(2)
-                    ])
+                        ])
             ])
     }
 }

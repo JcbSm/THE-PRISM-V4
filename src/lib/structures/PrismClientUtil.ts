@@ -1,6 +1,8 @@
+import { updateMessageComponents } from "#helpers/discord";
 import type { DatabaseMember } from "#lib/database/DatabaseMember";
 import type { PrismClient } from "#lib/PrismClient";
-import type { Guild, GuildMember, User } from "discord.js";
+import type { RawDatabasePoll } from "#types/database";
+import type { ButtonBuilder, Guild, GuildMember, Snowflake, TextBasedChannel, User } from "discord.js";
 
 export class PrismClientUtil {
     constructor(client: PrismClient) {
@@ -67,6 +69,34 @@ export class PrismClientUtil {
 
         })
 
+    }
+
+    public async fetchMessageFromURL(url: string) {
+        try {
+            let arr = url.match(/\d[\d\/]+/)![0].split('/');
+            return await (await this.client.channels.fetch(arr[1] as Snowflake) as TextBasedChannel)?.messages.fetch(arr[2] as Snowflake)
+        } catch {
+            return undefined
+        }
+    }
+
+    public async trackPoll(poll: RawDatabasePoll) {
+
+        this.client.logger.debug(`Tracking poll ${poll.poll_id}`)
+
+        const message = await this.client.util.fetchMessageFromURL(poll.message_url);
+        const timer = poll.end_timestamp - Date.now();
+
+        setTimeout(() => {
+            message?.edit({ components: updateMessageComponents(message, [
+                {
+                    customId: 'pollVote',
+                    update(builder: ButtonBuilder) {
+                        builder.setDisabled(true)
+                    }
+                }
+            ])})
+        }, timer);
     }
 }
 

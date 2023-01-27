@@ -21,8 +21,9 @@ export declare class Duration {
     private resolveNum;
     isZero(): boolean;
     toMilli(): number;
+    endTimestamp(): number;
     toDate(): Date;
-    toMention(style?: TimestampStylesString): `<t:${bigint}:t>` | `<t:${bigint}:T>` | `<t:${bigint}:d>` | `<t:${bigint}:D>` | `<t:${bigint}:f>` | `<t:${bigint}:F>` | `<t:${bigint}:R>`;
+    toMention(style?: TimestampStylesString): `<t:${bigint}:d>` | `<t:${bigint}:D>` | `<t:${bigint}:t>` | `<t:${bigint}:T>` | `<t:${bigint}:f>` | `<t:${bigint}:F>` | `<t:${bigint}:R>`;
 }
 export interface Duration {
 }

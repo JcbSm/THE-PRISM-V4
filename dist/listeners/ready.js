@@ -5,8 +5,13 @@ import { ApplyOptions } from "@sapphire/decorators";
 let default_1 = class extends PrismListener {
     async run() {
         const members = await this.db.fetchVoiceMembers();
-        for (const { user_id, guild_id } of members)
+        const polls = await this.db.fetchActivePolls();
+        for (const poll of polls) {
+            this.client.util.trackPoll(poll);
+        }
+        for (const { user_id, guild_id } of members) {
             this.getAndTrackMemberVoice(user_id, guild_id);
+        }
         this.client.calls.init();
     }
     async getAndTrackMemberVoice(user_id, guild_id) {

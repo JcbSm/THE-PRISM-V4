@@ -21,3 +21,15 @@ export function groupDigits(n: number): string {
     n < 0 ? arr.push('-') : {};
     return arr.reverse().join("");
 };
+
+export function factors(n: number) {
+    let factors: number[] = [];
+    for (let i = 0; i < n; i++)
+        if (n % i == 0) factors.push(i);
+    return factors;
+}
+
+export function pad(n: number | string, size: number) {
+    let s = new Array(size).fill('0').join("") + n;
+    return s.substring(s.length-size);
+}

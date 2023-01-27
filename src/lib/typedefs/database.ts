@@ -46,3 +46,17 @@ export type RawDatabaseCall = {
     channel_id: Snowflake;
     persistent: number;
 }
+
+export type RawDatabasePoll = {
+    poll_id: number;
+    user_id: Snowflake;
+    message_url: string;
+    end_timestamp: EpochTimeStamp;
+    max_choices: number;
+}
+
+export type RawDatabaseVote = {
+    poll_id: number;
+    user_id: Snowflake;
+    vote: number;
+}

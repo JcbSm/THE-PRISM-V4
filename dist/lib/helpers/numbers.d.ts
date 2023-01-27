@@ -11,4 +11,6 @@ export declare function rng(min?: number, max?: number): number;
  * @returns Formed string
  */
 export declare function groupDigits(n: number): string;
+export declare function factors(n: number): number[];
+export declare function pad(n: number | string, size: number): string;
 //# sourceMappingURL=numbers.d.ts.map
