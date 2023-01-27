@@ -64,6 +64,7 @@ export class CountingCommand extends PrismCommand {
         return new EmbedBuilder()
             .setTitle('Counting Stats')
             .setDescription(`${member} has counted \`${counting_counts}\` times.\nThat's \`${percentage(counting_counts, counting_count, 2)}\` of total counts.`)
+            .setThumbnail(member.displayAvatarURL())
 
     }
 }
