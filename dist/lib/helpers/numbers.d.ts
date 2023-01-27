@@ -13,4 +13,12 @@ export declare function rng(min?: number, max?: number): number;
 export declare function groupDigits(n: number): string;
 export declare function factors(n: number): number[];
 export declare function pad(n: number | string, size: number): string;
+/**
+ * Returns a percentage
+ * @param numerator Top
+ * @param denominator Button
+ * @param d Number of decimal places
+ * @returns {string} Percentage
+ */
+export declare function percentage(numerator: number, denominator: number, d: number): string;
 //# sourceMappingURL=numbers.d.ts.map

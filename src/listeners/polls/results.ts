@@ -16,6 +16,7 @@ export class PollResultsListener extends PrismListener {
 
         const { poll_id } = await this.db.fetchPoll(interaction.message);
         const options = interaction.message.embeds[0].description?.split("\n") || [];
+        //const optionValues = options.map(s => s.slice(5))
 
         const votes = (await this.db.fetchVotes(poll_id)).map(v => pad(v.vote.toString(2), options.length).split("").map(s => Number(s)).reverse());
 

@@ -32,4 +32,14 @@ export function pad(n, size) {
     let s = new Array(size).fill('0').join("") + n;
     return s.substring(s.length - size);
 }
+/**
+ * Returns a percentage
+ * @param numerator Top
+ * @param denominator Button
+ * @param d Number of decimal places
+ * @returns {string} Percentage
+ */
+export function percentage(numerator, denominator, d) {
+    return `${Math.round((Math.pow(10, d + 2) * numerator) / (denominator)) / Math.pow(10, d)}%`;
+}
 //# sourceMappingURL=numbers.js.map
