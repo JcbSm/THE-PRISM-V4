@@ -335,6 +335,10 @@ export class DatabaseClient {
         return (await this.query(`SELECT * FROM calls WHERE channel_id = ${channel.id}`))[0]
     }
 
+    public async fetchMemberCall(member: GuildMember): Promise<RawDatabaseCall> {
+        return (await this.query(`SELECT * FROM calls WHERE user_id = ${member.id} AND guild_id = ${member.guild.id}`))[0]
+    }
+
     public async fetchCalls(guild?: Guild) {
         return guild 
             ? ((await this.query(`SELECT * FROM calls WHERE guild_id = ${guild.id}`)) as RawDatabaseCall[])

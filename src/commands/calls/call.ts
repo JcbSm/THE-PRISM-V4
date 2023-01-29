@@ -36,17 +36,20 @@ export class CallComand extends PrismCommand {
 
     public override async chatInputRun(interaction: PrismCommand.ChatInputInteraction) {
 
-        if (!interaction.guild) return;
+        if (!interaction.guild || !(interaction.member instanceof GuildMember)) return;
 
         const { channel_id_calls } = await this.db.fetchGuild(interaction.guild);
 
         if (!channel_id_calls) return interaction.reply({ ephemeral: true, content: 'No parent channel set, calls will be unavailable.' });
 
+        const exists = await this.db.fetchMemberCall(interaction.member);
+
+        if (exists) return interaction.reply({ ephemeral: true, content: 'You can only have one call per server.' })
+
         const priv = interaction.options.getBoolean('private', false) ?? false;
         
         await interaction.deferReply({ ephemeral: priv });
 
-        if (!(interaction.member) || !(interaction.member instanceof GuildMember)) return;
 
         const userLimit = interaction.options.getInteger('userlimit', false) ?? 0;
         const channelName = interaction.options.getString('name', false) ?? `${interaction.member.displayName}'s Channel`;

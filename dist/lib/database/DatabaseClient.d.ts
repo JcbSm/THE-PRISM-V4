@@ -131,6 +131,7 @@ export declare class DatabaseClient {
      * @returns Call
      */
     fetchCall(channel: Channel): Promise<any>;
+    fetchMemberCall(member: GuildMember): Promise<RawDatabaseCall>;
     fetchCalls(guild?: Guild): Promise<RawDatabaseCall[]>;
     rps(guild: Guild, user: User, opponent: User, outcome: number): Promise<void>;
     createPoll(message: Message, user: User, maxchoices: number, end: EpochTimeStamp | null): Promise<RawDatabasePoll>;

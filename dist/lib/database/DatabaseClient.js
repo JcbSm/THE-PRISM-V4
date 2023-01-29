@@ -246,6 +246,9 @@ export class DatabaseClient {
     async fetchCall(channel) {
         return (await this.query(`SELECT * FROM calls WHERE channel_id = ${channel.id}`))[0];
     }
+    async fetchMemberCall(member) {
+        return (await this.query(`SELECT * FROM calls WHERE user_id = ${member.id} AND guild_id = ${member.guild.id}`))[0];
+    }
     async fetchCalls(guild) {
         return guild
             ? (await this.query(`SELECT * FROM calls WHERE guild_id = ${guild.id}`))
