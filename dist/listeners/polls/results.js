@@ -10,6 +10,7 @@ let PollResultsListener = class PollResultsListener extends PrismListener {
     async run(interaction) {
         if (!interaction.isButton() || interaction.customId !== 'pollResults')
             return;
+        await interaction.deferReply({ ephemeral: true });
         const { poll_id } = await this.db.fetchPoll(interaction.message);
         const options = interaction.message.embeds[0].description?.split("\n") || [];
         const optionValues = options.map(s => s.slice(5));
@@ -21,7 +22,7 @@ let PollResultsListener = class PollResultsListener extends PrismListener {
             });
         });
         const totalVotes = results.reduce((c, a) => c + a);
-        await interaction.reply({ ephemeral: true,
+        await interaction.editReply({
             files: totalVotes > 0 ? [
                 new AttachmentBuilder(this.resultsCanvas(optionValues, results), { name: 'data.png' })
             ] : [],

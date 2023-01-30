@@ -27,6 +27,9 @@ export class PollVoteListener extends PrismListener {
 
         await message.awaitMessageComponent({ componentType: ComponentType.StringSelect, filter: (i: StringSelectMenuInteraction) => interaction.user.id === i.user.id, time: 30 * 1000})
             .then(async (interaction: StringSelectMenuInteraction) => {
+
+                await interaction.deferUpdate();
+
                 const arr = new Array(options.length).fill(0);
                 const picked: string[] = [];
 

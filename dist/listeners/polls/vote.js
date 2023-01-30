@@ -18,6 +18,7 @@ let PollVoteListener = class PollVoteListener extends PrismListener {
         const message = await interaction.fetchReply();
         await message.awaitMessageComponent({ componentType: ComponentType.StringSelect, filter: (i) => interaction.user.id === i.user.id, time: 30 * 1000 })
             .then(async (interaction) => {
+            await interaction.deferUpdate();
             const arr = new Array(options.length).fill(0);
             const picked = [];
             interaction.values.forEach((v) => {
