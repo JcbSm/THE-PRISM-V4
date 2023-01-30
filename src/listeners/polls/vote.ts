@@ -44,9 +44,9 @@ export class PollVoteListener extends PrismListener {
 
                 await this.db.vote(poll_id, interaction.user.id, vote)
 
-                interaction.update({ content: `Your vote:\n${picked.join("\n")}`, components: [] });
+                interaction.editReply({ content: `Your vote:\n${picked.join("\n")}`, components: [] });
             })
-            .catch(() => interaction.deleteReply());
+            .catch(() => interaction.editReply({ content: 'You took too long ;(', components: [] }));
 
     }
 
