@@ -12,6 +12,11 @@ export class CallEndListener extends PrismListener {
         if (!(interaction.isButton() && interaction.customId == 'callToggleVisibility' && interaction.channel && interaction.guild && interaction.channel.type == ChannelType.GuildVoice)) return;
 
         const call = this.client.calls.get(interaction.channel.id) || await this.client.calls.recreate(interaction, interaction.guild, interaction.channel);
+        
+        if (call.userId !== interaction.user.id) {
+            interaction.reply({ ephemeral: true, content: 'You cannot modify someone else\'s call' })
+            return;
+        }
 
         const visibility = await call.toggleVisibility();
 

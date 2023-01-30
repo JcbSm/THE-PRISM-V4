@@ -1,9 +1,9 @@
 import type { PrismClient } from "#lib/PrismClient";
 import type { RawDatabaseCall } from "#types/database";
-import { EmbedBuilder, Guild, User, VoiceChannel } from "discord.js";
+import { EmbedBuilder, Guild, Snowflake, User, VoiceChannel } from "discord.js";
 export declare class Call {
     private channel_id;
-    private user_id;
+    private user;
     constructor(data: RawDatabaseCall, client: PrismClient);
     get guild(): Guild;
     get isPublic(): boolean;
@@ -48,9 +48,9 @@ export declare class Call {
 }
 export interface Call {
     client: PrismClient;
-    id: number;
     guild: Guild;
-    user: User;
+    userId: Snowflake;
+    id: number;
     channel: VoiceChannel;
     persistent: boolean;
     deleted: boolean;

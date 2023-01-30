@@ -3,11 +3,11 @@ import { blankFieldInline } from "#helpers/embeds";
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder } from "discord.js";
 export class Call {
     channel_id;
-    user_id;
+    user;
     constructor(data, client) {
         this.client = client;
         this.id = data.call_id;
-        this.user_id = data.user_id;
+        this.userId = data.user_id;
         this.persistent = Boolean(data.persistent);
         this.deleted = false;
         this.channel_id = data.channel_id;
@@ -52,7 +52,7 @@ export class Call {
     async fetchUser() {
         if (this.user)
             return this.user;
-        return this.user = await this.client.users.fetch(this.user_id);
+        return this.user = await this.client.users.fetch(this.userId);
     }
     /**
      * Send the options message on initialisation.

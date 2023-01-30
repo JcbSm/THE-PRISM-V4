@@ -2,17 +2,17 @@ import { isChannelPublic } from "#helpers/discord";
 import { blankFieldInline } from "#helpers/embeds";
 import type { PrismClient } from "#lib/PrismClient";
 import type { RawDatabaseCall } from "#types/database";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, Guild, User, VoiceChannel } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, Guild, Snowflake, User, VoiceChannel } from "discord.js";
 
 export class Call {
 
     private channel_id;
-    private user_id;
+    private user: User | undefined;
 
     constructor(data: RawDatabaseCall, client: PrismClient) {
         this.client = client;
         this.id = data.call_id;
-        this.user_id = data.user_id;
+        this.userId = data.user_id;
         this.persistent = Boolean(data.persistent);
         this.deleted = false;
         this.channel_id = data.channel_id;
@@ -70,7 +70,7 @@ export class Call {
         if (this.user)
             return this.user;
 
-        return this.user = await this.client.users.fetch(this.user_id);
+        return this.user = await this.client.users.fetch(this.userId);
     }
 
     /**
@@ -169,9 +169,9 @@ export class Call {
 
 export interface Call {
     client: PrismClient;
-    id: number;
     guild: Guild;
-    user: User;
+    userId: Snowflake;
+    id: number;
     channel: VoiceChannel;
     persistent: boolean;
     deleted: boolean;
