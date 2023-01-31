@@ -58,7 +58,7 @@ export class PollVoteListener extends PrismListener {
                     new StringSelectMenuBuilder()
                         .setCustomId('pollVoteSelect')
                         .setMinValues(1)
-                        .setMaxValues(max)
+                        .setMaxValues(max > options.length ? options.length : max)
                         .setOptions(options.map((o, i) => {
                             return new StringSelectMenuOptionBuilder()
                                 .setEmoji(alphabet[i] as APIMessageComponentEmoji)
