@@ -1,7 +1,7 @@
 import type { DatabaseMember } from "#lib/database/DatabaseMember";
 import type { PrismClient } from "#lib/PrismClient";
 import type { RawDatabasePoll } from "#types/database";
-import type { Guild, GuildMember, User } from "discord.js";
+import { Guild, GuildMember, User } from "discord.js";
 export declare class PrismClientUtil {
     constructor(client: PrismClient);
     /**

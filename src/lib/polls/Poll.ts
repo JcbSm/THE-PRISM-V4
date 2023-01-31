@@ -22,6 +22,11 @@ export abstract class Poll {
         this.question = question;
         this.options = options.filter(o => o.length > 0).slice(0,20);
         this.duration = duration || new Duration();
+
+        const cap = new Duration('28d');
+
+        if (this.duration.toMilli() > cap.toMilli())
+            this.duration = cap;
     }
 
     get db() {
