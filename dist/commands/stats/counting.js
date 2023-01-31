@@ -16,7 +16,7 @@ let CountingCommand = class CountingCommand extends PrismCommand {
             .setType(ApplicationCommandType.User));
     }
     async chatInputRun(interaction) {
-        if (!interaction.guild || !interaction.member)
+        if (!interaction.guild)
             return;
         const member = interaction.options.getMember('user') ?? interaction.member;
         if (!(member instanceof GuildMember))
