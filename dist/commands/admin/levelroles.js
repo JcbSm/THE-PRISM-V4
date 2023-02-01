@@ -213,7 +213,7 @@ let LevelRolesCommand = class LevelRolesCommand extends PrismSubcommand {
                 rem = levelRoles.filter(r => r.level > level && member.roles.cache.has(r.role_id));
             }
             else {
-                const max = levelRoles.filter(r => r.level <= level)[0].level;
+                const max = levelRoles.filter(r => r.level <= level)[0]?.level || level;
                 add = levelRoles.filter(r => r.level === max && !member.roles.cache.has(r.role_id));
                 rem = levelRoles.filter(r => r.level !== max && member.roles.cache.has(r.role_id));
             }

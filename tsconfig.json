@@ -21,6 +21,6 @@
             "#helpers/*": ["./lib/helpers/*"],
             "#lib/*": ["./lib/*"]
         }
-    },
+    }
 
 }
