@@ -10,12 +10,17 @@ let default_1 = class extends PrismCommand {
     registerApplicationCommands(registry) {
         registry.registerChatInputCommand(command => command //
             .setName(this.name)
-            .setDescription('Load up noob'), {
+            .setDescription('Load up noob')
+            .addStringOption(option => option //
+            .setName('time')
+            .setDescription('What time you want to play')
+            .setRequired(false)), {
             guildIds: this.client.dev ? [this.client.devGuildId] : dirname ? [dirname] : []
         });
     }
     async chatInputRun(interaction) {
-        return await interaction.reply({ content: `@everyone cs or bent` });
+        const time = interaction.options.getString('time');
+        return await interaction.reply({ content: time ? `@everyone cs or bent at ${time}` : `@everyone cs or bent` });
     }
 };
 default_1 = __decorate([
