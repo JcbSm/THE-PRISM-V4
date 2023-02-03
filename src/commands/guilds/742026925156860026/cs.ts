@@ -36,6 +36,6 @@ export default class extends PrismCommand {
 
         const time = interaction.options.getString('time')
 
-        return await interaction.reply({ content: time ? `@everyone cs or bent at ${time}` : `@everyone cs or bent` });
+        return await interaction.reply({ content: time ? `@everyone cs at ${time} or bent` : `@everyone cs or bent` });
     }
 }
