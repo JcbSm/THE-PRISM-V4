@@ -43,6 +43,7 @@ let RibyCommand = class RibyCommand extends PrismCommand {
         ];
         // Quotes
         const quotes = [
+            // Just for testing: 
             // 'Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really long'
             'Can we get a example of the drake equation in haskell?',
             'Do you want some salami?',
