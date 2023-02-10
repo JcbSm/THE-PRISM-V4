@@ -54,9 +54,9 @@ let RibyCommand = class RibyCommand extends PrismCommand {
         const imageURL = images[Math.floor(Math.random() * images.length)];
         const image = await loadImage(imageURL);
         const quote = `"${quotes[Math.floor(Math.random() * quotes.length)]}"`;
-        console.log({
-            quote, imageURL
-        });
+        // console.log({
+        //     quote, imageURL
+        // })
         const { width, height } = (() => {
             let width = image.width;
             let height = image.height;
@@ -68,16 +68,16 @@ let RibyCommand = class RibyCommand extends PrismCommand {
         })();
         const canvas = createCanvas(width, height);
         const ctx = canvas.getContext('2d');
-        console.log({
-            image: {
-                w: image.width,
-                h: image.height
-            },
-            canvas: {
-                w: canvas.width,
-                h: canvas.height
-            }
-        });
+        // console.log({
+        //     image : {
+        //         w: image.width,
+        //         h: image.height
+        //     },
+        //     canvas : {
+        //         w: canvas.width,
+        //         h: canvas.height
+        //     }
+        // })
         const bottomBoxHeight = canvas.height / 2.5;
         let fontsize = Math.round(canvas.height / 10);
         ctx.drawImage(image, 0, 0, width, height);
