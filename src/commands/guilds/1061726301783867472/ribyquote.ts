@@ -2,8 +2,9 @@ import { parseDirname } from "#helpers/files";
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators";
 import type { ChatInputCommand } from "@sapphire/framework";
-import { createCanvas, loadImage } from "canvas";
+import { createCanvas, loadImage, registerFont } from "canvas";
 import { AttachmentBuilder } from "discord.js";
+import { resolve } from "path";
 
 const dirname = parseDirname(import.meta.url);
 
@@ -50,14 +51,10 @@ export class RibyCommand extends PrismCommand {
             'https://cdn.discordapp.com/attachments/1014939283825643540/1037772943540887613/rn_image_picker_lib_temp_5696cf8d-a9b6-4a8a-a87e-073892f88469.jpg',
             'https://cdn.discordapp.com/attachments/1014939283825643540/1037054205963288608/rn_image_picker_lib_temp_2778b1f9-2a68-4320-9a35-3877a5eecd2a.jpg',
             'https://cdn.discordapp.com/attachments/1014939283825643540/1032594368525258762/IMG_20221019_155807_026.jpg',
-            'https://cdn.discordapp.com/attachments/1014939283825643540/1023543439494746152/507D6447-C509-41E7-B7B9-3269DAF9B601.jpg',
             'https://cdn.discordapp.com/attachments/1014939283825643540/1022549987374141591/85C7439E-5DAC-4787-A615-61C8902DCC85.jpg',
-            'https://cdn.discordapp.com/attachments/1014939283825643540/1018881220744065175/F2CC9FFA-1F82-4233-BF99-3B925E8F1314.jpg',
             'https://cdn.discordapp.com/attachments/1014939283825643540/1017839340686151730/IMG_4210.jpg',
             'https://cdn.discordapp.com/attachments/1014939283825643540/1016446668788486204/CC060053-FDA7-4761-A70B-F6FB3330348B.JPG',
-            'https://cdn.discordapp.com/attachments/1014939283825643540/1016426391966855248/92859312-0BE4-4D74-9C9F-E6B0A535D7B4.jpg',
             'https://cdn.discordapp.com/attachments/1014939283825643540/1016418623427973130/IMG_4153.png',
-            'https://cdn.discordapp.com/attachments/1014939283825643540/1016418144178405506/5500A37C-6DD9-4B2B-A031-493487FA0E48.jpg',
             'https://cdn.discordapp.com/attachments/1014939283825643540/1015269213730000997/2EA72597-4837-411F-85AF-44D78B4EA920.jpg',
         ]
 
@@ -65,24 +62,54 @@ export class RibyCommand extends PrismCommand {
             // 'Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really long'
             'Can we get a example of the drake equation in haskell?',
             'Do you want some salami?',
-            'Puss in boots 2 was very good',
-            'Mr Beast burger right good',
-            'I got lost coming back from campus today',
-            'Bus',
-            'I\'m confused'
+            'Puss in boots 2 was very good.',
+            'Mr Beast burger right good.',
+            'I got lost coming back from campus today.',
+            'Bus.',
+            'I\'m confused.'
         ]
+
+        registerFont(resolve('./src/assets/fonts/impact.ttf'), {family: "Impact"})
 
         const imageURL = images[Math.floor(Math.random()*images.length)];
         const image = await loadImage(imageURL);
         const quote = `"${quotes[Math.floor(Math.random()*quotes.length)]}"`;
 
-        const canvas = createCanvas(image.width, image.height);
+        console.log({
+            quote, imageURL
+        })
+
+        const { width, height } = (() => {
+
+            let width = image.width;
+            let height = image.height;
+
+            while (width > 1000 || height > 1000) {
+                width *= .95;
+                height *= .95
+            }
+
+            return { width, height }
+        })();
+
+        const canvas = createCanvas(width, height);
         const ctx = canvas.getContext('2d');
 
-        const bottomBoxHeight = image.height/2.5;
-        let fontsize = image.height/10
+        console.log({
+            image : {
+                w: image.width,
+                h: image.height
+            },
+            canvas : {
+                w: canvas.width,
+                h: canvas.height
+            }
+        })
 
-        ctx.drawImage(image, 0, 0);
+        const bottomBoxHeight = canvas.height/2.5;
+        let fontsize = Math.round(canvas.height/10);
+
+        ctx.drawImage(image, 0, 0, width, height);
 
         ctx.font = `${fontsize}px Impact`;
         ctx.textAlign = 'center';
@@ -90,8 +117,8 @@ export class RibyCommand extends PrismCommand {
         ctx.strokeStyle = '#000';
         ctx.lineWidth = fontsize/10;
 
-        ctx.strokeText('RIBY QOTD:', canvas.width/2, fontsize);
-        ctx.fillText('RIBY QOTD:', canvas.width/2, fontsize);
+        ctx.strokeText('RIBY QOTD:', width/2, fontsize);
+        ctx.fillText('RIBY QOTD:', width/2, fontsize);
 
         const splitText = () => {
             
@@ -99,8 +126,8 @@ export class RibyCommand extends PrismCommand {
 
             let row = 0;
 
-            while (ctx.measureText(rows[rows.length - 1]).width > canvas.width) {
-                while (ctx.measureText(rows[row]).width > canvas.width) {
+            while (ctx.measureText(rows[rows.length - 1]).width > width) {
+                while (ctx.measureText(rows[row]).width > width) {
 
                     // Move last word
                     if (rows[row+1]) 
@@ -124,13 +151,13 @@ export class RibyCommand extends PrismCommand {
             rows = splitText();
         }
 
-        let spacing = fontsize + fontsize/2
-        ctx.lineWidth = fontsize/10;
+        let spacing = fontsize + Math.round(fontsize/10);
+        ctx.lineWidth = Math.round(fontsize/10);
 
         rows.forEach((str: string, i: number, arr: string[]) => {
             const rows = arr.length - 1;
-            ctx.strokeText(str, canvas.width/2, canvas.height - (ctx.lineWidth + (spacing * (rows-i))));
-            ctx.fillText(str, canvas.width/2, canvas.height - (ctx.lineWidth + (spacing * (rows-i))));
+            ctx.strokeText(str, width/2, height - (ctx.lineWidth*2 + (spacing * (rows-i))));
+            ctx.fillText(str, width/2, height - (ctx.lineWidth*2 + (spacing * (rows-i))));
         })
         
         return canvas.toBuffer();
