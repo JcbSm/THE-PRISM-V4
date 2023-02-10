@@ -41,6 +41,7 @@ export class RibyCommand extends PrismCommand {
     private async drawRiby() {
         
         // Image URLs
+        // These are all images from #selfies in UoN Official Server
         const images = [
             'https://cdn.discordapp.com/attachments/1014939283825643540/1052296710417829958/fortnite.jpg',
             'https://cdn.discordapp.com/attachments/1014939283825643540/1052231794335952986/WIN_20221213_14_33_17_Pro.jpg',
