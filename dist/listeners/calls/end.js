@@ -2,13 +2,15 @@ import { __decorate } from "tslib";
 import { updateMessageComponents } from "#helpers/discord";
 import { PrismListener } from "#structs/PrismListener";
 import { ApplyOptions } from "@sapphire/decorators";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, GuildMember, PermissionFlagsBits } from "discord.js";
 let CallEndListener = class CallEndListener extends PrismListener {
     async run(interaction) {
         if (!(interaction.isButton() && interaction.customId == 'callEnd' && interaction.channel && interaction.guild && interaction.channel.type == ChannelType.GuildVoice))
             return;
+        if (!(interaction.member instanceof GuildMember))
+            return;
         const call = this.client.calls.get(interaction.channel.id) || await this.client.calls.recreate(interaction, interaction.guild, interaction.channel);
-        if (call.userId !== interaction.user.id) {
+        if (call.userId !== interaction.user.id && !interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
             interaction.reply({ ephemeral: true, content: 'You cannot modify someone else\'s call' });
             return;
         }

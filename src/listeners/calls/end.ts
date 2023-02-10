@@ -1,7 +1,7 @@
 import { updateMessageComponents } from "#helpers/discord";
 import { PrismListener } from "#structs/PrismListener";
 import { ApplyOptions } from "@sapphire/decorators";
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Interaction } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, GuildMember, Interaction, PermissionFlagsBits } from "discord.js";
 
 @ApplyOptions<PrismListener.Options>({
     event: 'interactionCreate'
@@ -11,10 +11,11 @@ export class CallEndListener extends PrismListener {
     public async run(interaction: Interaction) {
 
         if (!(interaction.isButton() && interaction.customId == 'callEnd' && interaction.channel && interaction.guild && interaction.channel.type == ChannelType.GuildVoice)) return;
+        if (!(interaction.member instanceof GuildMember)) return;
 
         const call = this.client.calls.get(interaction.channel.id)  || await this.client.calls.recreate(interaction, interaction.guild, interaction.channel);
         
-        if (call.userId !== interaction.user.id) {
+        if (call.userId !== interaction.user.id && !interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
             interaction.reply({ ephemeral: true, content: 'You cannot modify someone else\'s call' })
             return;
         }
