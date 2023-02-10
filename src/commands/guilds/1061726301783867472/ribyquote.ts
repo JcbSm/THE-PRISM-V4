@@ -40,6 +40,7 @@ export class RibyCommand extends PrismCommand {
 
     private async drawRiby() {
         
+        // Image URLs
         const images = [
             'https://cdn.discordapp.com/attachments/1014939283825643540/1052296710417829958/fortnite.jpg',
             'https://cdn.discordapp.com/attachments/1014939283825643540/1052231794335952986/WIN_20221213_14_33_17_Pro.jpg',
@@ -58,32 +59,34 @@ export class RibyCommand extends PrismCommand {
             'https://cdn.discordapp.com/attachments/1014939283825643540/1015269213730000997/2EA72597-4837-411F-85AF-44D78B4EA920.jpg',
         ]
 
+        // Quotes
         const quotes = [
             // 'Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really long'
             'Can we get a example of the drake equation in haskell?',
             'Do you want some salami?',
             'Puss in boots 2 was very good.',
-            'Mr Beast burger right good.',
+            'Mr Beast burger, right good.',
             'I got lost coming back from campus today.',
             'Bus.',
             'I\'m confused.'
         ]
 
-        registerFont(resolve('./src/assets/fonts/impact.ttf'), {family: "Impact"})
+        // Load IMPACT if running on host server (they too poor to have it)
+        if (!this.client.dev)
+            registerFont(resolve('./src/assets/fonts/impact.ttf'), {family: "Impact"})
 
+        // Pick image and quote
         const imageURL = images[Math.floor(Math.random()*images.length)];
         const image = await loadImage(imageURL);
         const quote = `"${quotes[Math.floor(Math.random()*quotes.length)]}"`;
 
-        // console.log({
-        //     quote, imageURL
-        // })
-
+        // Get width and height of image
         const { width, height } = (() => {
 
             let width = image.width;
             let height = image.height;
 
+            // If too large, scale down by 5%
             while (width > 1000 || height > 1000) {
                 width *= .95;
                 height *= .95
@@ -92,68 +95,78 @@ export class RibyCommand extends PrismCommand {
             return { width, height }
         })();
 
+        // Create the canvas to work with
         const canvas = createCanvas(width, height);
         const ctx = canvas.getContext('2d');
 
-        // console.log({
-        //     image : {
-        //         w: image.width,
-        //         h: image.height
-        //     },
-        //     canvas : {
-        //         w: canvas.width,
-        //         h: canvas.height
-        //     }
-        // })
+        // Set boundry for bottom text
+        const bottomBoxHeight = height/2.5;
 
-        const bottomBoxHeight = canvas.height/2.5;
-        let fontsize = Math.round(canvas.height/10);
+        // Set default fontsize
+        let fontsize = Math.round(height/10);
 
+        // Draw riby image
         ctx.drawImage(image, 0, 0, width, height);
 
+        // Set default variables
         ctx.font = `${fontsize}px Impact`;
         ctx.textAlign = 'center';
         ctx.fillStyle = '#FFF';
         ctx.strokeStyle = '#000';
-        ctx.lineWidth = fontsize/10;
+        ctx.lineWidth = Math.round(fontsize/10);
 
+        // TITLE
         ctx.strokeText('RIBY QOTD:', width/2, fontsize);
         ctx.fillText('RIBY QOTD:', width/2, fontsize);
 
+        // Function to split text into rows so it fits, as you can't write multilines
         const splitText = () => {
             
+            // Init Variables
             const rows: string[] = [quote];
-
             let row = 0;
 
+            // While the last row is too long to fit on the canvas
+            // This will make new rows until all of them are small enough
             while (ctx.measureText(rows[rows.length - 1]).width > width) {
+                // While the current row is too long to fit on the canvas
                 while (ctx.measureText(rows[row]).width > width) {
 
-                    // Move last word
+                    // Move last word of current row to the start of the next
+                    // if there is already a row, put it at the start
                     if (rows[row+1]) 
                         rows[row+1] = rows[row].split(" ").pop() + " " + rows[row+1];
+
+                    // Else if there isn't another row, make a new one
                     else rows.push(rows[row].split(" ").pop() || '');
 
-                    // Remove
+                    // Remove last word from current row
                     rows[row] = rows[row].split(" ").slice(0, -1).join(" ");
                 }
+
+                // next row
                 row++;
             }
 
             return rows;
         }
 
+        // Get the rows
         let rows = splitText();
-
+        // If the rows are too tall, and go past our boundry
         while (rows.length * (fontsize + fontsize/2) > bottomBoxHeight) {
+
+            // Make font size slightly smaller
             fontsize -= 5;
             ctx.font = `${fontsize}px Impact`;
+            // And get the rows again
             rows = splitText();
         }
 
         let spacing = fontsize + Math.round(fontsize/10);
         ctx.lineWidth = Math.round(fontsize/10);
 
+        // Draw the text
         rows.forEach((str: string, i: number, arr: string[]) => {
             const rows = arr.length - 1;
             ctx.strokeText(str, width/2, height - (ctx.lineWidth*2 + (spacing * (rows-i))));
@@ -161,6 +174,5 @@ export class RibyCommand extends PrismCommand {
         })
         
         return canvas.toBuffer();
-
     }
 }
