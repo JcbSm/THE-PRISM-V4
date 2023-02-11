@@ -60,7 +60,7 @@ export default class extends PrismListener {
 
         return channel.send({ embeds: [
             new EmbedBuilder()
-                .setDescription(`${member} advanved to level ${level}!`)
+                .setDescription(`${member} advanced to level ${level}!`)
         ]})
     }
 }
