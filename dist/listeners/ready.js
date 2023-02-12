@@ -4,6 +4,7 @@ import { Events } from "#types/events";
 import { ApplyOptions } from "@sapphire/decorators";
 let default_1 = class extends PrismListener {
     async run() {
+        this.client.util.regenChannel();
         const members = await this.db.fetchVoiceMembers();
         const polls = await this.db.fetchActivePolls();
         for (const poll of polls) {

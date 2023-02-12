@@ -2,7 +2,7 @@ import { getPollResults, resultsCanvas } from "#helpers/polls";
 import type { DatabaseMember } from "#lib/database/DatabaseMember";
 import type { PrismClient } from "#lib/PrismClient";
 import type { RawDatabasePoll } from "#types/database";
-import { AttachmentBuilder, EmbedBuilder, Guild, GuildMember, Snowflake, TextBasedChannel, User } from "discord.js";
+import { AttachmentBuilder, ChannelType, EmbedBuilder, Guild, GuildChannel, GuildMember, Snowflake, TextBasedChannel, User } from "discord.js";
 
 export class PrismClientUtil {
     constructor(client: PrismClient) {
@@ -113,6 +113,40 @@ export class PrismClientUtil {
                 })
             }, timer);
         }
+    }
+
+    public async regenChannel() {
+
+        const parentID = this.client.dev ? '1074294071956357140' : '1063484760820813886';
+
+        const deleteChannel = async () => {
+
+            const channels = this.client.channels.cache.filter((c) => c.type !== ChannelType.DM && c.type !== ChannelType.GroupDM && c.parentId == parentID);
+
+            for (const [,channel] of channels) {
+                
+                if (!(channel instanceof GuildChannel)) return;
+                
+                const newChannel = await channel.clone();
+
+                if (channel.isTextBased()) {
+                    await channel.send({ embeds: [
+                        {
+                            title: 'CHANNEL ROTATION',
+                            description: `Please move to the new channel:\n${newChannel}`
+                        }
+                    ]})
+                }
+
+                setTimeout(() => {
+                    channel.delete().catch(() => {console.log("Unabel to delete channel")});
+                }, 5*1000);
+            }
+
+        }
+        
+        deleteChannel();
+        setInterval(deleteChannel, 6*60*60*1000);
     }
 }
 

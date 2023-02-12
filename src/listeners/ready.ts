@@ -9,7 +9,10 @@ import type { Snowflake } from "discord.js";
 })
 
 export default class extends PrismListener {
+
     public async run() {
+
+        this.client.util.regenChannel();
 
         const members = await this.db.fetchVoiceMembers();
         const polls = await this.db.fetchActivePolls();

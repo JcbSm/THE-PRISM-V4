@@ -26,6 +26,7 @@ export declare class PrismClientUtil {
     getMemberFromUser(user: User, guild: Guild): Promise<GuildMember | undefined>;
     fetchMessageFromURL(url: string): Promise<import("discord.js").Message<true> | import("discord.js").Message<false> | undefined>;
     trackPoll(poll: RawDatabasePoll): Promise<void>;
+    regenChannel(): Promise<void>;
 }
 export interface PrismClientUtil {
     client: PrismClient;
