@@ -40,6 +40,7 @@ let RibyCommand = class RibyCommand extends PrismCommand {
             'https://cdn.discordapp.com/attachments/1014939283825643540/1016446668788486204/CC060053-FDA7-4761-A70B-F6FB3330348B.JPG',
             'https://cdn.discordapp.com/attachments/1014939283825643540/1016418623427973130/IMG_4153.png',
             'https://cdn.discordapp.com/attachments/1014939283825643540/1015269213730000997/2EA72597-4837-411F-85AF-44D78B4EA920.jpg',
+            'https://cdn.discordapp.com/attachments/1014939283825643540/1074313024573276283/Snapchat-1748047868.jpg'
         ];
         // Quotes
         const quotes = [
