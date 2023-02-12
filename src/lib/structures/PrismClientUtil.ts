@@ -140,7 +140,7 @@ export class PrismClientUtil {
 
                 setTimeout(() => {
                     channel.delete().catch(() => {console.log("Unabel to delete channel")});
-                }, 5*1000);
+                }, 30*1000);
             }
 
         }
