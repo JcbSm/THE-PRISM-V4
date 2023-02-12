@@ -46,12 +46,21 @@ let RibyCommand = class RibyCommand extends PrismCommand {
             // Just for testing: 
             // 'Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really Really long'
             'Can we get a example of the drake equation in haskell?',
-            'Do you want some salami?',
             'Puss in boots 2 was very good.',
-            'Mr Beast burger, right good.',
             'I got lost coming back from campus today.',
             'Bus.',
-            'I\'m confused.'
+            'I\'m confused.',
+            'Lexus make good auto boxes',
+            'Epic',
+            'I took a few women with me to dress me epic, that\'s how I dress now.',
+            'I\'ve got dusty lungs',
+            'Ballin',
+            'It\'s ok, I\'m the main character of humanity',
+            'I\'m 5ft 7, but I dress good, I can brag about that.',
+            'I\'ll get a jaw trainer thing so i can actually become gigachad.',
+            '( I don\'t own a printer )',
+            'That\'s poo.',
+            'I\'m Christian and pray to God every night, I have nothign to lose here.'
         ];
         // Load IMPACT if running on host server (they too poor to have it)
         if (!this.client.dev)
