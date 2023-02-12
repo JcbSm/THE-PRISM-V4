@@ -41,7 +41,7 @@ let default_1 = class extends PrismListener {
             return;
         return channel.send({ embeds: [
                 new EmbedBuilder()
-                    .setDescription(`${member} advanved to level ${level}!`)
+                    .setDescription(`${member} advanced to level ${level}!`)
             ] });
     }
 };

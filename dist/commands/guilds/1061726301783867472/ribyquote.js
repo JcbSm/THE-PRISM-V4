@@ -8,7 +8,6 @@ import { resolve } from "path";
 const dirname = parseDirname(import.meta.url);
 let RibyCommand = class RibyCommand extends PrismCommand {
     registerApplicationCommands(registry) {
-        console.log(dirname);
         registry.registerChatInputCommand(command => command //
             .setName(this.name)
             .setDescription(this.description), {

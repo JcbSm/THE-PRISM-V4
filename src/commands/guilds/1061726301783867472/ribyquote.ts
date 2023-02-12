@@ -16,7 +16,6 @@ const dirname = parseDirname(import.meta.url);
 export class RibyCommand extends PrismCommand {
 
     public override registerApplicationCommands(registry: ChatInputCommand.Registry) {
-        console.log(dirname)
         registry.registerChatInputCommand(command =>
             command //
                 .setName(this.name)
