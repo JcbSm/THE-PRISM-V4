@@ -17,7 +17,7 @@ export declare class DatabaseClient {
      * @param query Query to be ran
      * @returns Query result
      */
-    private query;
+    query(query: string, retries?: number): Promise<any>;
     /**
      * Converts options object into string useable with query
      * @param options Options to convert

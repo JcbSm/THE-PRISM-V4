@@ -58,12 +58,18 @@ export class CountingCommand extends PrismCommand {
 
     private async getEmbed(member: GuildMember) {
 
-        const { counting_counts } = await this.db.fetchMember(member);
+        const { counting_counts, counting_last_message_url } = await this.db.fetchMember(member);
         const { counting_count } = await this.db.fetchGuild(member.guild);
 
         return new EmbedBuilder()
             .setTitle('Counting Stats')
             .setDescription(`${member} has counted \`${counting_counts}\` times.\nThat's \`${percentage(counting_counts, counting_count, 2)}\` of total counts.`)
+            .addFields([
+                {
+                    name: 'LAST COUNT',
+                    value: `[Jump](${counting_last_message_url})`
+                }
+            ])
             .setThumbnail(member.displayAvatarURL())
 
     }

@@ -41,7 +41,7 @@ export class DatabaseClient {
      * @param query Query to be ran
      * @returns Query result
      */
-    private async query(query: string, retries = 0): Promise<any> {
+    public async query(query: string, retries = 0): Promise<any> {
 
         const max_retries = 10
         
