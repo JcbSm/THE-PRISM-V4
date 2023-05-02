@@ -12,6 +12,13 @@ let default_1 = class extends PrismListener {
             return;
         if (!message.guild || !message.member)
             return;
+        if (message.guild.id === '447504770719154192' && /meow/gim.test(message.content)) {
+            console.log(message.member.moderatable);
+            if (message.member.moderatable) {
+                message.member.timeout(60 * 1000, 'No me*wing...');
+            }
+            message.reply('stfu');
+        }
         const { member_id, xp: old_xp, xp_last_message_at } = await this.db.fetchMember(message.member);
         // Log message for stats & xp
         await this.db.message(member_id, message.createdTimestamp - xp_last_message_at > xp_cooldown);
