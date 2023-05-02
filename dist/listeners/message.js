@@ -15,7 +15,7 @@ let default_1 = class extends PrismListener {
         if (message.guild.id === '447504770719154192' && /meow/gim.test(message.content)) {
             console.log(message.member.moderatable);
             if (message.member.moderatable) {
-                message.member.timeout(60 * 1000, 'No me*wing...');
+                message.member.timeout(3 * 60 * 1000, 'No me*wing...');
             }
             message.reply('stfu');
         }
