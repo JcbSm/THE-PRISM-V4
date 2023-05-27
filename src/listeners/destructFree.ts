@@ -12,7 +12,7 @@ export default class extends PrismListener {
 
         if (message.channel.id !== '1112128330825748552') return;
 
-        const digits = 3;
+        const digits = 4;
         const digitArr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
         const regen = () => {

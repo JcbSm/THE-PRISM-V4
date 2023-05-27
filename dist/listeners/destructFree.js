@@ -6,7 +6,7 @@ let default_1 = class extends PrismListener {
     async run(message) {
         if (message.channel.id !== '1112128330825748552')
             return;
-        const digits = 3;
+        const digits = 4;
         const digitArr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
         const regen = () => {
             return new Array(digits).fill(0).map(() => {
