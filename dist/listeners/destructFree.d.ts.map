@@ -1,0 +1,1 @@
+{"version":3,"file":"destructFree.d.ts","sourceRoot":"","sources":["../../src/listeners/destructFree.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,wBAAwB,CAAC;AAGvD,OAAO,KAAK,EAAE,OAAO,EAAE,MAAM,YAAY,CAAC;AAM1C,MAAM,CAAC,OAAO,MAAO,SAAQ,aAAa;IACzB,GAAG,CAAC,OAAO,EAAE,OAAO;CAqBpC"}
