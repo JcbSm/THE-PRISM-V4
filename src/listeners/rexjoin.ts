@@ -10,7 +10,7 @@ import type { GuildMember } from "discord.js";
 
 export default class extends PrismListener {
     public async run(member: GuildMember) {
-        if (member.id === '887416215839076373')
+        if (member.guild.id == '447504770719154192')
             member.roles.add('1112128366934511648');
     }
 }

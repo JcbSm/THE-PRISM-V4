@@ -4,7 +4,7 @@ import { Events } from "#types/events";
 import { ApplyOptions } from "@sapphire/decorators";
 let default_1 = class extends PrismListener {
     async run(member) {
-        if (member.id === '887416215839076373')
+        if (member.guild.id == '447504770719154192')
             member.roles.add('1112128366934511648');
     }
 };
