@@ -2,6 +2,23 @@ import { createPool } from 'mysql';
 import { rng } from '#helpers/numbers';
 import { DatabaseMember } from '#lib/database/DatabaseMember';
 import { DatabaseGuild } from '#lib/database/DatabaseGuild';
+export class QueryResponse {
+    constructor(success, result, error = null) {
+        this.success = success;
+        this.result = result;
+        this.error = error;
+    }
+}
+export class QueryResult extends QueryResponse {
+    constructor(result) {
+        super(true, result);
+    }
+}
+export class QueryError extends QueryResponse {
+    constructor(error) {
+        super(false, null, error);
+    }
+}
 export class DatabaseClient {
     constructor(client) {
         this.client = client;
@@ -21,27 +38,22 @@ export class DatabaseClient {
      * @param query Query to be ran
      * @returns Query result
      */
-    async query(query, retries = 0) {
-        const max_retries = 10;
-        const res = await new Promise((res, rej) => {
-            this.pool.query({ sql: query, timeout: 10 * 1000 }, async (err, result) => {
-                if (err) {
-                    if (retries < max_retries) {
-                        console.log(`Query Error: ${err.code}. Retrying...`);
-                        retries++;
-                        await this.query(query, retries);
-                        rej(err);
-                    }
-                    else {
-                        console.log(`Query failed after ${retries} retries`);
-                        rej(err);
-                    }
-                }
+    async query(sql) {
+        return new Promise((resolve, reject) => {
+            this.pool.getConnection((err, con) => {
+                if (err)
+                    reject(new QueryError(err));
+                if (con)
+                    con.query({ sql, timeout: 10 * 1000 }, (err, rows) => {
+                        con.release();
+                        if (err)
+                            reject(new QueryError(err));
+                        resolve(new QueryResult(rows));
+                    });
                 else
-                    res(result);
+                    resolve(new QueryError("Unable to connect"));
             });
         });
-        return res;
     }
     /**
      * Converts options object into string useable with query
@@ -58,7 +70,7 @@ export class DatabaseClient {
      * @returns User data
      */
     async fetchUser(user) {
-        return { ...(await this.query(`SELECT * FROM users WHERE user_id = ${user.id};`))[0] || (await this.query(`INSERT INTO users (user_id) VALUES (${user.id}) RETURNING *`))[0] };
+        return { ...(await this.query(`SELECT * FROM users WHERE user_id = ${user.id};`)).result[0] || (await this.query(`INSERT INTO users (user_id) VALUES (${user.id}) RETURNING *`)).result[0] };
     }
     /**
      * Sums all the member data for a specified user
@@ -79,7 +91,7 @@ export class DatabaseClient {
             SUM(counting_counts) as counting_counts
             FROM members WHERE user_id = ${user.id}
         `;
-        const data = (await this.query(query))[0];
+        const data = (await this.query(query)).result[0];
         return data;
     }
     /**
@@ -88,7 +100,7 @@ export class DatabaseClient {
      * @returns Guild data
      */
     async fetchGuild(guild) {
-        const data = { ...(await this.query(`SELECT * FROM guilds WHERE guild_id = ${guild.id};`))[0] || (await this.query(`INSERT INTO guilds (guild_id) VALUES (${guild.id}) RETURNING *`))[0] };
+        const data = { ...(await this.query(`SELECT * FROM guilds WHERE guild_id = ${guild.id};`)).result[0] || (await this.query(`INSERT INTO guilds (guild_id) VALUES (${guild.id}) RETURNING *`)).result[0] };
         return new DatabaseGuild(data);
     }
     /**
@@ -100,8 +112,8 @@ export class DatabaseClient {
         // Ensure guild and member exist first.
         await this.fetchGuild(member.guild);
         await this.fetchUser(member.user);
-        const data = { ...(await this.query(`SELECT * FROM members WHERE user_id = ${member.user.id} AND guild_id = ${member.guild.id};`))[0] || //
-                (await this.query(`INSERT INTO members (user_id, guild_id) VALUES (${member.user.id}, ${member.guild.id}) RETURNING *;`))[0] };
+        const data = { ...(await this.query(`SELECT * FROM members WHERE user_id = ${member.user.id} AND guild_id = ${member.guild.id};`)).result[0] || //
+                (await this.query(`INSERT INTO members (user_id, guild_id) VALUES (${member.user.id}, ${member.guild.id}) RETURNING *;`)).result[0] };
         return new DatabaseMember(data);
     }
     /**
@@ -109,7 +121,7 @@ export class DatabaseClient {
      * @returns {DatabaseMember[]} Every member in the database
      */
     async fetchMembers() {
-        return (await this.query(`SELECT * FROM members`)).map((m) => new DatabaseMember(m));
+        return (await this.query(`SELECT * FROM members`)).result.map((m) => new DatabaseMember(m));
     }
     /**
      * Fetch all DatabaseMembers for a guild
@@ -119,7 +131,7 @@ export class DatabaseClient {
     async fetchGuildMembers(guild) {
         // Ensure guild exists.
         await this.fetchGuild(guild);
-        const res = await this.query(`SELECT * FROM members WHERE guild_id = ${guild.id}`);
+        const res = (await this.query(`SELECT * FROM members WHERE guild_id = ${guild.id}`)).result;
         return res.map(data => new DatabaseMember(data));
     }
     /**
@@ -127,7 +139,7 @@ export class DatabaseClient {
      * @returns {DatabaseMember[]} Every member in the database where tracking_voice = true
      */
     async fetchVoiceMembers() {
-        const res = (await this.query(`SELECT * FROM members WHERE tracking_voice = true`));
+        const res = (await this.query(`SELECT * FROM members WHERE tracking_voice = true`)).result;
         return res.map(data => new DatabaseMember(data));
     }
     /**
@@ -161,7 +173,7 @@ export class DatabaseClient {
         // Ensure guild exists on database
         await this.fetchGuild(guild);
         // Set values
-        return await this.query(`UPDATE guilds SET channel_id_${feature} = ${channelId} WHERE guild_id = ${guild.id}`);
+        return (await this.query(`UPDATE guilds SET channel_id_${feature} = ${channelId} WHERE guild_id = ${guild.id}`)).result;
     }
     /**
      * Record a message for a guildmember.
@@ -212,10 +224,10 @@ export class DatabaseClient {
         }, 60 * 1000);
     }
     async addLevelRole(role, guild, level) {
-        return (await this.query(`INSERT INTO level_roles (guild_id, role_id, level) VALUES (${guild.id}, ${role.id}, ${level}) RETURNING *`))[0];
+        return (await this.query(`INSERT INTO level_roles (guild_id, role_id, level) VALUES (${guild.id}, ${role.id}, ${level}) RETURNING *`)).result[0];
     }
     async getLevelRoles(guild) {
-        return await this.query(`SELECT * FROM level_roles WHERE guild_id = ${guild.id}`);
+        return (await this.query(`SELECT * FROM level_roles WHERE guild_id = ${guild.id}`)).result;
     }
     async removeLevelRole(id) {
         return await this.query(`DELETE FROM level_roles WHERE level_role_id = ${id}`);
@@ -228,7 +240,7 @@ export class DatabaseClient {
      * @returns The created call
      */
     async createCall(guild, userId, channel) {
-        return (await this.query(`INSERT INTO calls (guild_id, user_id, channel_id) VALUES (${guild.id}, ${userId}, ${channel.id}) RETURNING *`))[0];
+        return (await this.query(`INSERT INTO calls (guild_id, user_id, channel_id) VALUES (${guild.id}, ${userId}, ${channel.id}) RETURNING *`)).result[0];
     }
     /**
      * Deletes a call
@@ -244,15 +256,15 @@ export class DatabaseClient {
      * @returns Call
      */
     async fetchCall(channel) {
-        return (await this.query(`SELECT * FROM calls WHERE channel_id = ${channel.id}`))[0];
+        return (await this.query(`SELECT * FROM calls WHERE channel_id = ${channel.id}`)).result[0];
     }
     async fetchMemberCall(member) {
-        return (await this.query(`SELECT * FROM calls WHERE user_id = ${member.id} AND guild_id = ${member.guild.id}`))[0];
+        return (await this.query(`SELECT * FROM calls WHERE user_id = ${member.id} AND guild_id = ${member.guild.id}`)).result[0];
     }
     async fetchCalls(guild) {
         return guild
-            ? (await this.query(`SELECT * FROM calls WHERE guild_id = ${guild.id}`))
-            : (await this.query(`SELECT * FROM calls`));
+            ? (await this.query(`SELECT * FROM calls WHERE guild_id = ${guild.id}`)).result
+            : (await this.query(`SELECT * FROM calls`)).result;
     }
     async rps(guild, user, opponent, outcome) {
         const userfield = outcome > 0 ? 'wins' : outcome < 0 ? 'losses' : 'draws';
@@ -261,19 +273,19 @@ export class DatabaseClient {
         this.query(`UPDATE members SET rps_${oponentfield} = rps_${oponentfield} + 1 WHERE user_id = ${opponent.id} AND guild_id = ${guild.id}`);
     }
     async createPoll(message, user, maxchoices, end) {
-        return (await this.query(`INSERT INTO polls (message_url, user_id, end_timestamp, max_choices) VALUES ('${message.url}', ${user.id}, ${end}, ${maxchoices}) RETURNING *`))[0];
+        return (await this.query(`INSERT INTO polls (message_url, user_id, end_timestamp, max_choices) VALUES ('${message.url}', ${user.id}, ${end}, ${maxchoices}) RETURNING *`)).result[0];
     }
     async fetchPoll(message) {
-        return (await this.query(`SELECT * FROM polls WHERE message_url = '${message.url}'`))[0];
+        return (await this.query(`SELECT * FROM polls WHERE message_url = '${message.url}'`)).result[0];
     }
     async vote(pollId, user_id, vote) {
         return (await this.query(`REPLACE INTO poll_votes (poll_id, user_id, vote) VALUES (${pollId}, ${user_id}, ${vote})`));
     }
     async fetchVotes(pollId) {
-        return (await this.query(`SELECT * FROM poll_votes WHERE poll_id = ${pollId}`));
+        return (await this.query(`SELECT * FROM poll_votes WHERE poll_id = ${pollId}`)).result;
     }
     async fetchActivePolls() {
-        return (await this.query(`SELECT * FROM polls WHERE end_timestamp > ${Date.now()}`));
+        return (await this.query(`SELECT * FROM polls WHERE end_timestamp > ${Date.now()}`)).result;
     }
 }
 //# sourceMappingURL=DatabaseClient.js.map

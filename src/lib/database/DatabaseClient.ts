@@ -14,6 +14,32 @@ import { rng } from '#helpers/numbers';
 import { DatabaseMember } from '#lib/database/DatabaseMember';
 import { DatabaseGuild } from '#lib/database/DatabaseGuild';
 
+export interface QueryResponse {
+    success: boolean;
+    result: any;
+    error: MysqlError | string | null;
+}
+
+export class QueryResponse {
+    constructor(success: boolean, result: any | null, error: MysqlError | string | null = null) {
+        this.success = success;
+        this.result = result;
+        this.error = error;
+    }
+}
+
+export class QueryResult extends QueryResponse {
+    constructor(result: any) {
+        super(true, result)
+    }
+}
+
+export class QueryError extends QueryResponse {
+    constructor(error: MysqlError | string) {
+        super(false, null, error);
+    }
+}
+
 export interface DatabaseClient {
     client: PrismClient;
     pool: Pool;
@@ -22,6 +48,7 @@ export interface DatabaseClient {
 }
 
 export class DatabaseClient {
+
     constructor(client: PrismClient) {
         this.client = client;
         this.db = this.client.db;
@@ -36,41 +63,35 @@ export class DatabaseClient {
         })
     }
 
+
     /**
      * Run a query on the MySQL database
      * @param query Query to be ran
      * @returns Query result
      */
-    public async query(query: string, retries = 0): Promise<any> {
+    public async query(sql: string): Promise<QueryResponse> {
 
-        const max_retries = 10
-        
-        const res = await new Promise((res, rej) => {
-            this.pool.query({ sql: query, timeout: 10*1000 }, async (err, result) => {
+        return new Promise((resolve, reject) => {
+
+            this.pool.getConnection((err, con) => {
+
+                if (err)
+                    reject(new QueryError(err));
+
+                if (con)
+                    con.query({ sql, timeout: 10*1000 }, (err, rows) => {
+                        con.release();
+
+                        if (err)
+                            reject(new QueryError(err));
+
+                        resolve(new QueryResult(rows));
+                    })
                 
-                if (err) {
-
-                    if (retries < max_retries) {
-                    
-                        console.log(`Query Error: ${err.code}. Retrying...`)
-                        retries++;
-                        await this.query(query, retries);
-                        rej(err);
-                    
-                    } else {
-                    
-                        console.log(`Query failed after ${retries} retries`);
-                        rej(err)
-                    
-                    }
-                
-                } else
-                    res(result);
-
+                else resolve(new QueryError("Unable to connect"));
             })
-        });
 
-        return res;
+        })
     }
 
     /**
@@ -89,7 +110,7 @@ export class DatabaseClient {
      * @returns User data
      */
     public async fetchUser(user: User): Promise<RawDatabaseUser> {
-        return {...(await this.query(`SELECT * FROM users WHERE user_id = ${user.id};`))[0] || (await this.query(`INSERT INTO users (user_id) VALUES (${user.id}) RETURNING *`))[0]}
+        return {...(await this.query(`SELECT * FROM users WHERE user_id = ${user.id};`)).result[0] || (await this.query(`INSERT INTO users (user_id) VALUES (${user.id}) RETURNING *`)).result[0]}
     }
 
     /**
@@ -113,7 +134,7 @@ export class DatabaseClient {
             FROM members WHERE user_id = ${user.id}
         `
 
-        const data = (await this.query(query))[0] as {
+        const data = (await this.query(query)).result[0] as {
             user_id: Snowflake;
             count: number;
             xp: number;
@@ -134,7 +155,7 @@ export class DatabaseClient {
      * @returns Guild data
      */
     public async fetchGuild(guild: Guild): Promise<DatabaseGuild> {
-        const data = {...(await this.query(`SELECT * FROM guilds WHERE guild_id = ${guild.id};`))[0] || (await this.query(`INSERT INTO guilds (guild_id) VALUES (${guild.id}) RETURNING *`))[0]} as RawDatabaseGuild;
+        const data = {...(await this.query(`SELECT * FROM guilds WHERE guild_id = ${guild.id};`)).result[0] || (await this.query(`INSERT INTO guilds (guild_id) VALUES (${guild.id}) RETURNING *`)).result[0]} as RawDatabaseGuild;
 
         return new DatabaseGuild(data);
     }
@@ -149,8 +170,8 @@ export class DatabaseClient {
         // Ensure guild and member exist first.
         await this.fetchGuild(member.guild); await this.fetchUser(member.user);
 
-        const data = {...(await this.query(`SELECT * FROM members WHERE user_id = ${member.user.id} AND guild_id = ${member.guild.id};`))[0] || //
-            (await this.query(`INSERT INTO members (user_id, guild_id) VALUES (${member.user.id}, ${member.guild.id}) RETURNING *;`))[0]} as RawDatabaseMember;
+        const data = {...(await this.query(`SELECT * FROM members WHERE user_id = ${member.user.id} AND guild_id = ${member.guild.id};`)).result[0] || //
+            (await this.query(`INSERT INTO members (user_id, guild_id) VALUES (${member.user.id}, ${member.guild.id}) RETURNING *;`)).result[0]} as RawDatabaseMember;
 
         return new DatabaseMember(data);
 
@@ -162,7 +183,7 @@ export class DatabaseClient {
      */
     public async fetchMembers(): Promise<DatabaseMember[]> {
 
-        return (await this.query(`SELECT * FROM members`)).map((m: RawDatabaseMember) => new DatabaseMember(m));
+        return (await this.query(`SELECT * FROM members`)).result.map((m: RawDatabaseMember) => new DatabaseMember(m));
 
     }
 
@@ -176,7 +197,7 @@ export class DatabaseClient {
         // Ensure guild exists.
         await this.fetchGuild(guild);
 
-        const res = await this.query(`SELECT * FROM members WHERE guild_id = ${guild.id}`) as RawDatabaseMember[];
+        const res = (await this.query(`SELECT * FROM members WHERE guild_id = ${guild.id}`)).result as RawDatabaseMember[];
 
         return res.map(data => new DatabaseMember(data));
     }
@@ -187,7 +208,7 @@ export class DatabaseClient {
      */
     public async fetchVoiceMembers(): Promise<DatabaseMember[]> {
 
-        const res = (await this.query(`SELECT * FROM members WHERE tracking_voice = true`)) as RawDatabaseMember[];
+        const res = (await this.query(`SELECT * FROM members WHERE tracking_voice = true`)).result as RawDatabaseMember[];
 
         return res.map(data => new DatabaseMember(data));
 
@@ -228,7 +249,7 @@ export class DatabaseClient {
         await this.fetchGuild(guild);
 
         // Set values
-        return await this.query(`UPDATE guilds SET channel_id_${feature} = ${channelId} WHERE guild_id = ${guild.id}`);
+        return (await this.query(`UPDATE guilds SET channel_id_${feature} = ${channelId} WHERE guild_id = ${guild.id}`)).result;
     }
 
     /**
@@ -295,11 +316,11 @@ export class DatabaseClient {
     }
 
     public async addLevelRole(role: Role, guild: Guild, level: number): Promise<RawDatabaseLevelRole> {
-        return (await this.query(`INSERT INTO level_roles (guild_id, role_id, level) VALUES (${guild.id}, ${role.id}, ${level}) RETURNING *`))[0];
+        return (await this.query(`INSERT INTO level_roles (guild_id, role_id, level) VALUES (${guild.id}, ${role.id}, ${level}) RETURNING *`)).result[0];
     }
 
     public async getLevelRoles(guild: Guild): Promise<RawDatabaseLevelRole[]> {
-        return await this.query(`SELECT * FROM level_roles WHERE guild_id = ${guild.id}`);
+        return (await this.query(`SELECT * FROM level_roles WHERE guild_id = ${guild.id}`)).result;
     }
 
     public async removeLevelRole(id: number) {
@@ -314,7 +335,7 @@ export class DatabaseClient {
      * @returns The created call
      */
     public async createCall(guild: Guild, userId: Snowflake, channel: VoiceChannel): Promise<RawDatabaseCall> {
-        return (await this.query(`INSERT INTO calls (guild_id, user_id, channel_id) VALUES (${guild.id}, ${userId}, ${channel.id}) RETURNING *`))[0];
+        return (await this.query(`INSERT INTO calls (guild_id, user_id, channel_id) VALUES (${guild.id}, ${userId}, ${channel.id}) RETURNING *`)).result[0];
     }
 
     /**
@@ -332,17 +353,17 @@ export class DatabaseClient {
      * @returns Call
      */
     public async fetchCall(channel: Channel) {
-        return (await this.query(`SELECT * FROM calls WHERE channel_id = ${channel.id}`))[0]
+        return (await this.query(`SELECT * FROM calls WHERE channel_id = ${channel.id}`)).result[0]
     }
 
     public async fetchMemberCall(member: GuildMember): Promise<RawDatabaseCall> {
-        return (await this.query(`SELECT * FROM calls WHERE user_id = ${member.id} AND guild_id = ${member.guild.id}`))[0]
+        return (await this.query(`SELECT * FROM calls WHERE user_id = ${member.id} AND guild_id = ${member.guild.id}`)).result[0]
     }
 
     public async fetchCalls(guild?: Guild) {
         return guild 
-            ? ((await this.query(`SELECT * FROM calls WHERE guild_id = ${guild.id}`)) as RawDatabaseCall[])
-            : ((await this.query(`SELECT * FROM calls`)) as RawDatabaseCall[])
+            ? ((await this.query(`SELECT * FROM calls WHERE guild_id = ${guild.id}`)).result as RawDatabaseCall[])
+            : ((await this.query(`SELECT * FROM calls`)).result as RawDatabaseCall[])
     }
 
     public async rps(guild: Guild, user: User, opponent: User, outcome: number) {
@@ -353,11 +374,11 @@ export class DatabaseClient {
     }
 
     public async createPoll(message: Message, user: User, maxchoices: number, end: EpochTimeStamp | null): Promise<RawDatabasePoll> {
-        return (await this.query(`INSERT INTO polls (message_url, user_id, end_timestamp, max_choices) VALUES ('${message.url}', ${user.id}, ${end}, ${maxchoices}) RETURNING *`))[0];
+        return (await this.query(`INSERT INTO polls (message_url, user_id, end_timestamp, max_choices) VALUES ('${message.url}', ${user.id}, ${end}, ${maxchoices}) RETURNING *`)).result[0];
     }
 
     public async fetchPoll(message: Message): Promise<RawDatabasePoll> {
-        return (await this.query(`SELECT * FROM polls WHERE message_url = '${message.url}'`))[0];
+        return (await this.query(`SELECT * FROM polls WHERE message_url = '${message.url}'`)).result[0];
     }
 
     public async vote(pollId: number, user_id: Snowflake, vote: number) {
@@ -365,10 +386,10 @@ export class DatabaseClient {
     }
 
     public async fetchVotes(pollId: number): Promise<RawDatabaseVote[]> {
-        return (await this.query(`SELECT * FROM poll_votes WHERE poll_id = ${pollId}`))
+        return (await this.query(`SELECT * FROM poll_votes WHERE poll_id = ${pollId}`)).result
     }
 
     public async fetchActivePolls(): Promise<RawDatabasePoll[]> {
-        return (await this.query(`SELECT * FROM polls WHERE end_timestamp > ${Date.now()}`))
+        return (await this.query(`SELECT * FROM polls WHERE end_timestamp > ${Date.now()}`)).result
     }
 }

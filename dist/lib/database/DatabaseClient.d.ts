@@ -4,6 +4,20 @@ import type { Channel, Guild, GuildMember, Message, Role, Snowflake, User, Voice
 import type { RawDatabaseUser, RawDatabaseLevelRole, RawDatabaseCall, RawDatabasePoll, RawDatabaseVote } from '#types/database';
 import { DatabaseMember } from '#lib/database/DatabaseMember';
 import { DatabaseGuild } from '#lib/database/DatabaseGuild';
+export interface QueryResponse {
+    success: boolean;
+    result: any;
+    error: MysqlError | string | null;
+}
+export declare class QueryResponse {
+    constructor(success: boolean, result: any | null, error?: MysqlError | string | null);
+}
+export declare class QueryResult extends QueryResponse {
+    constructor(result: any);
+}
+export declare class QueryError extends QueryResponse {
+    constructor(error: MysqlError | string);
+}
 export interface DatabaseClient {
     client: PrismClient;
     pool: Pool;
@@ -17,7 +31,7 @@ export declare class DatabaseClient {
      * @param query Query to be ran
      * @returns Query result
      */
-    query(query: string, retries?: number): Promise<any>;
+    query(sql: string): Promise<QueryResponse>;
     /**
      * Converts options object into string useable with query
      * @param options Options to convert
@@ -80,14 +94,14 @@ export declare class DatabaseClient {
      * @param options Fields to update
      * @returns MySQL Query result
      */
-    updateGuild(guild: Guild, options: DatabaseGuild.Options): Promise<any>;
+    updateGuild(guild: Guild, options: DatabaseGuild.Options): Promise<QueryResponse>;
     /**
      * Update database values for member.
      * @param member Guildmember to update
      * @param options Fields to update
      * @returns MySQL query results
      */
-    updateMember(member: GuildMember, options: DatabaseMember.Options): Promise<any>;
+    updateMember(member: GuildMember, options: DatabaseMember.Options): Promise<QueryResponse>;
     /**
      * Sets a channel in the guilds table
      * @param guild Guild to set channel for
@@ -102,7 +116,7 @@ export declare class DatabaseClient {
      * @param xp if the user should earn xp from this message
      * @returns
      */
-    message(member_id: number, xp?: boolean): Promise<any>;
+    message(member_id: number, xp?: boolean): Promise<QueryResponse>;
     /**
      * Tracks the voice stats for a member
      * @param {GuildMember} member Memebr to track
@@ -110,7 +124,7 @@ export declare class DatabaseClient {
     trackVoice(member: GuildMember): Promise<void>;
     addLevelRole(role: Role, guild: Guild, level: number): Promise<RawDatabaseLevelRole>;
     getLevelRoles(guild: Guild): Promise<RawDatabaseLevelRole[]>;
-    removeLevelRole(id: number): Promise<any>;
+    removeLevelRole(id: number): Promise<QueryResponse>;
     /**
      * Create a call
      * @param guild Guild
@@ -124,7 +138,7 @@ export declare class DatabaseClient {
      * @param id Call id
      * @returns
      */
-    deleteCall(id: number): Promise<any>;
+    deleteCall(id: number): Promise<QueryResponse>;
     /**
      * Get a call from the database
      * @param channel Voice channel
@@ -136,7 +150,7 @@ export declare class DatabaseClient {
     rps(guild: Guild, user: User, opponent: User, outcome: number): Promise<void>;
     createPoll(message: Message, user: User, maxchoices: number, end: EpochTimeStamp | null): Promise<RawDatabasePoll>;
     fetchPoll(message: Message): Promise<RawDatabasePoll>;
-    vote(pollId: number, user_id: Snowflake, vote: number): Promise<any>;
+    vote(pollId: number, user_id: Snowflake, vote: number): Promise<QueryResponse>;
     fetchVotes(pollId: number): Promise<RawDatabaseVote[]>;
     fetchActivePolls(): Promise<RawDatabasePoll[]>;
 }
