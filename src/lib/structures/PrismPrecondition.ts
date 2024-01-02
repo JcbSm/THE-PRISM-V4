@@ -1,7 +1,7 @@
-import { PieceContext, Precondition } from "@sapphire/framework";
+import { LoaderPieceContext, Precondition } from "@sapphire/framework";
 
 export abstract class PrismPrecondition extends Precondition {
-    constructor(context: PieceContext, options: PrismPrecondition.Options) {
+    constructor(context: LoaderPieceContext<"preconditions">, options: PrismPrecondition.Options) {
         super(context, {
             ...options
         })

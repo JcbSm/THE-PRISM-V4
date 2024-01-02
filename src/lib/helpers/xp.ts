@@ -79,7 +79,7 @@ export async function card(member: GuildMember, client: PrismClient): Promise<Bu
 
     ctx.fillStyle = grd; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    canvasRGBA(canvas as unknown as HTMLCanvasElement, 0, 0, canvas.width, canvas.height, 15)
+    canvasRGBA(canvas, 0, 0, canvas.width, canvas.height, 15)
     
     //Outline
     ctx.lineWidth = 10

@@ -11,6 +11,8 @@
         // Compilation directories
         "rootDir": "src",
         "outDir": "dist",
+        "incremental": true,
+        "composite": true,
         "tsBuildInfoFile": "dist/.tsbuildinfo",
 
         // Paths and such
@@ -20,7 +22,9 @@
             "#types/*": ["./lib/typedefs/*"],
             "#helpers/*": ["./lib/helpers/*"],
             "#lib/*": ["./lib/*"]
-        }
+        },
+
+        "ignoreDeprecations": "5.0"
     }
 
 }

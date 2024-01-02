@@ -47,7 +47,7 @@ export class DatabaseClient {
                     con.query({ sql, timeout: 10 * 1000 }, (err, rows) => {
                         con.release();
                         if (err)
-                            reject(new QueryError(err));
+                            resolve(new QueryError(err));
                         resolve(new QueryResult(rows));
                     });
                 else

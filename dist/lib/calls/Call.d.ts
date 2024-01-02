@@ -17,7 +17,7 @@ export declare class Call {
      * Fetch the call owner
      * @returns {User} Discord user
      */
-    fetchUser(): Promise<User>;
+    fetchOwner(): Promise<User>;
     /**
      * Send the options message on initialisation.
      * @returns {Message} The send message
@@ -33,6 +33,10 @@ export declare class Call {
      * @returns {boolean} New permission value
      */
     toggleVisibility(): Promise<boolean>;
+    fetchUserIds(): Promise<string[]>;
+    setUsers(ids: Snowflake[]): Promise<void>;
+    addUser(id: Snowflake): Promise<void>;
+    removeUser(id: Snowflake): Promise<void>;
     /**
      * Update call voice channel user limit
      * @param {number} n The new user limit

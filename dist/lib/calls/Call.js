@@ -1,6 +1,6 @@
 import { isChannelPublic } from "#helpers/discord";
 import { blankFieldInline } from "#helpers/embeds";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, OverwriteType, PermissionFlagsBits } from "discord.js";
 export class Call {
     channel_id;
     user;
@@ -49,7 +49,7 @@ export class Call {
      * Fetch the call owner
      * @returns {User} Discord user
      */
-    async fetchUser() {
+    async fetchOwner() {
         if (this.user)
             return this.user;
         return this.user = await this.client.users.fetch(this.userId);
@@ -84,6 +84,35 @@ export class Call {
         await this.channel.permissionOverwrites.edit(this.guild.roles.everyone.id, { ViewChannel: priv });
         return priv;
     }
+    async fetchUserIds() {
+        return this.channel.permissionOverwrites.cache.filter((overwrite) => {
+            return overwrite.type == OverwriteType.Member && overwrite.allow.has('ViewChannel') && overwrite.id != this.client.id && overwrite.id != this.userId;
+        }).map((_, id) => id);
+    }
+    async setUsers(ids) {
+        this.channel.permissionOverwrites.set([
+            {
+                id: this.userId,
+                allow: [PermissionFlagsBits.ViewChannel]
+            },
+            {
+                id: this.client.user.id,
+                allow: [PermissionFlagsBits.ViewChannel]
+            },
+            ...ids.map((userId) => {
+                return {
+                    id: userId,
+                    allow: [PermissionFlagsBits.ViewChannel]
+                };
+            })
+        ]);
+    }
+    async addUser(id) {
+        this.channel.permissionOverwrites.edit(id, { ViewChannel: true });
+    }
+    async removeUser(id) {
+        this.channel.permissionOverwrites.delete(id);
+    }
     /**
      * Update call voice channel user limit
      * @param {number} n The new user limit
@@ -103,7 +132,7 @@ export class Call {
             .setTitle('Call Options')
             .setDescription('Configure your call here.')
             .addFields([
-            { name: 'Created By', value: `${await this.fetchUser()}`, inline: true },
+            { name: 'Created By', value: `${await this.fetchOwner()}`, inline: true },
             blankFieldInline,
             { name: 'Visibility', value: this.isPublic ? '🔓 Public' : '🔒 Private', inline: true },
             { name: 'User Limit', value: `\`${this.userLimit > 0 ? this.userLimit : '0 (unlimited)'}\``, inline: true }
@@ -136,6 +165,13 @@ export class Call {
                     .setStyle(ButtonStyle.Primary)
                     .setEmoji('➖')
                     .setDisabled(this.userLimit == 0 ? true : false)
+            ]),
+            new ActionRowBuilder()
+                .addComponents([
+                new ButtonBuilder()
+                    .setCustomId('callManageUsers')
+                    .setLabel('Manage Users')
+                    .setStyle(ButtonStyle.Success)
             ])
         ];
     }

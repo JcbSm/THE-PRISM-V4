@@ -51,7 +51,7 @@ export type RawDatabasePoll = {
     poll_id: number;
     user_id: Snowflake;
     message_url: string;
-    end_timestamp: EpochTimeStamp;
+    end_timestamp: number;
     max_choices: number;
 }
 

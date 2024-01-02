@@ -5,6 +5,12 @@ export declare const Events: {
      * @param {number} level The level they advanced to.
      */
     readonly GuildMemberLevelUp: "guildMemberLevelUp";
+    readonly ApplicationCommandPermissionsUpdate: import("discord.js").Events.ApplicationCommandPermissionsUpdate;
+    readonly AutoModerationActionExecution: import("discord.js").Events.AutoModerationActionExecution;
+    readonly AutoModerationRuleCreate: import("discord.js").Events.AutoModerationRuleCreate;
+    readonly AutoModerationRuleDelete: import("discord.js").Events.AutoModerationRuleDelete;
+    readonly AutoModerationRuleUpdate: import("discord.js").Events.AutoModerationRuleUpdate;
+    readonly CacheSweep: import("discord.js").Events.CacheSweep;
     readonly ChannelCreate: import("discord.js").Events.ChannelCreate;
     readonly ChannelDelete: import("discord.js").Events.ChannelDelete;
     readonly ChannelPinsUpdate: import("discord.js").Events.ChannelPinsUpdate;
@@ -12,6 +18,8 @@ export declare const Events: {
     readonly ClientReady: import("discord.js").Events.ClientReady;
     readonly Debug: import("discord.js").Events.Debug;
     readonly Error: import("discord.js").Events.Error;
+    readonly GuildAuditLogEntryCreate: import("discord.js").Events.GuildAuditLogEntryCreate;
+    readonly GuildAvailable: import("discord.js").Events.GuildAvailable;
     readonly GuildBanAdd: import("discord.js").Events.GuildBanAdd;
     readonly GuildBanRemove: import("discord.js").Events.GuildBanRemove;
     readonly GuildCreate: import("discord.js").Events.GuildCreate;
@@ -21,13 +29,18 @@ export declare const Events: {
     readonly GuildEmojiUpdate: import("discord.js").Events.GuildEmojiUpdate;
     readonly GuildIntegrationsUpdate: import("discord.js").Events.GuildIntegrationsUpdate;
     readonly GuildMemberAdd: import("discord.js").Events.GuildMemberAdd;
-    readonly GuildMemberAvailable: import("discord.js").Events.GuildMemberAdd;
+    readonly GuildMemberAvailable: import("discord.js").Events.GuildMemberAvailable;
     readonly GuildMemberRemove: import("discord.js").Events.GuildMemberRemove;
     readonly GuildMembersChunk: import("discord.js").Events.GuildMembersChunk;
     readonly GuildMemberUpdate: import("discord.js").Events.GuildMemberUpdate;
     readonly GuildRoleCreate: import("discord.js").Events.GuildRoleCreate;
     readonly GuildRoleDelete: import("discord.js").Events.GuildRoleDelete;
     readonly GuildRoleUpdate: import("discord.js").Events.GuildRoleUpdate;
+    readonly GuildScheduledEventCreate: import("discord.js").Events.GuildScheduledEventCreate;
+    readonly GuildScheduledEventDelete: import("discord.js").Events.GuildScheduledEventDelete;
+    readonly GuildScheduledEventUpdate: import("discord.js").Events.GuildScheduledEventUpdate;
+    readonly GuildScheduledEventUserAdd: import("discord.js").Events.GuildScheduledEventUserAdd;
+    readonly GuildScheduledEventUserRemove: import("discord.js").Events.GuildScheduledEventUserRemove;
     readonly GuildStickerCreate: import("discord.js").Events.GuildStickerCreate;
     readonly GuildStickerDelete: import("discord.js").Events.GuildStickerDelete;
     readonly GuildStickerUpdate: import("discord.js").Events.GuildStickerUpdate;
@@ -84,10 +97,15 @@ export declare const Events: {
     readonly MessageCommandTypingError: "messageCommandTypingError";
     readonly ListenerError: "listenerError";
     readonly CommandApplicationCommandRegistryError: "commandApplicationCommandRegistryError";
+    readonly ApplicationCommandRegistriesInitialising: "applicationCommandRegistriesInitialising";
     readonly ApplicationCommandRegistriesRegistered: "applicationCommandRegistriesRegistered";
+    readonly ApplicationCommandRegistriesBulkOverwriteError: "applicationCommandRegistriesBulkOverwriteError";
     readonly PiecePostLoad: "piecePostLoad";
     readonly PieceUnload: "pieceUnload";
     readonly PluginLoaded: "pluginLoaded";
+    readonly InteractionHandlerParseSuccess: "interactionHandlerParseSuccess";
+    readonly InteractionHandlerParseSome: "interactionHandlerParseSome";
+    readonly InteractionHandlerParseNone: "interactionHandlerParseNone";
     readonly InteractionHandlerParseError: "interactionHandlerParseError";
     readonly InteractionHandlerError: "interactionHandlerError";
     readonly PossibleAutocompleteInteraction: "possibleAutocompleteInteraction";

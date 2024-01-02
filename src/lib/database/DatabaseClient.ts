@@ -83,7 +83,7 @@ export class DatabaseClient {
                         con.release();
 
                         if (err)
-                            reject(new QueryError(err));
+                            resolve(new QueryError(err));
 
                         resolve(new QueryResult(rows));
                     })
@@ -373,7 +373,7 @@ export class DatabaseClient {
         this.query(`UPDATE members SET rps_${oponentfield} = rps_${oponentfield} + 1 WHERE user_id = ${opponent.id} AND guild_id = ${guild.id}`);
     }
 
-    public async createPoll(message: Message, user: User, maxchoices: number, end: EpochTimeStamp | null): Promise<RawDatabasePoll> {
+    public async createPoll(message: Message, user: User, maxchoices: number, end: number | null): Promise<RawDatabasePoll> {
         return (await this.query(`INSERT INTO polls (message_url, user_id, end_timestamp, max_choices) VALUES ('${message.url}', ${user.id}, ${end}, ${maxchoices}) RETURNING *`)).result[0];
     }
 

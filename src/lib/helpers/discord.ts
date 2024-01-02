@@ -1,19 +1,23 @@
 import { ActionRowBuilder, ButtonBuilder, ChannelSelectMenuBuilder, GuildChannel, StringSelectMenuBuilder } from "discord.js";
-import type { Message } from "discord.js";
+import type { AnyComponentBuilder, Message, MessageActionRowComponentBuilder, RoleSelectMenuBuilder, UserSelectMenuBuilder } from "discord.js";
 
 export type ActionRowComponentBuilders =
     | ButtonBuilder
     | StringSelectMenuBuilder
     | ChannelSelectMenuBuilder
+    | UserSelectMenuBuilder
+    | RoleSelectMenuBuilder
 
 export interface UpdateMessageComponentsOptions {
     customId: string;
-    update(builder: ActionRowComponentBuilders): void;
+    update(builder: AnyComponentBuilder): void;
 }
 
-export function updateMessageComponents(message: Message, options: UpdateMessageComponentsOptions[]): ActionRowBuilder<ActionRowComponentBuilders>[] {
+export function updateMessageComponents(message: Message, options: UpdateMessageComponentsOptions[]): ActionRowBuilder<MessageActionRowComponentBuilder>[] {
 
-    let components = [...message.components].map(row => ActionRowBuilder.from(row) as ActionRowBuilder<ActionRowComponentBuilders>)
+    let components = [...message.components].map(row => {
+        return ActionRowBuilder.from(row) as ActionRowBuilder<MessageActionRowComponentBuilder>;
+    })
 
     for (const component of options) {
 

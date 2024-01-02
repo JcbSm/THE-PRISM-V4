@@ -2,7 +2,7 @@ import { isChannelPublic } from "#helpers/discord";
 import { blankFieldInline } from "#helpers/embeds";
 import type { PrismClient } from "#lib/PrismClient";
 import type { RawDatabaseCall } from "#types/database";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, Guild, Snowflake, User, VoiceChannel } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, Guild, OverwriteType, PermissionFlagsBits, PermissionOverwrites, Snowflake, User, VoiceChannel } from "discord.js";
 
 export class Call {
 
@@ -65,7 +65,7 @@ export class Call {
      * Fetch the call owner
      * @returns {User} Discord user
      */
-    public async fetchUser() {
+    public async fetchOwner() {
 
         if (this.user)
             return this.user;
@@ -109,6 +109,45 @@ export class Call {
         return priv
     }
 
+    public async fetchUserIds() {
+
+        return this.channel.permissionOverwrites.cache.filter((overwrite: PermissionOverwrites) => {
+            return overwrite.type == OverwriteType.Member && overwrite.allow.has('ViewChannel') && overwrite.id != this.client.id && overwrite.id != this.userId;
+        }).map((_, id: Snowflake) => id);
+
+    }
+
+    public async setUsers(ids: Snowflake[]) {
+
+        this.channel.permissionOverwrites.set([
+            {
+                id: this.userId,
+                allow: [PermissionFlagsBits.ViewChannel]
+            },
+            {
+                id: this.client.user!.id,
+                allow: [PermissionFlagsBits.ViewChannel]
+            },
+            ...ids.map((userId: Snowflake) => {
+                return {
+                    id: userId,
+                    allow: [PermissionFlagsBits.ViewChannel]
+                }
+            })
+        ])
+
+    }
+
+    public async addUser(id: Snowflake) {
+
+        this.channel.permissionOverwrites.edit(id, { ViewChannel: true });
+
+    }
+
+    public async removeUser(id: Snowflake) {
+        this.channel.permissionOverwrites.delete(id);
+    }
+
     /**
      * Update call voice channel user limit
      * @param {number} n The new user limit
@@ -128,7 +167,7 @@ export class Call {
             .setTitle('Call Options')
             .setDescription('Configure your call here.')
             .addFields([
-                { name: 'Created By', value: `${await this.fetchUser()}`, inline: true },
+                { name: 'Created By', value: `${await this.fetchOwner()}`, inline: true },
                 blankFieldInline,
                 { name: 'Visibility', value: this.isPublic ? '🔓 Public' : '🔒 Private', inline: true},
                 { name: 'User Limit', value: `\`${this.userLimit > 0 ? this.userLimit : '0 (unlimited)' }\``, inline: true }
@@ -162,7 +201,14 @@ export class Call {
                         .setStyle(ButtonStyle.Primary)
                         .setEmoji('➖')
                         .setDisabled(this.userLimit == 0 ? true : false)
-                ])
+                ]),
+                new ActionRowBuilder<ButtonBuilder>()
+                    .addComponents([
+                        new ButtonBuilder()
+                            .setCustomId('callManageUsers')
+                            .setLabel('Manage Users')
+                            .setStyle(ButtonStyle.Success)
+                        ])
         ]
     }
 }

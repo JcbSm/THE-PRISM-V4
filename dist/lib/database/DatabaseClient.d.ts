@@ -148,7 +148,7 @@ export declare class DatabaseClient {
     fetchMemberCall(member: GuildMember): Promise<RawDatabaseCall>;
     fetchCalls(guild?: Guild): Promise<RawDatabaseCall[]>;
     rps(guild: Guild, user: User, opponent: User, outcome: number): Promise<void>;
-    createPoll(message: Message, user: User, maxchoices: number, end: EpochTimeStamp | null): Promise<RawDatabasePoll>;
+    createPoll(message: Message, user: User, maxchoices: number, end: number | null): Promise<RawDatabasePoll>;
     fetchPoll(message: Message): Promise<RawDatabasePoll>;
     vote(pollId: number, user_id: Snowflake, vote: number): Promise<QueryResponse>;
     fetchVotes(pollId: number): Promise<RawDatabaseVote[]>;

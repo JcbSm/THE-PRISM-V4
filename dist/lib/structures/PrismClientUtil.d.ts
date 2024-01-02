@@ -24,7 +24,7 @@ export declare class PrismClientUtil {
      * @returns {Promise<GuildMember | undefined>} Returns GuildMember, if no member exists, returns undefined.
      */
     getMemberFromUser(user: User, guild: Guild): Promise<GuildMember | undefined>;
-    fetchMessageFromURL(url: string): Promise<import("discord.js").Message<true> | import("discord.js").Message<false> | undefined>;
+    fetchMessageFromURL(url: string): Promise<import("discord.js").Message<boolean> | undefined>;
     trackPoll(poll: RawDatabasePoll): Promise<void>;
     regenChannel(): Promise<void>;
 }

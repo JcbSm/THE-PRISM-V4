@@ -23,7 +23,7 @@ export declare class Duration {
     toMilli(): number;
     endTimestamp(): number;
     toDate(): Date;
-    toMention(style?: TimestampStylesString): `<t:${bigint}:f>` | `<t:${bigint}:d>` | `<t:${bigint}:t>` | `<t:${bigint}:T>` | `<t:${bigint}:D>` | `<t:${bigint}:F>` | `<t:${bigint}:R>`;
+    toMention(style?: TimestampStylesString): `<t:${bigint}:d>` | `<t:${bigint}:D>` | `<t:${bigint}:t>` | `<t:${bigint}:T>` | `<t:${bigint}:f>` | `<t:${bigint}:F>` | `<t:${bigint}:R>`;
 }
 export interface Duration {
 }
