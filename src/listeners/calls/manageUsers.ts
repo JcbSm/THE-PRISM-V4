@@ -29,6 +29,7 @@ export class CallEndListener extends PrismListener {
                             .setCustomId('callManageUsersSelect')
                             .setDefaultUsers(await call.fetchUserIds())
                             .setMaxValues(25)
+                            .setMinValues(0)
                     ])
             ]
         }))
