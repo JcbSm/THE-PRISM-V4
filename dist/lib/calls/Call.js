@@ -90,7 +90,13 @@ export class Call {
         }).map((_, id) => id);
     }
     async setUsers(ids) {
+        const visibility = this.isPublic;
         this.channel.permissionOverwrites.set([
+            {
+                id: this.guild.roles.everyone,
+                allow: visibility ? [PermissionFlagsBits.ViewChannel] : [],
+                deny: visibility ? [] : [PermissionFlagsBits.ViewChannel]
+            },
             {
                 id: this.userId,
                 allow: [PermissionFlagsBits.ViewChannel]
