@@ -26,7 +26,7 @@ let CallEndListener = class CallEndListener extends PrismListener {
                 ])
             ]
         }));
-        reply.createMessageComponentCollector({ max: 2, time: 15 * 1000 })
+        reply.createMessageComponentCollector({ max: 2, time: 300 * 1000 })
             .on('collect', async (selectInteraction) => {
             await call.setUsers(selectInteraction.values);
             selectInteraction.update({
