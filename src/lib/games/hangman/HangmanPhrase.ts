@@ -1,4 +1,4 @@
-import { HangmanWord } from "./HangmanWord";
+import { HangmanWord } from "#lib/games/hangman/HangmanWord";
 
 /**
  * Represents a HangmanPhrase

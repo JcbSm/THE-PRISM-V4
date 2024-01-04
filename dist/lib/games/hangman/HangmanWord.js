@@ -1,4 +1,4 @@
-import { HangmanCharacter } from "./HangmanCharacter";
+import { HangmanCharacter } from "#lib/games/hangman/HangmanCharacter";
 /**
  * Represents a word
  */
