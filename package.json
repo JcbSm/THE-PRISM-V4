@@ -14,6 +14,7 @@
         "color": "^4.2.3",
         "discord.js": "^14.14.1",
         "dotenv": "^16.0.3",
+        "fs": "^0.0.1-security",
         "mysql": "^2.18.1",
         "path": "^0.12.7",
         "stackblur-canvas": "^2.6.0",

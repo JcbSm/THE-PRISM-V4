@@ -1,0 +1,1 @@
+{"version":3,"file":"hangman.d.ts","sourceRoot":"","sources":["../../../src/commands/fun/hangman.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,YAAY,EAAE,MAAM,uBAAuB,CAAC;AAErD,OAAO,KAAK,EAAE,gBAAgB,EAAE,MAAM,qBAAqB,CAAC;AAG5D,qBAKa,cAAe,SAAQ,YAAY;IAE5B,2BAA2B,CAAC,QAAQ,EAAE,gBAAgB,CAAC,QAAQ;IAWlE,YAAY,CAAC,WAAW,EAAE,YAAY,CAAC,oBAAoB;CAY3E"}
