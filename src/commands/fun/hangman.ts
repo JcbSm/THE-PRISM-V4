@@ -1,5 +1,5 @@
 import { HangmanGame } from "#lib/games/hangman/HangmanGame";
-import { HangmanPhrase } from "#lib/games/hangman/phrases";
+import { HangmanPhrase } from "#lib/games/hangman/HangmanPhrase";
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators"
 import type { ChatInputCommand } from "@sapphire/framework";
@@ -16,11 +16,11 @@ export class HangmanCommand extends PrismCommand {
         registry.registerChatInputCommand(
             (builder) => builder
                 .setName(this.name)
-                .setDescription(this.description)
-                .addStringOption(option =>
-                    option //
-                        .setName('word')
-                        .setDescription('The word to play hangman with')))
+                .setDescription(this.description))
+                // .addStringOption(option =>
+                //     option //
+                //         .setName('word')
+                //         .setDescription('The word to play hangman with')))
     }
 
     public async chatInputRun(interaction: PrismCommand.ChatInputInteraction) {
