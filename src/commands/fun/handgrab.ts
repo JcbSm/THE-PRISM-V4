@@ -1,6 +1,7 @@
 import { PrismCommand } from "#structs/PrismCommand";
 import { ApplyOptions } from "@sapphire/decorators";
 import type { ApplicationCommandRegistry } from "@sapphire/framework";
+import { AttachmentBuilder } from "discord.js";
 
 @ApplyOptions<PrismCommand.Options>({
     name: 'handgrab',
@@ -26,7 +27,8 @@ export class HandgrabCommand extends PrismCommand {
 
     public override async chatInputRun(interaction: PrismCommand.ChatInputInteraction) {
 
-        const urls = this.getURLs(interaction.options.getString('type') ?? 'default');
+        // const urls = this.getURLs(interaction.options.getString('type') ?? 'default');
+        const attachments = this.getAttachment(interaction.options.getString('type') ?? 'default');
 
         if (interaction.channel?.isTextBased()) {
             await interaction.reply({ content: `Laying the trap, don't say a word 🤫`, ephemeral: true });
@@ -35,9 +37,12 @@ export class HandgrabCommand extends PrismCommand {
 
             try {
                 await interaction.channel.awaitMessages({ filter: m => !m.author.bot, max: 1, time: 1200 * 1000, errors: ['time']});
-                await top.edit(urls.top);
-                return await interaction.channel.send(urls.bot);
-            } catch {
+                await top.edit({ files: [ attachments.top ]});
+                return await interaction.channel.send({ files: [attachments.bottom]});
+            } catch (e) {
+
+                console.error(e)
+
                 return top.delete();
             }
 
@@ -45,27 +50,14 @@ export class HandgrabCommand extends PrismCommand {
 
     }
 
-    private getURLs(type: string) {
+    private getAttachment(type: string): { top: AttachmentBuilder; bottom: AttachmentBuilder; } {
 
-        let top: string;
-        let bot: string;
+        const url = `./src/assets/handgrab/`
+        const suffix = (type == 'default' ? "" : `_${type}`) + ".png" ;
 
-        if (type.toLowerCase() === 'thanos') {
-
-            top = 'https://i.imgur.com/7kjMLYJ.png',
-            bot = 'https://i.imgur.com/d5TxlJo.png'
-
-        } else if (type.toLowerCase() === 'laser') {
-            
-            top = 'https://i.imgur.com/0S5zqIn.png',
-            bot = 'https://i.imgur.com/iyyggjV.png'
-
-        } else {
-            top = 'https://i.imgur.com/Sv6kz8f.png',
-            bot = 'https://i.imgur.com/wvUPp3d.png'
-        };
-
-        return { top, bot }
-
+        return {
+            top: new AttachmentBuilder(url + "top" + suffix),
+            bottom: new AttachmentBuilder(url + "bottom" + suffix)
+        }
     }
 }
